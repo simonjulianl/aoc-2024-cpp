@@ -1,0 +1,32 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "",
+	"cxx-modules" : 
+	{
+		"aoc/CMakeFiles/part_two.dir/part_two.cpp.o" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "",
+			"source" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		}
+	},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc",
+	"dir-cur-src" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc",
+	"dir-top-bld" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+	"dir-top-src" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : [],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/CMakeFiles/part_two.dir",
+	"sources" : {}
+}

@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+  "command": "/usr/bin/g++-14 -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -fmodules-ts -fmodule-mapper=aoc/CMakeFiles/input.dir/input.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o aoc/CMakeFiles/input.dir/input.cpp.o -c /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp",
+  "file": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp",
+  "output": "aoc/CMakeFiles/input.dir/input.cpp.o"
+},
+{
+  "directory": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+  "command": "/usr/bin/g++-14 -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -fmodules-ts -fmodule-mapper=aoc/CMakeFiles/part_one.dir/part_one.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o aoc/CMakeFiles/part_one.dir/part_one.cpp.o -c /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp",
+  "file": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp",
+  "output": "aoc/CMakeFiles/part_one.dir/part_one.cpp.o"
+},
+{
+  "directory": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+  "command": "/usr/bin/g++-14 -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -fmodules-ts -fmodule-mapper=aoc/CMakeFiles/part_two.dir/part_two.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o aoc/CMakeFiles/part_two.dir/part_two.cpp.o -c /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp",
+  "file": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp",
+  "output": "aoc/CMakeFiles/part_two.dir/part_two.cpp.o"
+},
+{
+  "directory": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src",
+  "command": "/usr/bin/g++-14 -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -fmodules-ts -fmodule-mapper=aoc/CMakeFiles/aoc2024.dir/main.cpp.o.modmap -MD -fdeps-format=p1689r5 -x c++ -o aoc/CMakeFiles/aoc2024.dir/main.cpp.o -c /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp",
+  "file": "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp",
+  "output": "aoc/CMakeFiles/aoc2024.dir/main.cpp.o"
+}
+]
