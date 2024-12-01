@@ -69024,13 +69024,15 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 2 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp" 2
 
 
-# 3 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp"
+
+# 4 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp"
 import  input;
 import  part_one;
 import  part_two;
 
 int main() {
-  std::cout << "Solution to part 1: " << part_one::solve(input::input) << std::endl;
-  std::cout << "Solution to part 2: " << part_two::solve(input::input) << std::endl;
+  std::string_view i = input::get_input();
+  std::cout << "Solution to part 1: " << part_one::solve(i) << std::endl;
+  std::cout << "Solution to part 2: " << part_two::solve(i) << std::endl;
   return 0;
 }
