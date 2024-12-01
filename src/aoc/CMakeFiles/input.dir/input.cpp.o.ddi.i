@@ -70958,7 +70958,6 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 5 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp" 2
-
 # 1 "/usr/include/c++/14/sstream" 1 3
 # 36 "/usr/include/c++/14/sstream" 3
        
@@ -72139,7 +72138,8 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 1239 "/usr/include/c++/14/sstream" 2 3
-# 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp" 2
+# 6 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp" 2
+
 
 
 
@@ -72147,7 +72147,8 @@ namespace std __attribute__ ((__visibility__ ("default")))
 export  module  input;
 
 export namespace input {
-std::string_view get_input() {
+
+std::string get_input() {
   std::string filename = "aoc/input.txt";
   std::ifstream file(filename);
   if (!file) {
@@ -72156,8 +72157,8 @@ std::string_view get_input() {
 
   std::stringstream buffer;
   buffer << file.rdbuf();
-  std::cout << buffer.str();
 
   return buffer.str();
 }
+
 }

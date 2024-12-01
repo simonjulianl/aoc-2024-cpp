@@ -10,7 +10,7 @@ export module input;
 
 export namespace input {
 
-std::string_view get_input() {
+std::string get_input() {
   std::string filename = "aoc/input.txt";
   std::ifstream file(filename);
   if (!file) {
