@@ -79774,27 +79774,55 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp"
 export  module  part_one;
 
+
+
 export namespace part_one {
 
+template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
+
 auto solve(const std::string &input) -> long {
-  auto left = std::vector<long>();
-  auto right = std::vector<long>();
-  auto ss = std::stringstream{input};
+  std::istringstream stream(input);
+  std::string line;
 
-  for (std::string line; std::getline(ss, line, '\n');) {
-    long a, b;
-    std::istringstream iss(line);
-    iss >> a >> b;
-    left.push_back(a);
-    right.push_back(b);
-  }
+  auto ans = 0;
+  int max_diff = 3, min_diff = 1;
+  while (std::getline(stream, line)) {
+    std::istringstream line_stream(line);
+    long curr = -1, prev_number = -1, sign = 0;
 
-  std::sort(left.begin(), left.end());
-  std::sort(right.begin(), right.end());
+    bool valid = true;
+    while (line_stream >> curr) {
+      if (prev_number == -1) {
+        prev_number = curr;
+        continue;
+      }
 
-  long ans = 0;
-  for (size_t i = 0; i < left.size(); i++) {
-    ans += std::abs(left[i] - right[i]);
+      long diff = curr - prev_number;
+      if (std::abs(diff) >= min_diff && std::abs(diff) <= max_diff) {
+        prev_number = curr;
+        if (sign == 0) {
+          sign = sgn(diff);
+        } else {
+
+          auto new_sign = sgn(diff);
+          if (sign != new_sign) {
+            valid = false;
+            break;
+          }
+        }
+      } else {
+        valid = false;
+        break;
+      }
+    }
+
+
+
+
+
+    if (valid) {
+      ans++;
+    }
   }
 
   return ans;
