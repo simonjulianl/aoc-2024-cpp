@@ -1,0 +1,4 @@
+$root .
+part_two aoc/CMakeFiles/part_two.dir/part_two.gcm
+input aoc/CMakeFiles/input.dir/input.gcm
+part_one aoc/CMakeFiles/part_one.dir/part_one.gcm

@@ -1,0 +1,4 @@
+ninja_dyndep_version = 1.0
+build aoc/CMakeFiles/input.dir/input.cpp.o | aoc/CMakeFiles/input.dir/input.gcm: dyndep
+  restat = 1
+
