@@ -75,14 +75,14 @@ build cmake_object_order_depends_target_input: phony || .
 build aoc/CMakeFiles/input.dir/input.cpp.o.ddi: CXX_SCAN__input_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp || cmake_object_order_depends_target_input
   DEP_FILE = aoc/CMakeFiles/input.dir/input.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = aoc/CMakeFiles/input.dir/input.cpp.o.ddi
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJ_FILE = aoc/CMakeFiles/input.dir/input.cpp.o
   PREPROCESSED_OUTPUT_FILE = aoc/CMakeFiles/input.dir/input.cpp.o.ddi.i
 
 build aoc/CMakeFiles/input.dir/input.cpp.o: CXX_COMPILER__input_scanned_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/input.cpp | aoc/CMakeFiles/input.dir/input.cpp.o.modmap || cmake_object_order_depends_target_input aoc/CMakeFiles/input.dir/CXX.dd
   DEP_FILE = aoc/CMakeFiles/input.dir/input.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = aoc/CMakeFiles/input.dir/input.cpp.o.modmap
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJECT_DIR = aoc/CMakeFiles/input.dir
   OBJECT_FILE_DIR = aoc/CMakeFiles/input.dir
   dyndep = aoc/CMakeFiles/input.dir/CXX.dd
@@ -116,14 +116,14 @@ build cmake_object_order_depends_target_part_one: phony || .
 build aoc/CMakeFiles/part_one.dir/part_one.cpp.o.ddi: CXX_SCAN__part_one_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp || cmake_object_order_depends_target_part_one
   DEP_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o.ddi
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJ_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o
   PREPROCESSED_OUTPUT_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o.ddi.i
 
 build aoc/CMakeFiles/part_one.dir/part_one.cpp.o: CXX_COMPILER__part_one_scanned_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp | aoc/CMakeFiles/part_one.dir/part_one.cpp.o.modmap || cmake_object_order_depends_target_part_one aoc/CMakeFiles/part_one.dir/CXX.dd
   DEP_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = aoc/CMakeFiles/part_one.dir/part_one.cpp.o.modmap
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJECT_DIR = aoc/CMakeFiles/part_one.dir
   OBJECT_FILE_DIR = aoc/CMakeFiles/part_one.dir
   dyndep = aoc/CMakeFiles/part_one.dir/CXX.dd
@@ -157,14 +157,14 @@ build cmake_object_order_depends_target_part_two: phony || .
 build aoc/CMakeFiles/part_two.dir/part_two.cpp.o.ddi: CXX_SCAN__part_two_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp || cmake_object_order_depends_target_part_two
   DEP_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o.ddi
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJ_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o
   PREPROCESSED_OUTPUT_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o.ddi.i
 
 build aoc/CMakeFiles/part_two.dir/part_two.cpp.o: CXX_COMPILER__part_two_scanned_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp | aoc/CMakeFiles/part_two.dir/part_two.cpp.o.modmap || cmake_object_order_depends_target_part_two aoc/CMakeFiles/part_two.dir/CXX.dd
   DEP_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = aoc/CMakeFiles/part_two.dir/part_two.cpp.o.modmap
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJECT_DIR = aoc/CMakeFiles/part_two.dir
   OBJECT_FILE_DIR = aoc/CMakeFiles/part_two.dir
   dyndep = aoc/CMakeFiles/part_two.dir/CXX.dd
@@ -198,14 +198,14 @@ build cmake_object_order_depends_target_aoc2024: phony || cmake_object_order_dep
 build aoc/CMakeFiles/aoc2024.dir/main.cpp.o.ddi: CXX_SCAN__aoc2024_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp || cmake_object_order_depends_target_aoc2024
   DEP_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o.ddi.d
   DYNDEP_INTERMEDIATE_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o.ddi
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJ_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o
   PREPROCESSED_OUTPUT_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o.ddi.i
 
 build aoc/CMakeFiles/aoc2024.dir/main.cpp.o: CXX_COMPILER__aoc2024_scanned_ /home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/main.cpp | aoc/CMakeFiles/aoc2024.dir/main.cpp.o.modmap || cmake_object_order_depends_target_aoc2024 aoc/CMakeFiles/aoc2024.dir/CXX.dd
   DEP_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o.d
   DYNDEP_MODULE_MAP_FILE = aoc/CMakeFiles/aoc2024.dir/main.cpp.o.modmap
-  FLAGS = -std=gnu++23 -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
+  FLAGS = -std=gnu++23 --std=c++20 -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field
   OBJECT_DIR = aoc/CMakeFiles/aoc2024.dir
   OBJECT_FILE_DIR = aoc/CMakeFiles/aoc2024.dir
   dyndep = aoc/CMakeFiles/aoc2024.dir/CXX.dd
