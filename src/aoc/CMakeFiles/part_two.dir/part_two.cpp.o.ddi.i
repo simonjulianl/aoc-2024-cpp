@@ -54114,6 +54114,2390 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 48 "/usr/include/c++/14/bits/version.h" 3
 # 79 "/usr/include/c++/14/iterator" 2 3
 # 6 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 1 "/usr/include/c++/14/numeric" 1 3
+# 58 "/usr/include/c++/14/numeric" 3
+       
+# 59 "/usr/include/c++/14/numeric" 3
+
+
+
+# 1 "/usr/include/c++/14/bits/stl_numeric.h" 1 3
+# 64 "/usr/include/c++/14/bits/stl_numeric.h" 3
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+# 85 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _ForwardIterator, typename _Tp>
+    constexpr
+    void
+    iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __value)
+    {
+
+     
+
+     
+
+      ;
+
+      for (; __first != __last; ++__first)
+ {
+   *__first = __value;
+   ++__value;
+ }
+    }
+
+
+
+
+
+# 131 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _Tp>
+    constexpr
+    inline _Tp
+    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init)
+    {
+
+     
+      ;
+
+      for (; __first != __last; ++__first)
+ __init = std::move(__init) + *__first;
+      return __init;
+    }
+# 158 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
+    constexpr
+    inline _Tp
+    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init,
+        _BinaryOperation __binary_op)
+    {
+
+     
+      ;
+
+      for (; __first != __last; ++__first)
+ __init = __binary_op(std::move(__init), *__first);
+      return __init;
+    }
+# 187 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
+    constexpr
+    inline _Tp
+    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
+    _InputIterator2 __first2, _Tp __init)
+    {
+
+     
+     
+      ;
+
+      for (; __first1 != __last1; ++__first1, (void)++__first2)
+ __init = std::move(__init) + (*__first1 * *__first2);
+      return __init;
+    }
+# 219 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
+    typename _BinaryOperation1, typename _BinaryOperation2>
+    constexpr
+    inline _Tp
+    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
+    _InputIterator2 __first2, _Tp __init,
+    _BinaryOperation1 __binary_op1,
+    _BinaryOperation2 __binary_op2)
+    {
+
+     
+     
+      ;
+
+      for (; __first1 != __last1; ++__first1, (void)++__first2)
+ __init = __binary_op1(std::move(__init),
+         __binary_op2(*__first1, *__first2));
+      return __init;
+    }
+# 253 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    _OutputIterator
+    partial_sum(_InputIterator __first, _InputIterator __last,
+  _OutputIterator __result)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   __value = std::move(__value) + *__first;
+   *++__result = __value;
+ }
+      return ++__result;
+    }
+# 294 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    partial_sum(_InputIterator __first, _InputIterator __last,
+  _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   __value = __binary_op(std::move(__value), *__first);
+   *++__result = __value;
+ }
+      return ++__result;
+    }
+# 334 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    _OutputIterator
+    adjacent_difference(_InputIterator __first,
+   _InputIterator __last, _OutputIterator __result)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   _ValueType __tmp = *__first;
+   *++__result = __tmp - std::move(__value);
+   __value = std::move(__tmp);
+ }
+      return ++__result;
+    }
+# 376 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    adjacent_difference(_InputIterator __first, _InputIterator __last,
+   _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   _ValueType __tmp = *__first;
+   *++__result = __binary_op(__tmp, std::move(__value));
+   __value = std::move(__tmp);
+ }
+      return ++__result;
+    }
+
+
+
+
+
+
+}
+# 63 "/usr/include/c++/14/numeric" 2 3
+# 79 "/usr/include/c++/14/numeric" 3
+# 1 "/usr/include/c++/14/limits" 1 3
+# 40 "/usr/include/c++/14/limits" 3
+       
+# 41 "/usr/include/c++/14/limits" 3
+# 158 "/usr/include/c++/14/limits" 3
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+
+
+
+
+
+
+  enum float_round_style
+  {
+    round_indeterminate = -1,
+    round_toward_zero = 0,
+    round_to_nearest = 1,
+    round_toward_infinity = 2,
+    round_toward_neg_infinity = 3
+  };
+
+
+
+
+
+
+
+  enum float_denorm_style
+  {
+
+    denorm_indeterminate = -1,
+
+    denorm_absent = 0,
+
+    denorm_present = 1
+  };
+# 202 "/usr/include/c++/14/limits" 3
+  struct __numeric_limits_base
+  {
+
+
+    static constexpr bool is_specialized = false;
+
+
+
+
+    static constexpr int digits = 0;
+
+
+    static constexpr int digits10 = 0;
+
+
+
+
+    static constexpr int max_digits10 = 0;
+
+
+
+    static constexpr bool is_signed = false;
+
+
+    static constexpr bool is_integer = false;
+
+
+
+
+    static constexpr bool is_exact = false;
+
+
+
+    static constexpr int radix = 0;
+
+
+
+    static constexpr int min_exponent = 0;
+
+
+
+    static constexpr int min_exponent10 = 0;
+
+
+
+
+    static constexpr int max_exponent = 0;
+
+
+
+    static constexpr int max_exponent10 = 0;
+
+
+    static constexpr bool has_infinity = false;
+
+
+
+    static constexpr bool has_quiet_NaN = false;
+
+
+
+    static constexpr bool has_signaling_NaN = false;
+
+
+    static constexpr float_denorm_style has_denorm = denorm_absent;
+
+
+
+    static constexpr bool has_denorm_loss = false;
+
+
+
+    static constexpr bool is_iec559 = false;
+
+
+
+
+    static constexpr bool is_bounded = false;
+# 288 "/usr/include/c++/14/limits" 3
+    static constexpr bool is_modulo = false;
+
+
+    static constexpr bool traps = false;
+
+
+    static constexpr bool tinyness_before = false;
+
+
+
+
+    static constexpr float_round_style round_style =
+          round_toward_zero;
+  };
+# 311 "/usr/include/c++/14/limits" 3
+  template<typename _Tp>
+    struct numeric_limits : public __numeric_limits_base
+    {
+
+
+      static constexpr _Tp
+      min() noexcept { return _Tp(); }
+
+
+      static constexpr _Tp
+      max() noexcept { return _Tp(); }
+
+
+
+
+      static constexpr _Tp
+      lowest() noexcept { return _Tp(); }
+
+
+
+
+      static constexpr _Tp
+      epsilon() noexcept { return _Tp(); }
+
+
+      static constexpr _Tp
+      round_error() noexcept { return _Tp(); }
+
+
+      static constexpr _Tp
+      infinity() noexcept { return _Tp(); }
+
+
+
+      static constexpr _Tp
+      quiet_NaN() noexcept { return _Tp(); }
+
+
+
+      static constexpr _Tp
+      signaling_NaN() noexcept { return _Tp(); }
+
+
+
+
+      static constexpr _Tp
+      denorm_min() noexcept { return _Tp(); }
+    };
+
+
+
+
+  template<typename _Tp>
+    struct numeric_limits<const _Tp>
+    : public numeric_limits<_Tp> { };
+
+  template<typename _Tp>
+    struct numeric_limits<volatile _Tp>
+    : public numeric_limits<_Tp> { };
+
+  template<typename _Tp>
+    struct numeric_limits<const volatile _Tp>
+    : public numeric_limits<_Tp> { };
+# 383 "/usr/include/c++/14/limits" 3
+  template<>
+    struct numeric_limits<bool>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr bool
+      min() noexcept { return false; }
+
+      static constexpr bool
+      max() noexcept { return true; }
+
+
+      static constexpr bool
+      lowest() noexcept { return min(); }
+
+      static constexpr int digits = 1;
+      static constexpr int digits10 = 0;
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr bool
+      epsilon() noexcept { return false; }
+
+      static constexpr bool
+      round_error() noexcept { return false; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr bool
+      infinity() noexcept { return false; }
+
+      static constexpr bool
+      quiet_NaN() noexcept { return false; }
+
+      static constexpr bool
+      signaling_NaN() noexcept { return false; }
+
+      static constexpr bool
+      denorm_min() noexcept { return false; }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+
+
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<char>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr char
+      min() noexcept { return (((char)(-1) < 0) ? -(((char)(-1) < 0) ? (((((char)1 << ((sizeof(char) * 8 - ((char)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char)0) - 1 : (char)0); }
+
+      static constexpr char
+      max() noexcept { return (((char)(-1) < 0) ? (((((char)1 << ((sizeof(char) * 8 - ((char)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char)0); }
+
+
+      static constexpr char
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(char) * 8 - ((char)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(char) * 8 - ((char)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = ((char)(-1) < 0);
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr char
+      epsilon() noexcept { return 0; }
+
+      static constexpr char
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr
+      char infinity() noexcept { return char(); }
+
+      static constexpr char
+      quiet_NaN() noexcept { return char(); }
+
+      static constexpr char
+      signaling_NaN() noexcept { return char(); }
+
+      static constexpr char
+      denorm_min() noexcept { return static_cast<char>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = !is_signed;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<signed char>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr signed char
+      min() noexcept { return -0x7f - 1; }
+
+      static constexpr signed char
+      max() noexcept { return 0x7f; }
+
+
+      static constexpr signed char
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(signed char) * 8 - ((signed char)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(signed char) * 8 - ((signed char)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr signed char
+      epsilon() noexcept { return 0; }
+
+      static constexpr signed char
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr signed char
+      infinity() noexcept { return static_cast<signed char>(0); }
+
+      static constexpr signed char
+      quiet_NaN() noexcept { return static_cast<signed char>(0); }
+
+      static constexpr signed char
+      signaling_NaN() noexcept
+      { return static_cast<signed char>(0); }
+
+      static constexpr signed char
+      denorm_min() noexcept
+      { return static_cast<signed char>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<unsigned char>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr unsigned char
+      min() noexcept { return 0; }
+
+      static constexpr unsigned char
+      max() noexcept { return 0x7f * 2U + 1; }
+
+
+      static constexpr unsigned char
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(unsigned char) * 8 - ((unsigned char)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(unsigned char) * 8 - ((unsigned char)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr unsigned char
+      epsilon() noexcept { return 0; }
+
+      static constexpr unsigned char
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr unsigned char
+      infinity() noexcept
+      { return static_cast<unsigned char>(0); }
+
+      static constexpr unsigned char
+      quiet_NaN() noexcept
+      { return static_cast<unsigned char>(0); }
+
+      static constexpr unsigned char
+      signaling_NaN() noexcept
+      { return static_cast<unsigned char>(0); }
+
+      static constexpr unsigned char
+      denorm_min() noexcept
+      { return static_cast<unsigned char>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = true;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<wchar_t>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr wchar_t
+      min() noexcept { return (((wchar_t)(-1) < 0) ? -(((wchar_t)(-1) < 0) ? (((((wchar_t)1 << ((sizeof(wchar_t) * 8 - ((wchar_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(wchar_t)0) - 1 : (wchar_t)0); }
+
+      static constexpr wchar_t
+      max() noexcept { return (((wchar_t)(-1) < 0) ? (((((wchar_t)1 << ((sizeof(wchar_t) * 8 - ((wchar_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(wchar_t)0); }
+
+
+      static constexpr wchar_t
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(wchar_t) * 8 - ((wchar_t)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(wchar_t) * 8 - ((wchar_t)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = ((wchar_t)(-1) < 0);
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr wchar_t
+      epsilon() noexcept { return 0; }
+
+      static constexpr wchar_t
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr wchar_t
+      infinity() noexcept { return wchar_t(); }
+
+      static constexpr wchar_t
+      quiet_NaN() noexcept { return wchar_t(); }
+
+      static constexpr wchar_t
+      signaling_NaN() noexcept { return wchar_t(); }
+
+      static constexpr wchar_t
+      denorm_min() noexcept { return wchar_t(); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = !is_signed;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+
+  template<>
+    struct numeric_limits<char8_t>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr char8_t
+      min() noexcept { return (((char8_t)(-1) < 0) ? -(((char8_t)(-1) < 0) ? (((((char8_t)1 << ((sizeof(char8_t) * 8 - ((char8_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char8_t)0) - 1 : (char8_t)0); }
+
+      static constexpr char8_t
+      max() noexcept { return (((char8_t)(-1) < 0) ? (((((char8_t)1 << ((sizeof(char8_t) * 8 - ((char8_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char8_t)0); }
+
+      static constexpr char8_t
+      lowest() noexcept { return min(); }
+
+      static constexpr int digits = (sizeof(char8_t) * 8 - ((char8_t)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(char8_t) * 8 - ((char8_t)(-1) < 0)) * 643L / 2136);
+      static constexpr int max_digits10 = 0;
+      static constexpr bool is_signed = ((char8_t)(-1) < 0);
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr char8_t
+      epsilon() noexcept { return 0; }
+
+      static constexpr char8_t
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+ = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr char8_t
+      infinity() noexcept { return char8_t(); }
+
+      static constexpr char8_t
+      quiet_NaN() noexcept { return char8_t(); }
+
+      static constexpr char8_t
+      signaling_NaN() noexcept { return char8_t(); }
+
+      static constexpr char8_t
+      denorm_min() noexcept { return char8_t(); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = !is_signed;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+ = round_toward_zero;
+    };
+
+
+
+
+  template<>
+    struct numeric_limits<char16_t>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr char16_t
+      min() noexcept { return (((char16_t)(-1) < 0) ? -(((char16_t)(-1) < 0) ? (((((char16_t)1 << ((sizeof(char16_t) * 8 - ((char16_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char16_t)0) - 1 : (char16_t)0); }
+
+      static constexpr char16_t
+      max() noexcept { return (((char16_t)(-1) < 0) ? (((((char16_t)1 << ((sizeof(char16_t) * 8 - ((char16_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char16_t)0); }
+
+      static constexpr char16_t
+      lowest() noexcept { return min(); }
+
+      static constexpr int digits = (sizeof(char16_t) * 8 - ((char16_t)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(char16_t) * 8 - ((char16_t)(-1) < 0)) * 643L / 2136);
+      static constexpr int max_digits10 = 0;
+      static constexpr bool is_signed = ((char16_t)(-1) < 0);
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr char16_t
+      epsilon() noexcept { return 0; }
+
+      static constexpr char16_t
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr char16_t
+      infinity() noexcept { return char16_t(); }
+
+      static constexpr char16_t
+      quiet_NaN() noexcept { return char16_t(); }
+
+      static constexpr char16_t
+      signaling_NaN() noexcept { return char16_t(); }
+
+      static constexpr char16_t
+      denorm_min() noexcept { return char16_t(); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = !is_signed;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<char32_t>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr char32_t
+      min() noexcept { return (((char32_t)(-1) < 0) ? -(((char32_t)(-1) < 0) ? (((((char32_t)1 << ((sizeof(char32_t) * 8 - ((char32_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char32_t)0) - 1 : (char32_t)0); }
+
+      static constexpr char32_t
+      max() noexcept { return (((char32_t)(-1) < 0) ? (((((char32_t)1 << ((sizeof(char32_t) * 8 - ((char32_t)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(char32_t)0); }
+
+      static constexpr char32_t
+      lowest() noexcept { return min(); }
+
+      static constexpr int digits = (sizeof(char32_t) * 8 - ((char32_t)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(char32_t) * 8 - ((char32_t)(-1) < 0)) * 643L / 2136);
+      static constexpr int max_digits10 = 0;
+      static constexpr bool is_signed = ((char32_t)(-1) < 0);
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr char32_t
+      epsilon() noexcept { return 0; }
+
+      static constexpr char32_t
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr char32_t
+      infinity() noexcept { return char32_t(); }
+
+      static constexpr char32_t
+      quiet_NaN() noexcept { return char32_t(); }
+
+      static constexpr char32_t
+      signaling_NaN() noexcept { return char32_t(); }
+
+      static constexpr char32_t
+      denorm_min() noexcept { return char32_t(); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = !is_signed;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style = round_toward_zero;
+    };
+
+
+
+  template<>
+    struct numeric_limits<short>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr short
+      min() noexcept { return -0x7fff - 1; }
+
+      static constexpr short
+      max() noexcept { return 0x7fff; }
+
+
+      static constexpr short
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(short) * 8 - ((short)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(short) * 8 - ((short)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr short
+      epsilon() noexcept { return 0; }
+
+      static constexpr short
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr short
+      infinity() noexcept { return short(); }
+
+      static constexpr short
+      quiet_NaN() noexcept { return short(); }
+
+      static constexpr short
+      signaling_NaN() noexcept { return short(); }
+
+      static constexpr short
+      denorm_min() noexcept { return short(); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<unsigned short>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr unsigned short
+      min() noexcept { return 0; }
+
+      static constexpr unsigned short
+      max() noexcept { return 0x7fff * 2U + 1; }
+
+
+      static constexpr unsigned short
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(unsigned short) * 8 - ((unsigned short)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(unsigned short) * 8 - ((unsigned short)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr unsigned short
+      epsilon() noexcept { return 0; }
+
+      static constexpr unsigned short
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr unsigned short
+      infinity() noexcept
+      { return static_cast<unsigned short>(0); }
+
+      static constexpr unsigned short
+      quiet_NaN() noexcept
+      { return static_cast<unsigned short>(0); }
+
+      static constexpr unsigned short
+      signaling_NaN() noexcept
+      { return static_cast<unsigned short>(0); }
+
+      static constexpr unsigned short
+      denorm_min() noexcept
+      { return static_cast<unsigned short>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = true;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<int>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr int
+      min() noexcept { return -0x7fffffff - 1; }
+
+      static constexpr int
+      max() noexcept { return 0x7fffffff; }
+
+
+      static constexpr int
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(int) * 8 - ((int)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(int) * 8 - ((int)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr int
+      epsilon() noexcept { return 0; }
+
+      static constexpr int
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr int
+      infinity() noexcept { return static_cast<int>(0); }
+
+      static constexpr int
+      quiet_NaN() noexcept { return static_cast<int>(0); }
+
+      static constexpr int
+      signaling_NaN() noexcept { return static_cast<int>(0); }
+
+      static constexpr int
+      denorm_min() noexcept { return static_cast<int>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<unsigned int>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr unsigned int
+      min() noexcept { return 0; }
+
+      static constexpr unsigned int
+      max() noexcept { return 0x7fffffff * 2U + 1; }
+
+
+      static constexpr unsigned int
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(unsigned int) * 8 - ((unsigned int)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(unsigned int) * 8 - ((unsigned int)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr unsigned int
+      epsilon() noexcept { return 0; }
+
+      static constexpr unsigned int
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr unsigned int
+      infinity() noexcept { return static_cast<unsigned int>(0); }
+
+      static constexpr unsigned int
+      quiet_NaN() noexcept
+      { return static_cast<unsigned int>(0); }
+
+      static constexpr unsigned int
+      signaling_NaN() noexcept
+      { return static_cast<unsigned int>(0); }
+
+      static constexpr unsigned int
+      denorm_min() noexcept
+      { return static_cast<unsigned int>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = true;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<long>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr long
+      min() noexcept { return -0x7fffffffffffffffL - 1; }
+
+      static constexpr long
+      max() noexcept { return 0x7fffffffffffffffL; }
+
+
+      static constexpr long
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits = (sizeof(long) * 8 - ((long)(-1) < 0));
+      static constexpr int digits10 = ((sizeof(long) * 8 - ((long)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr long
+      epsilon() noexcept { return 0; }
+
+      static constexpr long
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr long
+      infinity() noexcept { return static_cast<long>(0); }
+
+      static constexpr long
+      quiet_NaN() noexcept { return static_cast<long>(0); }
+
+      static constexpr long
+      signaling_NaN() noexcept { return static_cast<long>(0); }
+
+      static constexpr long
+      denorm_min() noexcept { return static_cast<long>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<unsigned long>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr unsigned long
+      min() noexcept { return 0; }
+
+      static constexpr unsigned long
+      max() noexcept { return 0x7fffffffffffffffL * 2UL + 1; }
+
+
+      static constexpr unsigned long
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(unsigned long) * 8 - ((unsigned long)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(unsigned long) * 8 - ((unsigned long)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr unsigned long
+      epsilon() noexcept { return 0; }
+
+      static constexpr unsigned long
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr unsigned long
+      infinity() noexcept
+      { return static_cast<unsigned long>(0); }
+
+      static constexpr unsigned long
+      quiet_NaN() noexcept
+      { return static_cast<unsigned long>(0); }
+
+      static constexpr unsigned long
+      signaling_NaN() noexcept
+      { return static_cast<unsigned long>(0); }
+
+      static constexpr unsigned long
+      denorm_min() noexcept
+      { return static_cast<unsigned long>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = true;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<long long>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr long long
+      min() noexcept { return -0x7fffffffffffffffLL - 1; }
+
+      static constexpr long long
+      max() noexcept { return 0x7fffffffffffffffLL; }
+
+
+      static constexpr long long
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(long long) * 8 - ((long long)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(long long) * 8 - ((long long)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr long long
+      epsilon() noexcept { return 0; }
+
+      static constexpr long long
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr long long
+      infinity() noexcept { return static_cast<long long>(0); }
+
+      static constexpr long long
+      quiet_NaN() noexcept { return static_cast<long long>(0); }
+
+      static constexpr long long
+      signaling_NaN() noexcept
+      { return static_cast<long long>(0); }
+
+      static constexpr long long
+      denorm_min() noexcept { return static_cast<long long>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+
+
+  template<>
+    struct numeric_limits<unsigned long long>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr unsigned long long
+      min() noexcept { return 0; }
+
+      static constexpr unsigned long long
+      max() noexcept { return 0x7fffffffffffffffLL * 2ULL + 1; }
+
+
+      static constexpr unsigned long long
+      lowest() noexcept { return min(); }
+
+
+      static constexpr int digits
+       = (sizeof(unsigned long long) * 8 - ((unsigned long long)(-1) < 0));
+      static constexpr int digits10
+       = ((sizeof(unsigned long long) * 8 - ((unsigned long long)(-1) < 0)) * 643L / 2136);
+
+      static constexpr int max_digits10 = 0;
+
+      static constexpr bool is_signed = false;
+      static constexpr bool is_integer = true;
+      static constexpr bool is_exact = true;
+      static constexpr int radix = 2;
+
+      static constexpr unsigned long long
+      epsilon() noexcept { return 0; }
+
+      static constexpr unsigned long long
+      round_error() noexcept { return 0; }
+
+      static constexpr int min_exponent = 0;
+      static constexpr int min_exponent10 = 0;
+      static constexpr int max_exponent = 0;
+      static constexpr int max_exponent10 = 0;
+
+      static constexpr bool has_infinity = false;
+      static constexpr bool has_quiet_NaN = false;
+      static constexpr bool has_signaling_NaN = false;
+      static constexpr float_denorm_style has_denorm
+       = denorm_absent;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr unsigned long long
+      infinity() noexcept
+      { return static_cast<unsigned long long>(0); }
+
+      static constexpr unsigned long long
+      quiet_NaN() noexcept
+      { return static_cast<unsigned long long>(0); }
+
+      static constexpr unsigned long long
+      signaling_NaN() noexcept
+      { return static_cast<unsigned long long>(0); }
+
+      static constexpr unsigned long long
+      denorm_min() noexcept
+      { return static_cast<unsigned long long>(0); }
+
+      static constexpr bool is_iec559 = false;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = true;
+
+      static constexpr bool traps = true;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+       = round_toward_zero;
+    };
+# 1658 "/usr/include/c++/14/limits" 3
+  __extension__ template<> struct numeric_limits<__int128> { static constexpr bool is_specialized = true; static constexpr __int128 min() noexcept { return (((__int128)(-1) < 0) ? -(((__int128)(-1) < 0) ? (((((__int128)1 << ((128 - ((__int128)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(__int128)0) - 1 : (__int128)0); } static constexpr __int128 max() noexcept { return (((__int128)(-1) < 0) ? (((((__int128)1 << ((128 - ((__int128)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(__int128)0); } static constexpr int digits = 128 - 1; static constexpr int digits10 = (128 - 1) * 643L / 2136; static constexpr bool is_signed = true; static constexpr bool is_integer = true; static constexpr bool is_exact = true; static constexpr int radix = 2; static constexpr __int128 epsilon() noexcept { return 0; } static constexpr __int128 round_error() noexcept { return 0; } static constexpr __int128 lowest() noexcept { return min(); } static constexpr int max_digits10 = 0; static constexpr int min_exponent = 0; static constexpr int min_exponent10 = 0; static constexpr int max_exponent = 0; static constexpr int max_exponent10 = 0; static constexpr bool has_infinity = false; static constexpr bool has_quiet_NaN = false; static constexpr bool has_signaling_NaN = false; static constexpr float_denorm_style has_denorm = denorm_absent; static constexpr bool has_denorm_loss = false; static constexpr __int128 infinity() noexcept { return static_cast<__int128>(0); } static constexpr __int128 quiet_NaN() noexcept { return static_cast<__int128>(0); } static constexpr __int128 signaling_NaN() noexcept { return static_cast<__int128>(0); } static constexpr __int128 denorm_min() noexcept { return static_cast<__int128>(0); } static constexpr bool is_iec559 = false; static constexpr bool is_bounded = true; static constexpr bool is_modulo = false; static constexpr bool traps = true; static constexpr bool tinyness_before = false; static constexpr float_round_style round_style = round_toward_zero; }; __extension__ template<> struct numeric_limits<unsigned __int128> { static constexpr bool is_specialized = true; static constexpr unsigned __int128 min() noexcept { return 0; } static constexpr unsigned __int128 max() noexcept { return (((unsigned __int128)(-1) < 0) ? (((((unsigned __int128)1 << ((128 - ((unsigned __int128)(-1) < 0)) - 1)) - 1) << 1) + 1) : ~(unsigned __int128)0); } static constexpr unsigned __int128 lowest() noexcept { return min(); } static constexpr int max_digits10 = 0; static constexpr int digits = 128; static constexpr int digits10 = 128 * 643L / 2136; static constexpr bool is_signed = false; static constexpr bool is_integer = true; static constexpr bool is_exact = true; static constexpr int radix = 2; static constexpr unsigned __int128 epsilon() noexcept { return 0; } static constexpr unsigned __int128 round_error() noexcept { return 0; } static constexpr int min_exponent = 0; static constexpr int min_exponent10 = 0; static constexpr int max_exponent = 0; static constexpr int max_exponent10 = 0; static constexpr bool has_infinity = false; static constexpr bool has_quiet_NaN = false; static constexpr bool has_signaling_NaN = false; static constexpr float_denorm_style has_denorm = denorm_absent; static constexpr bool has_denorm_loss = false; static constexpr unsigned __int128 infinity() noexcept { return static_cast<unsigned __int128>(0); } static constexpr unsigned __int128 quiet_NaN() noexcept { return static_cast<unsigned __int128>(0); } static constexpr unsigned __int128 signaling_NaN() noexcept { return static_cast<unsigned __int128>(0); } static constexpr unsigned __int128 denorm_min() noexcept { return static_cast<unsigned __int128>(0); } static constexpr bool is_iec559 = false; static constexpr bool is_bounded = true; static constexpr bool is_modulo = true; static constexpr bool traps = true; static constexpr bool tinyness_before = false; static constexpr float_round_style round_style = round_toward_zero; };
+# 1669 "/usr/include/c++/14/limits" 3
+  template<>
+    struct numeric_limits<float>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr float
+      min() noexcept { return 1.17549435082228750796873653722224568e-38F; }
+
+      static constexpr float
+      max() noexcept { return 3.40282346638528859811704183484516925e+38F; }
+
+
+      static constexpr float
+      lowest() noexcept { return -3.40282346638528859811704183484516925e+38F; }
+
+
+      static constexpr int digits = 24;
+      static constexpr int digits10 = 6;
+
+      static constexpr int max_digits10
+  = (2 + (24) * 643L / 2136);
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = false;
+      static constexpr bool is_exact = false;
+      static constexpr int radix = 2;
+
+      static constexpr float
+      epsilon() noexcept { return 1.19209289550781250000000000000000000e-7F; }
+
+      static constexpr float
+      round_error() noexcept { return 0.5F; }
+
+      static constexpr int min_exponent = (-125);
+      static constexpr int min_exponent10 = (-37);
+      static constexpr int max_exponent = 128;
+      static constexpr int max_exponent10 = 38;
+
+      static constexpr bool has_infinity = 1;
+      static constexpr bool has_quiet_NaN = 1;
+      static constexpr bool has_signaling_NaN = has_quiet_NaN;
+      static constexpr float_denorm_style has_denorm
+ = bool(1) ? denorm_present : denorm_absent;
+      static constexpr bool has_denorm_loss
+       = false;
+
+      static constexpr float
+      infinity() noexcept { return __builtin_huge_valf(); }
+
+      static constexpr float
+      quiet_NaN() noexcept { return __builtin_nanf(""); }
+
+      static constexpr float
+      signaling_NaN() noexcept { return __builtin_nansf(""); }
+
+      static constexpr float
+      denorm_min() noexcept { return 1.40129846432481707092372958328991613e-45F; }
+
+      static constexpr bool is_iec559
+ = has_infinity && has_quiet_NaN && has_denorm == denorm_present;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = false;
+      static constexpr bool tinyness_before
+       = false;
+      static constexpr float_round_style round_style
+       = round_to_nearest;
+    };
+
+
+
+
+
+
+  template<>
+    struct numeric_limits<double>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr double
+      min() noexcept { return double(2.22507385850720138309023271733240406e-308L); }
+
+      static constexpr double
+      max() noexcept { return double(1.79769313486231570814527423731704357e+308L); }
+
+
+      static constexpr double
+      lowest() noexcept { return -double(1.79769313486231570814527423731704357e+308L); }
+
+
+      static constexpr int digits = 53;
+      static constexpr int digits10 = 15;
+
+      static constexpr int max_digits10
+  = (2 + (53) * 643L / 2136);
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = false;
+      static constexpr bool is_exact = false;
+      static constexpr int radix = 2;
+
+      static constexpr double
+      epsilon() noexcept { return double(2.22044604925031308084726333618164062e-16L); }
+
+      static constexpr double
+      round_error() noexcept { return 0.5; }
+
+      static constexpr int min_exponent = (-1021);
+      static constexpr int min_exponent10 = (-307);
+      static constexpr int max_exponent = 1024;
+      static constexpr int max_exponent10 = 308;
+
+      static constexpr bool has_infinity = 1;
+      static constexpr bool has_quiet_NaN = 1;
+      static constexpr bool has_signaling_NaN = has_quiet_NaN;
+      static constexpr float_denorm_style has_denorm
+ = bool(1) ? denorm_present : denorm_absent;
+      static constexpr bool has_denorm_loss
+        = false;
+
+      static constexpr double
+      infinity() noexcept { return __builtin_huge_val(); }
+
+      static constexpr double
+      quiet_NaN() noexcept { return __builtin_nan(""); }
+
+      static constexpr double
+      signaling_NaN() noexcept { return __builtin_nans(""); }
+
+      static constexpr double
+      denorm_min() noexcept { return double(4.94065645841246544176568792868221372e-324L); }
+
+      static constexpr bool is_iec559
+ = has_infinity && has_quiet_NaN && has_denorm == denorm_present;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = false;
+      static constexpr bool tinyness_before
+       = false;
+      static constexpr float_round_style round_style
+       = round_to_nearest;
+    };
+
+
+
+
+
+
+  template<>
+    struct numeric_limits<long double>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr long double
+      min() noexcept { return 3.36210314311209350626267781732175260e-4932L; }
+
+      static constexpr long double
+      max() noexcept { return 1.18973149535723176502126385303097021e+4932L; }
+
+
+      static constexpr long double
+      lowest() noexcept { return -1.18973149535723176502126385303097021e+4932L; }
+
+
+      static constexpr int digits = 64;
+      static constexpr int digits10 = 18;
+
+      static constexpr int max_digits10
+  = (2 + (64) * 643L / 2136);
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = false;
+      static constexpr bool is_exact = false;
+      static constexpr int radix = 2;
+
+      static constexpr long double
+      epsilon() noexcept { return 1.08420217248550443400745280086994171e-19L; }
+
+      static constexpr long double
+      round_error() noexcept { return 0.5L; }
+
+      static constexpr int min_exponent = (-16381);
+      static constexpr int min_exponent10 = (-4931);
+      static constexpr int max_exponent = 16384;
+      static constexpr int max_exponent10 = 4932;
+
+      static constexpr bool has_infinity = 1;
+      static constexpr bool has_quiet_NaN = 1;
+      static constexpr bool has_signaling_NaN = has_quiet_NaN;
+      static constexpr float_denorm_style has_denorm
+ = bool(1) ? denorm_present : denorm_absent;
+      static constexpr bool has_denorm_loss
+ = false;
+
+      static constexpr long double
+      infinity() noexcept { return __builtin_huge_vall(); }
+
+      static constexpr long double
+      quiet_NaN() noexcept { return __builtin_nanl(""); }
+
+      static constexpr long double
+      signaling_NaN() noexcept { return __builtin_nansl(""); }
+
+      static constexpr long double
+      denorm_min() noexcept { return 3.64519953188247460252840593361941982e-4951L; }
+
+      static constexpr bool is_iec559
+ = has_infinity && has_quiet_NaN && has_denorm == denorm_present;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = false;
+      static constexpr bool tinyness_before =
+      false;
+      static constexpr float_round_style round_style =
+            round_to_nearest;
+    };
+# 1989 "/usr/include/c++/14/limits" 3
+__extension__ template<> struct numeric_limits<_Float32> { static constexpr bool is_specialized = true; static constexpr _Float32 min() noexcept { return 1.17549435082228750796873653722224568e-38F32; } static constexpr _Float32 max() noexcept { return 3.40282346638528859811704183484516925e+38F32; } static constexpr _Float32 lowest() noexcept { return -3.40282346638528859811704183484516925e+38F32; } static constexpr int digits = 24; static constexpr int digits10 = 6; static constexpr int max_digits10 = (2 + (24) * 643L / 2136); static constexpr bool is_signed = true; static constexpr bool is_integer = false; static constexpr bool is_exact = false; static constexpr int radix = 2; static constexpr _Float32 epsilon() noexcept { return 1.19209289550781250000000000000000000e-7F32; } static constexpr _Float32 round_error() noexcept { return 0.5F32; } static constexpr int min_exponent = (-125); static constexpr int min_exponent10 = (-37); static constexpr int max_exponent = 128; static constexpr int max_exponent10 = 38; static constexpr bool has_infinity = 1; static constexpr bool has_quiet_NaN = 1; static constexpr bool has_signaling_NaN = has_quiet_NaN; static constexpr float_denorm_style has_denorm = bool(1) ? denorm_present : denorm_absent; static constexpr bool has_denorm_loss = false; static constexpr _Float32 infinity() noexcept { return __builtin_huge_valf32(); } static constexpr _Float32 quiet_NaN() noexcept { return __builtin_nanf32(""); } static constexpr _Float32 signaling_NaN() noexcept { return __builtin_nansf32(""); } static constexpr _Float32 denorm_min() noexcept { return 1.40129846432481707092372958328991613e-45F32; } static constexpr bool is_iec559 = has_infinity && has_quiet_NaN && has_denorm == denorm_present; static constexpr bool is_bounded = true; static constexpr bool is_modulo = false; static constexpr bool traps = false; static constexpr bool tinyness_before = false; static constexpr float_round_style round_style = round_to_nearest; };
+
+
+__extension__ template<> struct numeric_limits<_Float64> { static constexpr bool is_specialized = true; static constexpr _Float64 min() noexcept { return 2.22507385850720138309023271733240406e-308F64; } static constexpr _Float64 max() noexcept { return 1.79769313486231570814527423731704357e+308F64; } static constexpr _Float64 lowest() noexcept { return -1.79769313486231570814527423731704357e+308F64; } static constexpr int digits = 53; static constexpr int digits10 = 15; static constexpr int max_digits10 = (2 + (53) * 643L / 2136); static constexpr bool is_signed = true; static constexpr bool is_integer = false; static constexpr bool is_exact = false; static constexpr int radix = 2; static constexpr _Float64 epsilon() noexcept { return 2.22044604925031308084726333618164062e-16F64; } static constexpr _Float64 round_error() noexcept { return 0.5F64; } static constexpr int min_exponent = (-1021); static constexpr int min_exponent10 = (-307); static constexpr int max_exponent = 1024; static constexpr int max_exponent10 = 308; static constexpr bool has_infinity = 1; static constexpr bool has_quiet_NaN = 1; static constexpr bool has_signaling_NaN = has_quiet_NaN; static constexpr float_denorm_style has_denorm = bool(1) ? denorm_present : denorm_absent; static constexpr bool has_denorm_loss = false; static constexpr _Float64 infinity() noexcept { return __builtin_huge_valf64(); } static constexpr _Float64 quiet_NaN() noexcept { return __builtin_nanf64(""); } static constexpr _Float64 signaling_NaN() noexcept { return __builtin_nansf64(""); } static constexpr _Float64 denorm_min() noexcept { return 4.94065645841246544176568792868221372e-324F64; } static constexpr bool is_iec559 = has_infinity && has_quiet_NaN && has_denorm == denorm_present; static constexpr bool is_bounded = true; static constexpr bool is_modulo = false; static constexpr bool traps = false; static constexpr bool tinyness_before = false; static constexpr float_round_style round_style = round_to_nearest; };
+
+
+__extension__ template<> struct numeric_limits<_Float128> { static constexpr bool is_specialized = true; static constexpr _Float128 min() noexcept { return 3.36210314311209350626267781732175260e-4932F128; } static constexpr _Float128 max() noexcept { return 1.18973149535723176508575932662800702e+4932F128; } static constexpr _Float128 lowest() noexcept { return -1.18973149535723176508575932662800702e+4932F128; } static constexpr int digits = 113; static constexpr int digits10 = 33; static constexpr int max_digits10 = (2 + (113) * 643L / 2136); static constexpr bool is_signed = true; static constexpr bool is_integer = false; static constexpr bool is_exact = false; static constexpr int radix = 2; static constexpr _Float128 epsilon() noexcept { return 1.92592994438723585305597794258492732e-34F128; } static constexpr _Float128 round_error() noexcept { return 0.5F128; } static constexpr int min_exponent = (-16381); static constexpr int min_exponent10 = (-4931); static constexpr int max_exponent = 16384; static constexpr int max_exponent10 = 4932; static constexpr bool has_infinity = 1; static constexpr bool has_quiet_NaN = 1; static constexpr bool has_signaling_NaN = has_quiet_NaN; static constexpr float_denorm_style has_denorm = bool(1) ? denorm_present : denorm_absent; static constexpr bool has_denorm_loss = false; static constexpr _Float128 infinity() noexcept { return __builtin_huge_valf128(); } static constexpr _Float128 quiet_NaN() noexcept { return __builtin_nanf128(""); } static constexpr _Float128 signaling_NaN() noexcept { return __builtin_nansf128(""); } static constexpr _Float128 denorm_min() noexcept { return 6.47517511943802511092443895822764655e-4966F128; } static constexpr bool is_iec559 = has_infinity && has_quiet_NaN && has_denorm == denorm_present; static constexpr bool is_bounded = true; static constexpr bool is_modulo = false; static constexpr bool traps = false; static constexpr bool tinyness_before = false; static constexpr float_round_style round_style = round_to_nearest; };
+# 2087 "/usr/include/c++/14/limits" 3
+  __extension__
+  template<>
+    struct numeric_limits<__float128>
+    {
+      static constexpr bool is_specialized = true;
+
+      static constexpr __float128
+      min() noexcept
+      {
+
+
+ return double(9.3132257461547852e-10) * _S_1pm16352();
+
+
+
+      }
+
+      static constexpr __float128
+      max() noexcept
+      {
+
+
+
+ return (__float128(double(3.4028236692093843e+38))
+    + double(3.7778931862957153e+22) + double(8.35584e+6))
+   * _S_1p16256();
+
+
+
+      }
+
+      static constexpr __float128
+      lowest() noexcept
+      { return -max(); }
+
+      static constexpr int digits = 113;
+      static constexpr int digits10 = 33;
+
+      static constexpr int max_digits10 = 35;
+
+      static constexpr bool is_signed = true;
+      static constexpr bool is_integer = false;
+      static constexpr bool is_exact = false;
+      static constexpr int radix = 2;
+
+      static constexpr __float128
+      epsilon() noexcept
+      { return double(1.9259299443872359e-34); }
+
+      static constexpr __float128
+      round_error() noexcept { return 0.5; }
+
+      static constexpr int min_exponent = -16381;
+      static constexpr int min_exponent10 = -4931;
+      static constexpr int max_exponent = 16384;
+      static constexpr int max_exponent10 = 4932;
+
+      static constexpr bool has_infinity = 1;
+      static constexpr bool has_quiet_NaN = 1;
+
+
+      static constexpr bool has_signaling_NaN = true;
+
+
+
+      static constexpr float_denorm_style has_denorm
+ = denorm_present;
+      static constexpr bool has_denorm_loss = false;
+
+      static constexpr __float128
+      infinity() noexcept
+      { return __builtin_huge_val(); }
+
+      static constexpr __float128
+      quiet_NaN() noexcept
+      { return __builtin_nan(""); }
+
+      static constexpr __float128
+      signaling_NaN() noexcept
+      {
+
+ return __builtin_nansq("");
+
+
+
+
+
+      }
+
+      static constexpr __float128
+      denorm_min() noexcept
+      {
+
+
+ return double(1.7936620343357659e-43) * _S_1pm16352();
+
+
+
+      }
+
+      static constexpr bool is_iec559 = has_signaling_NaN;
+      static constexpr bool is_bounded = true;
+      static constexpr bool is_modulo = false;
+
+      static constexpr bool traps = false;
+      static constexpr bool tinyness_before = false;
+      static constexpr float_round_style round_style
+ = round_to_nearest;
+
+
+    private:
+      static constexpr __float128
+      _S_4p(__float128 __v) noexcept
+      { return __v * __v * __v * __v; }
+
+      static constexpr __float128
+      _S_1pm4088() noexcept
+      { return _S_4p( double(2.2250738585072014e-308)); }
+
+      static constexpr __float128
+      _S_1pm16352() noexcept
+      { return _S_4p(_S_1pm4088()); }
+
+      static constexpr __float128
+      _S_1p4064() noexcept
+      { return _S_4p( double(7.0222388080559215e+305)); }
+
+      static constexpr __float128
+      _S_1p16256() noexcept
+      { return _S_4p(_S_1p4064()); }
+
+    };
+
+
+
+
+}
+# 80 "/usr/include/c++/14/numeric" 2 3
+# 90 "/usr/include/c++/14/numeric" 3
+# 1 "/usr/include/c++/14/bits/version.h" 1 3
+# 47 "/usr/include/c++/14/bits/version.h" 3
+       
+# 48 "/usr/include/c++/14/bits/version.h" 3
+# 91 "/usr/include/c++/14/numeric" 2 3
+# 104 "/usr/include/c++/14/numeric" 3
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+
+
+namespace __detail
+{
+
+
+  template<typename _Res, typename _Tp>
+    constexpr _Res
+    __abs_r(_Tp __val)
+    {
+      static_assert(sizeof(_Res) >= sizeof(_Tp),
+   "result type must be at least as wide as the input type");
+
+      if (__val >= 0)
+ return __val;
+
+
+
+
+      return -static_cast<_Res>(__val);
+    }
+
+  template<typename> void __abs_r(bool) = delete;
+
+
+  template<typename _Tp>
+    constexpr _Tp
+    __gcd(_Tp __m, _Tp __n)
+    {
+      static_assert(is_unsigned<_Tp>::value, "type must be unsigned");
+
+      if (__m == 0)
+ return __n;
+      if (__n == 0)
+ return __m;
+
+      const int __i = std::__countr_zero(__m);
+      __m >>= __i;
+      const int __j = std::__countr_zero(__n);
+      __n >>= __j;
+      const int __k = __i < __j ? __i : __j;
+
+      while (true)
+ {
+   if (__m > __n)
+     {
+       _Tp __tmp = __m;
+       __m = __n;
+       __n = __tmp;
+     }
+
+   __n -= __m;
+
+   if (__n == 0)
+     return __m << __k;
+
+   __n >>= std::__countr_zero(__n);
+ }
+    }
+}
+
+
+
+
+  template<typename _Mn, typename _Nn>
+    constexpr common_type_t<_Mn, _Nn>
+    gcd(_Mn __m, _Nn __n) noexcept
+    {
+      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
+      "std::gcd arguments must be integers");
+      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
+      "std::gcd arguments must not be bool");
+      using _Ct = common_type_t<_Mn, _Nn>;
+      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
+      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
+      return __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
+    }
+
+
+  template<typename _Mn, typename _Nn>
+    constexpr common_type_t<_Mn, _Nn>
+    lcm(_Mn __m, _Nn __n) noexcept
+    {
+      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
+      "std::lcm arguments must be integers");
+      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
+      "std::lcm arguments must not be bool");
+      using _Ct = common_type_t<_Mn, _Nn>;
+      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
+      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
+      if (__m2 == 0 || __n2 == 0)
+ return 0;
+      _Ct __r = __m2 / __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
+
+      if constexpr (is_signed_v<_Ct>)
+ if (__is_constant_evaluated())
+   return __r * __n2;
+
+      bool __overflow = __builtin_mul_overflow(__r, __n2, &__r);
+      do { if (std::__is_constant_evaluated()) if (__builtin_expect(!bool(!__overflow), false)) std::__glibcxx_assert_fail(); } while (false);
+      return __r;
+    }
+
+
+
+
+
+  template<typename _Tp>
+    constexpr
+    enable_if_t<__and_v<is_arithmetic<_Tp>, is_same<remove_cv_t<_Tp>, _Tp>,
+   __not_<is_same<_Tp, bool>>>,
+  _Tp>
+    midpoint(_Tp __a, _Tp __b) noexcept
+    {
+      if constexpr (is_integral_v<_Tp>)
+ {
+   using _Up = make_unsigned_t<_Tp>;
+
+   int __k = 1;
+   _Up __m = __a;
+   _Up __M = __b;
+   if (__a > __b)
+     {
+       __k = -1;
+       __m = __b;
+       __M = __a;
+     }
+   return __a + __k * _Tp(_Up(__M - __m) / 2);
+ }
+      else
+ {
+   constexpr _Tp __lo = numeric_limits<_Tp>::min() * 2;
+   constexpr _Tp __hi = numeric_limits<_Tp>::max() / 2;
+   const _Tp __abs_a = __a < 0 ? -__a : __a;
+   const _Tp __abs_b = __b < 0 ? -__b : __b;
+   if (__abs_a <= __hi && __abs_b <= __hi) [[likely]]
+     return (__a + __b) / 2;
+   if (__abs_a < __lo)
+     return __a + __b/2;
+   if (__abs_b < __lo)
+     return __a/2 + __b;
+   return __a/2 + __b/2;
+ }
+    }
+
+  template<typename _Tp>
+    constexpr enable_if_t<is_object_v<_Tp>, _Tp*>
+    midpoint(_Tp* __a, _Tp* __b) noexcept
+    {
+      static_assert( sizeof(_Tp) != 0, "type must be complete" );
+      return __a + (__b - __a) / 2;
+    }
+# 284 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
+    constexpr
+    _Tp
+    reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
+    _BinaryOperation __binary_op)
+    {
+      using __ref = typename iterator_traits<_InputIterator>::reference;
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, __ref>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, _Tp&>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, _Tp&>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, __ref>);
+      if constexpr (__is_random_access_iter<_InputIterator>::value)
+ {
+   while ((__last - __first) >= 4)
+     {
+       _Tp __v1 = __binary_op(__first[0], __first[1]);
+       _Tp __v2 = __binary_op(__first[2], __first[3]);
+       _Tp __v3 = __binary_op(__v1, __v2);
+       __init = __binary_op(__init, __v3);
+       __first += 4;
+     }
+ }
+      for (; __first != __last; ++__first)
+ __init = __binary_op(__init, *__first);
+      return __init;
+    }
+# 322 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp>
+    constexpr
+    inline _Tp
+    reduce(_InputIterator __first, _InputIterator __last, _Tp __init)
+    { return std::reduce(__first, __last, std::move(__init), plus<>()); }
+# 339 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator>
+    constexpr
+    inline typename iterator_traits<_InputIterator>::value_type
+    reduce(_InputIterator __first, _InputIterator __last)
+    {
+      using value_type = typename iterator_traits<_InputIterator>::value_type;
+      return std::reduce(__first, __last, value_type{}, plus<>());
+    }
+# 366 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
+    typename _BinaryOperation1, typename _BinaryOperation2>
+    constexpr
+    _Tp
+    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
+       _InputIterator2 __first2, _Tp __init,
+       _BinaryOperation1 __binary_op1,
+       _BinaryOperation2 __binary_op2)
+    {
+      if constexpr (__and_v<__is_random_access_iter<_InputIterator1>,
+       __is_random_access_iter<_InputIterator2>>)
+ {
+   while ((__last1 - __first1) >= 4)
+     {
+       _Tp __v1 = __binary_op1(__binary_op2(__first1[0], __first2[0]),
+          __binary_op2(__first1[1], __first2[1]));
+       _Tp __v2 = __binary_op1(__binary_op2(__first1[2], __first2[2]),
+          __binary_op2(__first1[3], __first2[3]));
+       _Tp __v3 = __binary_op1(__v1, __v2);
+       __init = __binary_op1(__init, __v3);
+       __first1 += 4;
+       __first2 += 4;
+     }
+ }
+      for (; __first1 != __last1; ++__first1, (void) ++__first2)
+ __init = __binary_op1(__init, __binary_op2(*__first1, *__first2));
+      return __init;
+    }
+# 410 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
+    constexpr
+    inline _Tp
+    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
+       _InputIterator2 __first2, _Tp __init)
+    {
+      return std::transform_reduce(__first1, __last1, __first2,
+       std::move(__init),
+       plus<>(), multiplies<>());
+    }
+# 435 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp,
+    typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _Tp
+    transform_reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
+       _BinaryOperation __binary_op, _UnaryOperation __unary_op)
+    {
+      if constexpr (__is_random_access_iter<_InputIterator>::value)
+ {
+   while ((__last - __first) >= 4)
+     {
+       _Tp __v1 = __binary_op(__unary_op(__first[0]),
+         __unary_op(__first[1]));
+       _Tp __v2 = __binary_op(__unary_op(__first[2]),
+         __unary_op(__first[3]));
+       _Tp __v3 = __binary_op(__v1, __v2);
+       __init = __binary_op(__init, __v3);
+       __first += 4;
+     }
+ }
+      for (; __first != __last; ++__first)
+ __init = __binary_op(__init, __unary_op(*__first));
+      return __init;
+    }
+# 478 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    exclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _Tp __init,
+     _BinaryOperation __binary_op)
+    {
+      while (__first != __last)
+ {
+   auto __v = __init;
+   __init = __binary_op(__init, *__first);
+   ++__first;
+   *__result++ = std::move(__v);
+ }
+      return __result;
+    }
+# 513 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp>
+    constexpr
+    inline _OutputIterator
+    exclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _Tp __init)
+    {
+      return std::exclusive_scan(__first, __last, __result, std::move(__init),
+     plus<>());
+    }
+# 541 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation, typename _Tp>
+    constexpr
+    _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _BinaryOperation __binary_op,
+     _Tp __init)
+    {
+      for (; __first != __last; ++__first)
+ *__result++ = __init = __binary_op(__init, *__first);
+      return __result;
+    }
+# 570 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      if (__first != __last)
+ {
+   auto __init = *__first;
+   *__result++ = __init;
+   ++__first;
+   if (__first != __last)
+     __result = std::inclusive_scan(__first, __last, __result,
+        __binary_op, std::move(__init));
+ }
+      return __result;
+    }
+# 604 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    inline _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result)
+    { return std::inclusive_scan(__first, __last, __result, plus<>()); }
+# 631 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
+    typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _OutputIterator
+    transform_exclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result, _Tp __init,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op)
+    {
+      while (__first != __last)
+ {
+   auto __v = __init;
+   __init = __binary_op(__init, __unary_op(*__first));
+   ++__first;
+   *__result++ = std::move(__v);
+ }
+      return __result;
+    }
+# 670 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation, typename _UnaryOperation, typename _Tp>
+    constexpr
+    _OutputIterator
+    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op,
+        _Tp __init)
+    {
+      for (; __first != __last; ++__first)
+ *__result++ = __init = __binary_op(__init, __unary_op(*__first));
+      return __result;
+    }
+# 704 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+   typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _OutputIterator
+    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op)
+    {
+      if (__first != __last)
+ {
+   auto __init = __unary_op(*__first);
+   *__result++ = __init;
+   ++__first;
+   if (__first != __last)
+     __result = std::transform_inclusive_scan(__first, __last, __result,
+           __binary_op, __unary_op,
+           std::move(__init));
+ }
+      return __result;
+    }
+
+
+
+
+
+}
+# 739 "/usr/include/c++/14/numeric" 3
+# 1 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 1 3
+# 15 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 3
+namespace std
+{
+
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
+       _BinaryOperation __binary_op);
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy,
+                                                 typename iterator_traits<_ForwardIterator>::value_type>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
+                 _ForwardIterator2 __first2, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation1,
+          class _BinaryOperation2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
+                 _ForwardIterator2 __first2, _Tp __init, _BinaryOperation1 __binary_op1,
+                 _BinaryOperation2 __binary_op2);
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation, class _UnaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
+                 _BinaryOperation __binary_op, _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _BinaryOperation __binary_op);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _BinaryOperation __binary_op, _Tp __init);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation,
+          class _UnaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op,
+                         _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation,
+          class _UnaryOperation, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op,
+                         _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _UnaryOperation,
+          class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                    _ForwardIterator2 __d_first, _BinaryOperation __op);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                    _ForwardIterator2 __d_first);
+
+}
+# 740 "/usr/include/c++/14/numeric" 2 3
+# 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/ranges" 1 3
 # 35 "/usr/include/c++/14/ranges" 3
        
@@ -60961,7 +63345,7 @@ namespace views::__adaptor
 # 9520 "/usr/include/c++/14/ranges" 3
 
 }
-# 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 8 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/sstream" 1 3
 # 36 "/usr/include/c++/14/sstream" 3
        
@@ -62142,7 +64526,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 1239 "/usr/include/c++/14/sstream" 2 3
-# 8 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 9 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 
 # 1 "/usr/include/c++/14/unordered_map" 1 3
 # 32 "/usr/include/c++/14/unordered_map" 3
@@ -68755,150 +71139,1351 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
-# 1 "/usr/include/c++/14/utility" 1 3
-# 58 "/usr/include/c++/14/utility" 3
+# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 1 "/usr/include/c++/14/unordered_set" 1 3
+# 32 "/usr/include/c++/14/unordered_set" 3
        
-# 59 "/usr/include/c++/14/utility" 3
-# 68 "/usr/include/c++/14/utility" 3
-# 1 "/usr/include/c++/14/bits/stl_relops.h" 1 3
-# 62 "/usr/include/c++/14/bits/stl_relops.h" 3
+# 33 "/usr/include/c++/14/unordered_set" 3
+# 41 "/usr/include/c++/14/unordered_set" 3
+# 1 "/usr/include/c++/14/bits/unordered_set.h" 1 3
+# 38 "/usr/include/c++/14/bits/unordered_set.h" 3
 namespace std __attribute__ ((__visibility__ ("default")))
 {
 
 
-  namespace rel_ops
-  {
-# 86 "/usr/include/c++/14/bits/stl_relops.h" 3
-    template <class _Tp>
-      inline bool
-      operator!=(const _Tp& __x, const _Tp& __y)
-      { return !(__x == __y); }
-# 99 "/usr/include/c++/14/bits/stl_relops.h" 3
-    template <class _Tp>
-      inline bool
-      operator>(const _Tp& __x, const _Tp& __y)
-      { return __y < __x; }
-# 112 "/usr/include/c++/14/bits/stl_relops.h" 3
-    template <class _Tp>
-      inline bool
-      operator<=(const _Tp& __x, const _Tp& __y)
-      { return !(__y < __x); }
-# 125 "/usr/include/c++/14/bits/stl_relops.h" 3
-    template <class _Tp>
-      inline bool
-      operator>=(const _Tp& __x, const _Tp& __y)
-      { return !(__x < __y); }
-  }
+
+
+  template<bool _Cache>
+    using __uset_traits = __detail::_Hashtable_traits<_Cache, true, true>;
+
+  template<typename _Value,
+    typename _Hash = hash<_Value>,
+    typename _Pred = std::equal_to<_Value>,
+      typename _Alloc = std::allocator<_Value>,
+    typename _Tr = __uset_traits<__cache_default<_Value, _Hash>::value>>
+    using __uset_hashtable = _Hashtable<_Value, _Value, _Alloc,
+     __detail::_Identity, _Pred, _Hash,
+     __detail::_Mod_range_hashing,
+     __detail::_Default_ranged_hash,
+     __detail::_Prime_rehash_policy, _Tr>;
+
+
+  template<bool _Cache>
+    using __umset_traits = __detail::_Hashtable_traits<_Cache, true, false>;
+
+  template<typename _Value,
+    typename _Hash = hash<_Value>,
+    typename _Pred = std::equal_to<_Value>,
+    typename _Alloc = std::allocator<_Value>,
+    typename _Tr = __umset_traits<__cache_default<_Value, _Hash>::value>>
+    using __umset_hashtable = _Hashtable<_Value, _Value, _Alloc,
+      __detail::_Identity,
+      _Pred, _Hash,
+      __detail::_Mod_range_hashing,
+      __detail::_Default_ranged_hash,
+      __detail::_Prime_rehash_policy, _Tr>;
+
+  template<class _Value, class _Hash, class _Pred, class _Alloc>
+    class unordered_multiset;
+# 100 "/usr/include/c++/14/bits/unordered_set.h" 3
+  template<typename _Value,
+    typename _Hash = hash<_Value>,
+    typename _Pred = equal_to<_Value>,
+    typename _Alloc = allocator<_Value>>
+    class unordered_set
+    {
+      typedef __uset_hashtable<_Value, _Hash, _Pred, _Alloc> _Hashtable;
+      _Hashtable _M_h;
+
+    public:
+
+
+
+      typedef typename _Hashtable::key_type key_type;
+      typedef typename _Hashtable::value_type value_type;
+      typedef typename _Hashtable::hasher hasher;
+      typedef typename _Hashtable::key_equal key_equal;
+      typedef typename _Hashtable::allocator_type allocator_type;
+
+
+
+
+      typedef typename _Hashtable::pointer pointer;
+      typedef typename _Hashtable::const_pointer const_pointer;
+      typedef typename _Hashtable::reference reference;
+      typedef typename _Hashtable::const_reference const_reference;
+      typedef typename _Hashtable::iterator iterator;
+      typedef typename _Hashtable::const_iterator const_iterator;
+      typedef typename _Hashtable::local_iterator local_iterator;
+      typedef typename _Hashtable::const_local_iterator const_local_iterator;
+      typedef typename _Hashtable::size_type size_type;
+      typedef typename _Hashtable::difference_type difference_type;
+
+
+
+      using node_type = typename _Hashtable::node_type;
+      using insert_return_type = typename _Hashtable::insert_return_type;
+
+
+
+
+
+      unordered_set() = default;
+# 151 "/usr/include/c++/14/bits/unordered_set.h" 3
+      explicit
+      unordered_set(size_type __n,
+      const hasher& __hf = hasher(),
+      const key_equal& __eql = key_equal(),
+      const allocator_type& __a = allocator_type())
+      : _M_h(__n, __hf, __eql, __a)
+      { }
+# 172 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename _InputIterator>
+ unordered_set(_InputIterator __first, _InputIterator __last,
+        size_type __n = 0,
+        const hasher& __hf = hasher(),
+        const key_equal& __eql = key_equal(),
+        const allocator_type& __a = allocator_type())
+ : _M_h(__first, __last, __n, __hf, __eql, __a)
+ { }
+
+
+      unordered_set(const unordered_set&) = default;
+
+
+      unordered_set(unordered_set&&) = default;
+
+
+
+
+
+      explicit
+      unordered_set(const allocator_type& __a)
+      : _M_h(__a)
+      { }
+
+
+
+
+
+
+      unordered_set(const unordered_set& __uset,
+      const allocator_type& __a)
+      : _M_h(__uset._M_h, __a)
+      { }
+
+
+
+
+
+
+      unordered_set(unordered_set&& __uset,
+      const allocator_type& __a)
+ noexcept( noexcept(_Hashtable(std::move(__uset._M_h), __a)) )
+      : _M_h(std::move(__uset._M_h), __a)
+      { }
+# 228 "/usr/include/c++/14/bits/unordered_set.h" 3
+      unordered_set(initializer_list<value_type> __l,
+      size_type __n = 0,
+      const hasher& __hf = hasher(),
+      const key_equal& __eql = key_equal(),
+      const allocator_type& __a = allocator_type())
+      : _M_h(__l, __n, __hf, __eql, __a)
+      { }
+
+      unordered_set(size_type __n, const allocator_type& __a)
+      : unordered_set(__n, hasher(), key_equal(), __a)
+      { }
+
+      unordered_set(size_type __n, const hasher& __hf,
+      const allocator_type& __a)
+      : unordered_set(__n, __hf, key_equal(), __a)
+      { }
+
+      template<typename _InputIterator>
+ unordered_set(_InputIterator __first, _InputIterator __last,
+        size_type __n,
+        const allocator_type& __a)
+ : unordered_set(__first, __last, __n, hasher(), key_equal(), __a)
+ { }
+
+      template<typename _InputIterator>
+ unordered_set(_InputIterator __first, _InputIterator __last,
+        size_type __n, const hasher& __hf,
+        const allocator_type& __a)
+ : unordered_set(__first, __last, __n, __hf, key_equal(), __a)
+ { }
+
+      unordered_set(initializer_list<value_type> __l,
+      size_type __n,
+      const allocator_type& __a)
+      : unordered_set(__l, __n, hasher(), key_equal(), __a)
+      { }
+
+      unordered_set(initializer_list<value_type> __l,
+      size_type __n, const hasher& __hf,
+      const allocator_type& __a)
+      : unordered_set(__l, __n, __hf, key_equal(), __a)
+      { }
+
+
+      unordered_set&
+      operator=(const unordered_set&) = default;
+
+
+      unordered_set&
+      operator=(unordered_set&&) = default;
+# 290 "/usr/include/c++/14/bits/unordered_set.h" 3
+      unordered_set&
+      operator=(initializer_list<value_type> __l)
+      {
+ _M_h = __l;
+ return *this;
+      }
+
+
+      allocator_type
+      get_allocator() const noexcept
+      { return _M_h.get_allocator(); }
+
+
+
+
+      [[__nodiscard__]] bool
+      empty() const noexcept
+      { return _M_h.empty(); }
+
+
+      size_type
+      size() const noexcept
+      { return _M_h.size(); }
+
+
+      size_type
+      max_size() const noexcept
+      { return _M_h.max_size(); }
+# 326 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      begin() noexcept
+      { return _M_h.begin(); }
+
+      const_iterator
+      begin() const noexcept
+      { return _M_h.begin(); }
+
+
+
+
+
+
+
+      iterator
+      end() noexcept
+      { return _M_h.end(); }
+
+      const_iterator
+      end() const noexcept
+      { return _M_h.end(); }
+
+
+
+
+
+
+      const_iterator
+      cbegin() const noexcept
+      { return _M_h.begin(); }
+
+
+
+
+
+      const_iterator
+      cend() const noexcept
+      { return _M_h.end(); }
+# 382 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename... _Args>
+ std::pair<iterator, bool>
+ emplace(_Args&&... __args)
+ { return _M_h.emplace(std::forward<_Args>(__args)...); }
+# 408 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename... _Args>
+ iterator
+ emplace_hint(const_iterator __pos, _Args&&... __args)
+ { return _M_h.emplace_hint(__pos, std::forward<_Args>(__args)...); }
+# 427 "/usr/include/c++/14/bits/unordered_set.h" 3
+      std::pair<iterator, bool>
+      insert(const value_type& __x)
+      { return _M_h.insert(__x); }
+
+      std::pair<iterator, bool>
+      insert(value_type&& __x)
+      { return _M_h.insert(std::move(__x)); }
+# 456 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      insert(const_iterator __hint, const value_type& __x)
+      { return _M_h.insert(__hint, __x); }
+
+      iterator
+      insert(const_iterator __hint, value_type&& __x)
+      { return _M_h.insert(__hint, std::move(__x)); }
+# 474 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename _InputIterator>
+ void
+ insert(_InputIterator __first, _InputIterator __last)
+ { _M_h.insert(__first, __last); }
+# 486 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      insert(initializer_list<value_type> __l)
+      { _M_h.insert(__l); }
+
+
+
+      node_type
+      extract(const_iterator __pos)
+      {
+ do { if (std::__is_constant_evaluated()) if (__builtin_expect(!bool(__pos != end()), false)) std::__glibcxx_assert_fail(); } while (false);
+ return _M_h.extract(__pos);
+      }
+
+
+      node_type
+      extract(const key_type& __key)
+      { return _M_h.extract(__key); }
+
+
+      insert_return_type
+      insert(node_type&& __nh)
+      { return _M_h._M_reinsert_node(std::move(__nh)); }
+
+
+      iterator
+      insert(const_iterator, node_type&& __nh)
+      { return _M_h._M_reinsert_node(std::move(__nh)).position; }
+# 529 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      erase(const_iterator __position)
+      { return _M_h.erase(__position); }
+
+
+      iterator
+      erase(iterator __position)
+      { return _M_h.erase(__position); }
+# 551 "/usr/include/c++/14/bits/unordered_set.h" 3
+      size_type
+      erase(const key_type& __x)
+      { return _M_h.erase(__x); }
+# 569 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      erase(const_iterator __first, const_iterator __last)
+      { return _M_h.erase(__first, __last); }
+
+
+
+
+
+
+
+      void
+      clear() noexcept
+      { _M_h.clear(); }
+# 592 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      swap(unordered_set& __x)
+      noexcept( noexcept(_M_h.swap(__x._M_h)) )
+      { _M_h.swap(__x._M_h); }
+
+
+      template<typename, typename, typename>
+ friend class std::_Hash_merge_helper;
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_set<_Value, _H2, _P2, _Alloc>& __source)
+ {
+   using _Merge_helper = _Hash_merge_helper<unordered_set, _H2, _P2>;
+   _M_h._M_merge_unique(_Merge_helper::_S_get_table(__source));
+ }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_set<_Value, _H2, _P2, _Alloc>&& __source)
+ { merge(__source); }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_multiset<_Value, _H2, _P2, _Alloc>& __source)
+ {
+   using _Merge_helper = _Hash_merge_helper<unordered_set, _H2, _P2>;
+   _M_h._M_merge_unique(_Merge_helper::_S_get_table(__source));
+ }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_multiset<_Value, _H2, _P2, _Alloc>&& __source)
+ { merge(__source); }
+
+
+
+
+
+
+      hasher
+      hash_function() const
+      { return _M_h.hash_function(); }
+
+
+
+      key_equal
+      key_eq() const
+      { return _M_h.key_eq(); }
+# 656 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      find(const key_type& __x)
+      { return _M_h.find(__x); }
+
+
+      template<typename _Kt>
+ auto
+ find(const _Kt& __k)
+ -> decltype(_M_h._M_find_tr(__k))
+ { return _M_h._M_find_tr(__k); }
+
+
+      const_iterator
+      find(const key_type& __x) const
+      { return _M_h.find(__x); }
+
+
+      template<typename _Kt>
+ auto
+ find(const _Kt& __k) const
+ -> decltype(_M_h._M_find_tr(__k))
+ { return _M_h._M_find_tr(__k); }
+# 691 "/usr/include/c++/14/bits/unordered_set.h" 3
+      size_type
+      count(const key_type& __x) const
+      { return _M_h.count(__x); }
+
+
+      template<typename _Kt>
+ auto
+ count(const _Kt& __k) const
+ -> decltype(_M_h._M_count_tr(__k))
+ { return _M_h._M_count_tr(__k); }
+# 711 "/usr/include/c++/14/bits/unordered_set.h" 3
+      bool
+      contains(const key_type& __x) const
+      { return _M_h.find(__x) != _M_h.end(); }
+
+      template<typename _Kt>
+ auto
+ contains(const _Kt& __k) const
+ -> decltype(_M_h._M_find_tr(__k), void(), true)
+ { return _M_h._M_find_tr(__k) != _M_h.end(); }
+# 732 "/usr/include/c++/14/bits/unordered_set.h" 3
+      std::pair<iterator, iterator>
+      equal_range(const key_type& __x)
+      { return _M_h.equal_range(__x); }
+
+
+      template<typename _Kt>
+ auto
+ equal_range(const _Kt& __k)
+ -> decltype(_M_h._M_equal_range_tr(__k))
+ { return _M_h._M_equal_range_tr(__k); }
+
+
+      std::pair<const_iterator, const_iterator>
+      equal_range(const key_type& __x) const
+      { return _M_h.equal_range(__x); }
+
+
+      template<typename _Kt>
+ auto
+ equal_range(const _Kt& __k) const
+ -> decltype(_M_h._M_equal_range_tr(__k))
+ { return _M_h._M_equal_range_tr(__k); }
+
+
+
+
+
+
+      size_type
+      bucket_count() const noexcept
+      { return _M_h.bucket_count(); }
+
+
+      size_type
+      max_bucket_count() const noexcept
+      { return _M_h.max_bucket_count(); }
+
+
+
+
+
+
+      size_type
+      bucket_size(size_type __n) const
+      { return _M_h.bucket_size(__n); }
+
+
+
+
+
+
+      size_type
+      bucket(const key_type& __key) const
+      { return _M_h.bucket(__key); }
+# 794 "/usr/include/c++/14/bits/unordered_set.h" 3
+      local_iterator
+      begin(size_type __n)
+      { return _M_h.begin(__n); }
+
+      const_local_iterator
+      begin(size_type __n) const
+      { return _M_h.begin(__n); }
+
+      const_local_iterator
+      cbegin(size_type __n) const
+      { return _M_h.cbegin(__n); }
+# 814 "/usr/include/c++/14/bits/unordered_set.h" 3
+      local_iterator
+      end(size_type __n)
+      { return _M_h.end(__n); }
+
+      const_local_iterator
+      end(size_type __n) const
+      { return _M_h.end(__n); }
+
+      const_local_iterator
+      cend(size_type __n) const
+      { return _M_h.cend(__n); }
+
+
+
+
+
+      float
+      load_factor() const noexcept
+      { return _M_h.load_factor(); }
+
+
+
+      float
+      max_load_factor() const noexcept
+      { return _M_h.max_load_factor(); }
+
+
+
+
+
+      void
+      max_load_factor(float __z)
+      { _M_h.max_load_factor(__z); }
+# 855 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      rehash(size_type __n)
+      { _M_h.rehash(__n); }
+# 866 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      reserve(size_type __n)
+      { _M_h.reserve(__n); }
+
+      template<typename _Value1, typename _Hash1, typename _Pred1,
+        typename _Alloc1>
+        friend bool
+        operator==(const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&,
+     const unordered_set<_Value1, _Hash1, _Pred1, _Alloc1>&);
+    };
+
+
+
+  template<typename _InputIterator,
+    typename _Hash =
+      hash<typename iterator_traits<_InputIterator>::value_type>,
+    typename _Pred =
+      equal_to<typename iterator_traits<_InputIterator>::value_type>,
+    typename _Allocator =
+      allocator<typename iterator_traits<_InputIterator>::value_type>,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireNotAllocator<_Pred>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(_InputIterator, _InputIterator,
+    unordered_set<int>::size_type = {},
+    _Hash = _Hash(), _Pred = _Pred(), _Allocator = _Allocator())
+    -> unordered_set<typename iterator_traits<_InputIterator>::value_type,
+       _Hash, _Pred, _Allocator>;
+
+  template<typename _Tp, typename _Hash = hash<_Tp>,
+    typename _Pred = equal_to<_Tp>,
+    typename _Allocator = allocator<_Tp>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireNotAllocator<_Pred>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(initializer_list<_Tp>,
+    unordered_set<int>::size_type = {},
+    _Hash = _Hash(), _Pred = _Pred(), _Allocator = _Allocator())
+    -> unordered_set<_Tp, _Hash, _Pred, _Allocator>;
+
+  template<typename _InputIterator, typename _Allocator,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(_InputIterator, _InputIterator,
+    unordered_set<int>::size_type, _Allocator)
+    -> unordered_set<typename iterator_traits<_InputIterator>::value_type,
+       hash<
+         typename iterator_traits<_InputIterator>::value_type>,
+       equal_to<
+         typename iterator_traits<_InputIterator>::value_type>,
+       _Allocator>;
+
+  template<typename _InputIterator, typename _Hash, typename _Allocator,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(_InputIterator, _InputIterator,
+    unordered_set<int>::size_type,
+    _Hash, _Allocator)
+    -> unordered_set<typename iterator_traits<_InputIterator>::value_type,
+       _Hash,
+       equal_to<
+         typename iterator_traits<_InputIterator>::value_type>,
+       _Allocator>;
+
+  template<typename _Tp, typename _Allocator,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(initializer_list<_Tp>,
+    unordered_set<int>::size_type, _Allocator)
+    -> unordered_set<_Tp, hash<_Tp>, equal_to<_Tp>, _Allocator>;
+
+  template<typename _Tp, typename _Hash, typename _Allocator,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_set(initializer_list<_Tp>,
+    unordered_set<int>::size_type, _Hash, _Allocator)
+    -> unordered_set<_Tp, _Hash, equal_to<_Tp>, _Allocator>;
+# 968 "/usr/include/c++/14/bits/unordered_set.h" 3
+  template<typename _Value,
+    typename _Hash = hash<_Value>,
+    typename _Pred = equal_to<_Value>,
+    typename _Alloc = allocator<_Value>>
+    class unordered_multiset
+    {
+      typedef __umset_hashtable<_Value, _Hash, _Pred, _Alloc> _Hashtable;
+      _Hashtable _M_h;
+
+    public:
+
+
+
+      typedef typename _Hashtable::key_type key_type;
+      typedef typename _Hashtable::value_type value_type;
+      typedef typename _Hashtable::hasher hasher;
+      typedef typename _Hashtable::key_equal key_equal;
+      typedef typename _Hashtable::allocator_type allocator_type;
+
+
+
+
+      typedef typename _Hashtable::pointer pointer;
+      typedef typename _Hashtable::const_pointer const_pointer;
+      typedef typename _Hashtable::reference reference;
+      typedef typename _Hashtable::const_reference const_reference;
+      typedef typename _Hashtable::iterator iterator;
+      typedef typename _Hashtable::const_iterator const_iterator;
+      typedef typename _Hashtable::local_iterator local_iterator;
+      typedef typename _Hashtable::const_local_iterator const_local_iterator;
+      typedef typename _Hashtable::size_type size_type;
+      typedef typename _Hashtable::difference_type difference_type;
+
+
+
+      using node_type = typename _Hashtable::node_type;
+
+
+
+
+
+      unordered_multiset() = default;
+# 1018 "/usr/include/c++/14/bits/unordered_set.h" 3
+      explicit
+      unordered_multiset(size_type __n,
+    const hasher& __hf = hasher(),
+    const key_equal& __eql = key_equal(),
+    const allocator_type& __a = allocator_type())
+      : _M_h(__n, __hf, __eql, __a)
+      { }
+# 1039 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename _InputIterator>
+ unordered_multiset(_InputIterator __first, _InputIterator __last,
+      size_type __n = 0,
+      const hasher& __hf = hasher(),
+      const key_equal& __eql = key_equal(),
+      const allocator_type& __a = allocator_type())
+ : _M_h(__first, __last, __n, __hf, __eql, __a)
+ { }
+
+
+      unordered_multiset(const unordered_multiset&) = default;
+
+
+      unordered_multiset(unordered_multiset&&) = default;
+# 1065 "/usr/include/c++/14/bits/unordered_set.h" 3
+      unordered_multiset(initializer_list<value_type> __l,
+    size_type __n = 0,
+    const hasher& __hf = hasher(),
+    const key_equal& __eql = key_equal(),
+    const allocator_type& __a = allocator_type())
+      : _M_h(__l, __n, __hf, __eql, __a)
+      { }
+
+
+      unordered_multiset&
+      operator=(const unordered_multiset&) = default;
+
+
+      unordered_multiset&
+      operator=(unordered_multiset&&) = default;
+
+
+
+
+
+      explicit
+      unordered_multiset(const allocator_type& __a)
+      : _M_h(__a)
+      { }
+
+
+
+
+
+
+      unordered_multiset(const unordered_multiset& __umset,
+    const allocator_type& __a)
+      : _M_h(__umset._M_h, __a)
+      { }
+
+
+
+
+
+
+      unordered_multiset(unordered_multiset&& __umset,
+    const allocator_type& __a)
+ noexcept( noexcept(_Hashtable(std::move(__umset._M_h), __a)) )
+      : _M_h(std::move(__umset._M_h), __a)
+      { }
+
+      unordered_multiset(size_type __n, const allocator_type& __a)
+      : unordered_multiset(__n, hasher(), key_equal(), __a)
+      { }
+
+      unordered_multiset(size_type __n, const hasher& __hf,
+    const allocator_type& __a)
+      : unordered_multiset(__n, __hf, key_equal(), __a)
+      { }
+
+      template<typename _InputIterator>
+ unordered_multiset(_InputIterator __first, _InputIterator __last,
+      size_type __n,
+      const allocator_type& __a)
+ : unordered_multiset(__first, __last, __n, hasher(), key_equal(), __a)
+ { }
+
+      template<typename _InputIterator>
+ unordered_multiset(_InputIterator __first, _InputIterator __last,
+      size_type __n, const hasher& __hf,
+      const allocator_type& __a)
+ : unordered_multiset(__first, __last, __n, __hf, key_equal(), __a)
+ { }
+
+      unordered_multiset(initializer_list<value_type> __l,
+    size_type __n,
+    const allocator_type& __a)
+      : unordered_multiset(__l, __n, hasher(), key_equal(), __a)
+      { }
+
+      unordered_multiset(initializer_list<value_type> __l,
+    size_type __n, const hasher& __hf,
+    const allocator_type& __a)
+      : unordered_multiset(__l, __n, __hf, key_equal(), __a)
+      { }
+# 1157 "/usr/include/c++/14/bits/unordered_set.h" 3
+      unordered_multiset&
+      operator=(initializer_list<value_type> __l)
+      {
+ _M_h = __l;
+ return *this;
+      }
+
+
+      allocator_type
+      get_allocator() const noexcept
+      { return _M_h.get_allocator(); }
+
+
+
+
+      [[__nodiscard__]] bool
+      empty() const noexcept
+      { return _M_h.empty(); }
+
+
+      size_type
+      size() const noexcept
+      { return _M_h.size(); }
+
+
+      size_type
+      max_size() const noexcept
+      { return _M_h.max_size(); }
+# 1193 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      begin() noexcept
+      { return _M_h.begin(); }
+
+      const_iterator
+      begin() const noexcept
+      { return _M_h.begin(); }
+
+
+
+
+
+
+
+      iterator
+      end() noexcept
+      { return _M_h.end(); }
+
+      const_iterator
+      end() const noexcept
+      { return _M_h.end(); }
+
+
+
+
+
+
+      const_iterator
+      cbegin() const noexcept
+      { return _M_h.begin(); }
+
+
+
+
+
+      const_iterator
+      cend() const noexcept
+      { return _M_h.end(); }
+# 1241 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename... _Args>
+ iterator
+ emplace(_Args&&... __args)
+ { return _M_h.emplace(std::forward<_Args>(__args)...); }
+# 1263 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename... _Args>
+ iterator
+ emplace_hint(const_iterator __pos, _Args&&... __args)
+ { return _M_h.emplace_hint(__pos, std::forward<_Args>(__args)...); }
+# 1276 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      insert(const value_type& __x)
+      { return _M_h.insert(__x); }
+
+      iterator
+      insert(value_type&& __x)
+      { return _M_h.insert(std::move(__x)); }
+# 1302 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      insert(const_iterator __hint, const value_type& __x)
+      { return _M_h.insert(__hint, __x); }
+
+      iterator
+      insert(const_iterator __hint, value_type&& __x)
+      { return _M_h.insert(__hint, std::move(__x)); }
+# 1319 "/usr/include/c++/14/bits/unordered_set.h" 3
+      template<typename _InputIterator>
+ void
+ insert(_InputIterator __first, _InputIterator __last)
+ { _M_h.insert(__first, __last); }
+# 1331 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      insert(initializer_list<value_type> __l)
+      { _M_h.insert(__l); }
+
+
+
+      node_type
+      extract(const_iterator __pos)
+      {
+ do { if (std::__is_constant_evaluated()) if (__builtin_expect(!bool(__pos != end()), false)) std::__glibcxx_assert_fail(); } while (false);
+ return _M_h.extract(__pos);
+      }
+
+
+      node_type
+      extract(const key_type& __key)
+      { return _M_h.extract(__key); }
+
+
+      iterator
+      insert(node_type&& __nh)
+      { return _M_h._M_reinsert_node_multi(cend(), std::move(__nh)); }
+
+
+      iterator
+      insert(const_iterator __hint, node_type&& __nh)
+      { return _M_h._M_reinsert_node_multi(__hint, std::move(__nh)); }
+# 1375 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      erase(const_iterator __position)
+      { return _M_h.erase(__position); }
+
+
+      iterator
+      erase(iterator __position)
+      { return _M_h.erase(__position); }
+# 1398 "/usr/include/c++/14/bits/unordered_set.h" 3
+      size_type
+      erase(const key_type& __x)
+      { return _M_h.erase(__x); }
+# 1418 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      erase(const_iterator __first, const_iterator __last)
+      { return _M_h.erase(__first, __last); }
+# 1429 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      clear() noexcept
+      { _M_h.clear(); }
+# 1442 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      swap(unordered_multiset& __x)
+      noexcept( noexcept(_M_h.swap(__x._M_h)) )
+      { _M_h.swap(__x._M_h); }
+
+
+      template<typename, typename, typename>
+ friend class std::_Hash_merge_helper;
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_multiset<_Value, _H2, _P2, _Alloc>& __source)
+ {
+   using _Merge_helper
+     = _Hash_merge_helper<unordered_multiset, _H2, _P2>;
+   _M_h._M_merge_multi(_Merge_helper::_S_get_table(__source));
+ }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_multiset<_Value, _H2, _P2, _Alloc>&& __source)
+ { merge(__source); }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_set<_Value, _H2, _P2, _Alloc>& __source)
+ {
+   using _Merge_helper
+     = _Hash_merge_helper<unordered_multiset, _H2, _P2>;
+   _M_h._M_merge_multi(_Merge_helper::_S_get_table(__source));
+ }
+
+      template<typename _H2, typename _P2>
+ void
+ merge(unordered_set<_Value, _H2, _P2, _Alloc>&& __source)
+ { merge(__source); }
+
+
+
+
+
+
+      hasher
+      hash_function() const
+      { return _M_h.hash_function(); }
+
+
+
+      key_equal
+      key_eq() const
+      { return _M_h.key_eq(); }
+# 1508 "/usr/include/c++/14/bits/unordered_set.h" 3
+      iterator
+      find(const key_type& __x)
+      { return _M_h.find(__x); }
+
+
+      template<typename _Kt>
+ auto
+ find(const _Kt& __x)
+ -> decltype(_M_h._M_find_tr(__x))
+ { return _M_h._M_find_tr(__x); }
+
+
+      const_iterator
+      find(const key_type& __x) const
+      { return _M_h.find(__x); }
+
+
+      template<typename _Kt>
+ auto
+ find(const _Kt& __x) const
+ -> decltype(_M_h._M_find_tr(__x))
+ { return _M_h._M_find_tr(__x); }
+# 1539 "/usr/include/c++/14/bits/unordered_set.h" 3
+      size_type
+      count(const key_type& __x) const
+      { return _M_h.count(__x); }
+
+
+      template<typename _Kt>
+ auto
+ count(const _Kt& __x) const -> decltype(_M_h._M_count_tr(__x))
+ { return _M_h._M_count_tr(__x); }
+# 1558 "/usr/include/c++/14/bits/unordered_set.h" 3
+      bool
+      contains(const key_type& __x) const
+      { return _M_h.find(__x) != _M_h.end(); }
+
+      template<typename _Kt>
+ auto
+ contains(const _Kt& __x) const
+ -> decltype(_M_h._M_find_tr(__x), void(), true)
+ { return _M_h._M_find_tr(__x) != _M_h.end(); }
+# 1577 "/usr/include/c++/14/bits/unordered_set.h" 3
+      std::pair<iterator, iterator>
+      equal_range(const key_type& __x)
+      { return _M_h.equal_range(__x); }
+
+
+      template<typename _Kt>
+ auto
+ equal_range(const _Kt& __x)
+ -> decltype(_M_h._M_equal_range_tr(__x))
+ { return _M_h._M_equal_range_tr(__x); }
+
+
+      std::pair<const_iterator, const_iterator>
+      equal_range(const key_type& __x) const
+      { return _M_h.equal_range(__x); }
+
+
+      template<typename _Kt>
+ auto
+ equal_range(const _Kt& __x) const
+ -> decltype(_M_h._M_equal_range_tr(__x))
+ { return _M_h._M_equal_range_tr(__x); }
+
+
+
+
+
+
+      size_type
+      bucket_count() const noexcept
+      { return _M_h.bucket_count(); }
+
+
+      size_type
+      max_bucket_count() const noexcept
+      { return _M_h.max_bucket_count(); }
+
+
+
+
+
+
+      size_type
+      bucket_size(size_type __n) const
+      { return _M_h.bucket_size(__n); }
+
+
+
+
+
+
+      size_type
+      bucket(const key_type& __key) const
+      { return _M_h.bucket(__key); }
+# 1639 "/usr/include/c++/14/bits/unordered_set.h" 3
+      local_iterator
+      begin(size_type __n)
+      { return _M_h.begin(__n); }
+
+      const_local_iterator
+      begin(size_type __n) const
+      { return _M_h.begin(__n); }
+
+      const_local_iterator
+      cbegin(size_type __n) const
+      { return _M_h.cbegin(__n); }
+# 1659 "/usr/include/c++/14/bits/unordered_set.h" 3
+      local_iterator
+      end(size_type __n)
+      { return _M_h.end(__n); }
+
+      const_local_iterator
+      end(size_type __n) const
+      { return _M_h.end(__n); }
+
+      const_local_iterator
+      cend(size_type __n) const
+      { return _M_h.cend(__n); }
+
+
+
+
+
+      float
+      load_factor() const noexcept
+      { return _M_h.load_factor(); }
+
+
+
+      float
+      max_load_factor() const noexcept
+      { return _M_h.max_load_factor(); }
+
+
+
+
+
+      void
+      max_load_factor(float __z)
+      { _M_h.max_load_factor(__z); }
+# 1700 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      rehash(size_type __n)
+      { _M_h.rehash(__n); }
+# 1711 "/usr/include/c++/14/bits/unordered_set.h" 3
+      void
+      reserve(size_type __n)
+      { _M_h.reserve(__n); }
+
+      template<typename _Value1, typename _Hash1, typename _Pred1,
+        typename _Alloc1>
+        friend bool
+      operator==(const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&,
+   const unordered_multiset<_Value1, _Hash1, _Pred1, _Alloc1>&);
+    };
+
+
+
+
+  template<typename _InputIterator,
+    typename _Hash =
+      hash<typename iterator_traits<_InputIterator>::value_type>,
+    typename _Pred =
+      equal_to<typename iterator_traits<_InputIterator>::value_type>,
+    typename _Allocator =
+      allocator<typename iterator_traits<_InputIterator>::value_type>,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireNotAllocator<_Pred>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(_InputIterator, _InputIterator,
+         unordered_multiset<int>::size_type = {},
+         _Hash = _Hash(), _Pred = _Pred(),
+         _Allocator = _Allocator())
+    -> unordered_multiset<typename iterator_traits<_InputIterator>::value_type,
+                          _Hash, _Pred, _Allocator>;
+
+  template<typename _Tp, typename _Hash = hash<_Tp>,
+    typename _Pred = equal_to<_Tp>,
+    typename _Allocator = allocator<_Tp>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireNotAllocator<_Pred>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(initializer_list<_Tp>,
+         unordered_multiset<int>::size_type = {},
+         _Hash = _Hash(), _Pred = _Pred(),
+         _Allocator = _Allocator())
+    -> unordered_multiset<_Tp, _Hash, _Pred, _Allocator>;
+
+  template<typename _InputIterator, typename _Allocator,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(_InputIterator, _InputIterator,
+         unordered_multiset<int>::size_type, _Allocator)
+    -> unordered_multiset<typename iterator_traits<_InputIterator>::value_type,
+     hash<typename
+          iterator_traits<_InputIterator>::value_type>,
+     equal_to<typename
+       iterator_traits<_InputIterator>::value_type>,
+     _Allocator>;
+
+  template<typename _InputIterator, typename _Hash, typename _Allocator,
+    typename = _RequireInputIter<_InputIterator>,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(_InputIterator, _InputIterator,
+         unordered_multiset<int>::size_type,
+         _Hash, _Allocator)
+    -> unordered_multiset<typename
+     iterator_traits<_InputIterator>::value_type,
+     _Hash,
+     equal_to<
+       typename
+       iterator_traits<_InputIterator>::value_type>,
+     _Allocator>;
+
+  template<typename _Tp, typename _Allocator,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(initializer_list<_Tp>,
+         unordered_multiset<int>::size_type, _Allocator)
+    -> unordered_multiset<_Tp, hash<_Tp>, equal_to<_Tp>, _Allocator>;
+
+  template<typename _Tp, typename _Hash, typename _Allocator,
+    typename = _RequireNotAllocatorOrIntegral<_Hash>,
+    typename = _RequireAllocator<_Allocator>>
+    unordered_multiset(initializer_list<_Tp>,
+         unordered_multiset<int>::size_type, _Hash, _Allocator)
+    -> unordered_multiset<_Tp, _Hash, equal_to<_Tp>, _Allocator>;
+
+
+
+  template<class _Value, class _Hash, class _Pred, class _Alloc>
+    inline void
+    swap(unordered_set<_Value, _Hash, _Pred, _Alloc>& __x,
+  unordered_set<_Value, _Hash, _Pred, _Alloc>& __y)
+    noexcept(noexcept(__x.swap(__y)))
+    { __x.swap(__y); }
+
+  template<class _Value, class _Hash, class _Pred, class _Alloc>
+    inline void
+    swap(unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __x,
+  unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __y)
+    noexcept(noexcept(__x.swap(__y)))
+    { __x.swap(__y); }
+
+  template<class _Value, class _Hash, class _Pred, class _Alloc>
+    inline bool
+    operator==(const unordered_set<_Value, _Hash, _Pred, _Alloc>& __x,
+        const unordered_set<_Value, _Hash, _Pred, _Alloc>& __y)
+    { return __x._M_h._M_equal(__y._M_h); }
+# 1825 "/usr/include/c++/14/bits/unordered_set.h" 3
+  template<class _Value, class _Hash, class _Pred, class _Alloc>
+    inline bool
+    operator==(const unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __x,
+        const unordered_multiset<_Value, _Hash, _Pred, _Alloc>& __y)
+    { return __x._M_h._M_equal(__y._M_h); }
+# 1839 "/usr/include/c++/14/bits/unordered_set.h" 3
+
+
+
+
+  template<typename _Val, typename _Hash1, typename _Eq1, typename _Alloc,
+    typename _Hash2, typename _Eq2>
+    struct _Hash_merge_helper<
+      std::unordered_set<_Val, _Hash1, _Eq1, _Alloc>, _Hash2, _Eq2>
+    {
+    private:
+      template<typename... _Tp>
+ using unordered_set = std::unordered_set<_Tp...>;
+      template<typename... _Tp>
+ using unordered_multiset = std::unordered_multiset<_Tp...>;
+
+      friend unordered_set<_Val, _Hash1, _Eq1, _Alloc>;
+
+      static auto&
+      _S_get_table(unordered_set<_Val, _Hash2, _Eq2, _Alloc>& __set)
+      { return __set._M_h; }
+
+      static auto&
+      _S_get_table(unordered_multiset<_Val, _Hash2, _Eq2, _Alloc>& __set)
+      { return __set._M_h; }
+    };
+
+
+  template<typename _Val, typename _Hash1, typename _Eq1, typename _Alloc,
+    typename _Hash2, typename _Eq2>
+    struct _Hash_merge_helper<
+      std::unordered_multiset<_Val, _Hash1, _Eq1, _Alloc>,
+      _Hash2, _Eq2>
+    {
+    private:
+      template<typename... _Tp>
+ using unordered_set = std::unordered_set<_Tp...>;
+      template<typename... _Tp>
+ using unordered_multiset = std::unordered_multiset<_Tp...>;
+
+      friend unordered_multiset<_Val, _Hash1, _Eq1, _Alloc>;
+
+      static auto&
+      _S_get_table(unordered_set<_Val, _Hash2, _Eq2, _Alloc>& __set)
+      { return __set._M_h; }
+
+      static auto&
+      _S_get_table(unordered_multiset<_Val, _Hash2, _Eq2, _Alloc>& __set)
+      { return __set._M_h; }
+    };
+
 
 
 }
-# 69 "/usr/include/c++/14/utility" 2 3
-# 96 "/usr/include/c++/14/utility" 3
+# 42 "/usr/include/c++/14/unordered_set" 2 3
+# 54 "/usr/include/c++/14/unordered_set" 3
 # 1 "/usr/include/c++/14/bits/version.h" 1 3
 # 47 "/usr/include/c++/14/bits/version.h" 3
        
 # 48 "/usr/include/c++/14/bits/version.h" 3
-# 97 "/usr/include/c++/14/utility" 2 3
+# 55 "/usr/include/c++/14/unordered_set" 2 3
+
+
 
 namespace std __attribute__ ((__visibility__ ("default")))
 {
 
-
-
-
-  template <typename _Tp, typename _Up = _Tp>
-    constexpr
-    inline _Tp
-    exchange(_Tp& __obj, _Up&& __new_val)
-    noexcept(__and_<is_nothrow_move_constructible<_Tp>,
-      is_nothrow_assignable<_Tp&, _Up>>::value)
-    { return std::__exchange(__obj, std::forward<_Up>(__new_val)); }
-
-
-
-  template<typename _Tp>
-    [[nodiscard]]
-    constexpr add_const_t<_Tp>&
-    as_const(_Tp& __t) noexcept
-    { return __t; }
-
-  template<typename _Tp>
-    void as_const(const _Tp&&) = delete;
-
-
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_equal(_Tp __t, _Up __u) noexcept
-    {
-      static_assert(__is_standard_integer<_Tp>::value);
-      static_assert(__is_standard_integer<_Up>::value);
-
-      if constexpr (is_signed_v<_Tp> == is_signed_v<_Up>)
- return __t == __u;
-      else if constexpr (is_signed_v<_Tp>)
- return __t >= 0 && make_unsigned_t<_Tp>(__t) == __u;
-      else
- return __u >= 0 && __t == make_unsigned_t<_Up>(__u);
-    }
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_not_equal(_Tp __t, _Up __u) noexcept
-    { return !std::cmp_equal(__t, __u); }
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_less(_Tp __t, _Up __u) noexcept
-    {
-      static_assert(__is_standard_integer<_Tp>::value);
-      static_assert(__is_standard_integer<_Up>::value);
-
-      if constexpr (is_signed_v<_Tp> == is_signed_v<_Up>)
- return __t < __u;
-      else if constexpr (is_signed_v<_Tp>)
- return __t < 0 || make_unsigned_t<_Tp>(__t) < __u;
-      else
- return __u >= 0 && __t < make_unsigned_t<_Up>(__u);
-    }
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_greater(_Tp __t, _Up __u) noexcept
-    { return std::cmp_less(__u, __t); }
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_less_equal(_Tp __t, _Up __u) noexcept
-    { return !std::cmp_less(__u, __t); }
-
-  template<typename _Tp, typename _Up>
-    constexpr bool
-    cmp_greater_equal(_Tp __t, _Up __u) noexcept
-    { return !std::cmp_less(__t, __u); }
-
-  template<typename _Res, typename _Tp>
-    constexpr bool
-    in_range(_Tp __t) noexcept
-    {
-      static_assert(__is_standard_integer<_Res>::value);
-      static_assert(__is_standard_integer<_Tp>::value);
-      using __gnu_cxx::__int_traits;
-
-      if constexpr (is_signed_v<_Tp> == is_signed_v<_Res>)
- return __int_traits<_Res>::__min <= __t
-   && __t <= __int_traits<_Res>::__max;
-      else if constexpr (is_signed_v<_Tp>)
- return __t >= 0
-   && make_unsigned_t<_Tp>(__t) <= __int_traits<_Res>::__max;
-      else
- return __t <= make_unsigned_t<_Res>(__int_traits<_Res>::__max);
-    }
-# 230 "/usr/include/c++/14/utility" 3
+  namespace pmr
+  {
+    template<typename _Key, typename _Hash = std::hash<_Key>,
+      typename _Pred = std::equal_to<_Key>>
+      using unordered_set
+ = std::unordered_set<_Key, _Hash, _Pred,
+        polymorphic_allocator<_Key>>;
+    template<typename _Key, typename _Hash = std::hash<_Key>,
+      typename _Pred = std::equal_to<_Key>>
+      using unordered_multiset
+ = std::unordered_multiset<_Key, _Hash, _Pred,
+      polymorphic_allocator<_Key>>;
+  }
 
 }
-# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+
+
+
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+  template<typename _Key, typename _Hash, typename _CPred, typename _Alloc,
+    typename _Predicate>
+    inline typename unordered_set<_Key, _Hash, _CPred, _Alloc>::size_type
+    erase_if(unordered_set<_Key, _Hash, _CPred, _Alloc>& __cont,
+      _Predicate __pred)
+    {
+      std::unordered_set<_Key, _Hash, _CPred, _Alloc>&
+ __ucont = __cont;
+      return __detail::__erase_nodes_if(__cont, __ucont, __pred);
+    }
+
+  template<typename _Key, typename _Hash, typename _CPred, typename _Alloc,
+    typename _Predicate>
+    inline typename unordered_multiset<_Key, _Hash, _CPred, _Alloc>::size_type
+    erase_if(unordered_multiset<_Key, _Hash, _CPred, _Alloc>& __cont,
+      _Predicate __pred)
+    {
+      std::unordered_multiset<_Key, _Hash, _CPred, _Alloc>&
+ __ucont = __cont;
+      return __detail::__erase_nodes_if(__cont, __ucont, __pred);
+    }
+
+}
+# 12 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/vector" 1 3
 # 58 "/usr/include/c++/14/vector" 3
        
@@ -73807,114 +77392,95 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 12 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 13 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 
 
-# 13 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
+# 14 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
 export  module  part_two;
 
 
 
 export namespace part_two {
 
-auto is_reversed(
-    const long &before_num, const long& after_num,
-    std::unordered_map<long, std::vector<long>>& before_mapping) -> bool {
-  if (before_mapping.find(after_num) != before_mapping.end()) {
-    const auto &values = before_mapping[after_num];
-    if (std::find(values.begin(), values.end(), before_num) != values.end()) {
-      return true;
-    }
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
+  }
+};
+
+auto is_stuck(const std::vector<std::string> &lines) -> bool {
+  auto it = std::ranges::find_if(lines, [](const std::string &line) {
+    return line.find('^') != std::string::npos;
+  });
+
+  long curr_i, curr_j = 0;
+  if (it != lines.end()) {
+    curr_i = std::distance(lines.begin(), it);
+    curr_j = it->find('^');
   }
 
-  return false;
-}
+  auto um =
+      std::unordered_map<std::pair<long, long>, std::vector<int>, pair_hash>();
 
-auto solve(const std::string &input) -> long {
-  auto stream = std::istringstream{input};
-  std::stringstream ss;
-  std::string line;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      break;
-    }
-
-    ss << line << std::endl;
-  }
-
-  const auto &first = ss.str();
-
-  auto before_mapping = std::unordered_map<long, std::vector<long>>{};
-  auto first_stream = std::istringstream(first);
-  bool first_flag = true;
-  while (std::getline(first_stream, line)) {
-    if (line.empty()) {
-      break;
-    }
-
-    size_t delimiter_pos = line.find('|');
-    auto first_part = line.substr(0, delimiter_pos);
-    auto second_part = line.substr(delimiter_pos + 1);
-
-    auto first_number = std::stol(first_part);
-    auto second_number = std::stol(second_part);
-
-    before_mapping[first_number].push_back(second_number);
-  }
-
-
-  ss.clear();
-  ss.str("");
-  while (std::getline(stream, line)) {
-    ss << line << std::endl;
-  }
+  int direction = 0;
+  std::vector<std::pair<long, long>> moves = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
   long ans = 0;
-  const auto &second = ss.str();
-  auto second_stream = std::istringstream(second);
-  while (std::getline(second_stream, line)) {
-    if (line.empty()) {
-      continue;
-    }
+  while (true) {
 
-
-    std::cout << line << std::endl;
-    std::cout << "---" << std::endl;
-
-
-    auto tokens =
-        std::views::split(line, ',') | std::views::transform([](auto &&range) {
-          return std::stol(std::string(range.begin(), range.end()));
-        });
-
-    std::vector<int> numbers(tokens.begin(), tokens.end());
-
-    auto valid = true;
-    for (size_t i = 0; i < numbers.size(); i++) {
-      for (size_t j = i + 1; j < numbers.size(); j++) {
-        if (is_reversed(numbers[i], numbers[j], before_mapping)) {
-          valid = false;
-          break;
-        }
+    if (curr_i >= 0 && curr_i < lines.size() && curr_j >= 0 &&
+        curr_j < lines[curr_i].size()) {
+      auto &dirs = um[{curr_i, curr_j}];
+      if (std::find(dirs.begin(), dirs.end(), direction) != dirs.end()) {
+        return true;
+      } else {
+        dirs.push_back(direction);
       }
     }
 
-    if (!valid) {
-      auto compare = [&](
-                         const auto &lhs, const auto &rhs) {
-        if (is_reversed(lhs, rhs, before_mapping)) {
-          return false;
+
+    auto next_i = curr_i + moves[direction].first;
+    auto next_j = curr_j + moves[direction].second;
+
+
+    if (next_i >= 0 && next_i < lines.size() && next_j >= 0 &&
+        next_j < lines[next_i].size()) {
+      if (lines[next_i][next_j] == '#') {
+        direction = (direction + 1) % 4;
+      } else {
+        curr_i = next_i;
+        curr_j = next_j;
+      }
+    } else {
+
+      return false;
+    }
+  }
+}
+
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> lines;
+  std::istringstream stream(input);
+  for (std::string line; std::getline(stream, line);) {
+    lines.push_back(line);
+  }
+
+  long ans = 0;
+  for (auto &line : lines) {
+    for (auto &c : line) {
+      if (c == '.') {
+        c = '#';
+# 101 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
+        if (is_stuck(lines)) {
+          ans++;
         }
-
-        return true;
-      };
-      std::sort(numbers.begin(), numbers.end(), compare);
-
-      auto n = numbers[numbers.size() / 2];
-      ans += n;
+        c = '.';
+      }
     }
   }
 
   return ans;
 }
+
 }

@@ -3,117 +3,110 @@ module;
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <numeric>
 #include <ranges>
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <utility>
+#include <unordered_set>
 #include <vector>
 
 export module part_two;
 
-#define DEBUG
+//#define DEBUG
 
 export namespace part_two {
 
-auto is_reversed(
-    const long &before_num, const long& after_num,
-    std::unordered_map<long, std::vector<long>>& before_mapping) -> bool {
-  if (before_mapping.find(after_num) != before_mapping.end()) {
-    const auto &values = before_mapping[after_num];
-    if (std::find(values.begin(), values.end(), before_num) != values.end()) {
-      return true;
-    }
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
+  }
+};
+
+auto is_stuck(const std::vector<std::string> &lines) -> bool {
+  auto it = std::ranges::find_if(lines, [](const std::string &line) {
+    return line.find('^') != std::string::npos;
+  });
+
+  long curr_i, curr_j = 0;
+  if (it != lines.end()) {
+    curr_i = std::distance(lines.begin(), it);
+    curr_j = it->find('^');
   }
 
-  return false;
-}
+  auto um =
+      std::unordered_map<std::pair<long, long>, std::vector<int>, pair_hash>();
 
-auto solve(const std::string &input) -> long {
-  auto stream = std::istringstream{input};
-  std::stringstream ss;
-  std::string line;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      break;
-    }
-
-    ss << line << std::endl;
-  }
-
-  const auto &first = ss.str();
-
-  auto before_mapping = std::unordered_map<long, std::vector<long>>{};
-  auto first_stream = std::istringstream(first);
-  bool first_flag = true;
-  while (std::getline(first_stream, line)) {
-    if (line.empty()) {
-      break;
-    }
-
-    size_t delimiter_pos = line.find('|');
-    auto first_part = line.substr(0, delimiter_pos);
-    auto second_part = line.substr(delimiter_pos + 1);
-
-    auto first_number = std::stol(first_part);
-    auto second_number = std::stol(second_part);
-
-    before_mapping[first_number].push_back(second_number);
-  }
-
-  // part 2
-  ss.clear();
-  ss.str("");
-  while (std::getline(stream, line)) {
-    ss << line << std::endl;
-  }
+  int direction = 0; // 0: up, 1: right, 2: down, 3: left
+  std::vector<std::pair<long, long>> moves = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
   long ans = 0;
-  const auto &second = ss.str();
-  auto second_stream = std::istringstream(second);
-  while (std::getline(second_stream, line)) {
-    if (line.empty()) {
-      continue;
-    }
-
-#ifdef DEBUG
-    std::cout << line << std::endl;
-    std::cout << "---" << std::endl;
-#endif
-
-    auto tokens =
-        std::views::split(line, ',') | std::views::transform([](auto &&range) {
-          return std::stol(std::string(range.begin(), range.end()));
-        });
-
-    std::vector<int> numbers(tokens.begin(), tokens.end());
-
-    auto valid = true;
-    for (size_t i = 0; i < numbers.size(); i++) {
-      for (size_t j = i + 1; j < numbers.size(); j++) {
-        if (is_reversed(numbers[i], numbers[j], before_mapping)) {
-          valid = false;
-          break;
-        }
+  while (true) {
+    // if current position is within the map, add it to the set
+    if (curr_i >= 0 && curr_i < lines.size() && curr_j >= 0 &&
+        curr_j < lines[curr_i].size()) {
+      auto &dirs = um[{curr_i, curr_j}];
+      if (std::find(dirs.begin(), dirs.end(), direction) != dirs.end()) {
+        return true;
+      } else {
+        dirs.push_back(direction);
       }
     }
 
-    if (!valid) {
-      auto compare = [&](
-                         const auto &lhs, const auto &rhs) {
-        if (is_reversed(lhs, rhs, before_mapping)) {
-          return false;
+    // find the next move based on direction
+    auto next_i = curr_i + moves[direction].first;
+    auto next_j = curr_j + moves[direction].second;
+
+    // if next move is a hash, change direction
+    if (next_i >= 0 && next_i < lines.size() && next_j >= 0 &&
+        next_j < lines[next_i].size()) {
+      if (lines[next_i][next_j] == '#') {
+        direction = (direction + 1) % 4;
+      } else {
+        curr_i = next_i;
+        curr_j = next_j;
+      }
+    } else {
+      // outside the map already
+      return false;
+    }
+  }
+}
+
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> lines;
+  std::istringstream stream(input);
+  for (std::string line; std::getline(stream, line);) {
+    lines.push_back(line);
+  }
+
+  long ans = 0;
+  for (auto &line : lines) {
+    for (auto &c : line) {
+      if (c == '.') {
+        c = '#';
+#ifdef DEBUG
+        std::string result =
+            std::accumulate(lines.begin() + 1, lines.end(),
+                            lines[0], // Start with the first word
+                            [](const std::string &a, const std::string &b) {
+                              return a + "\n" + b; // Add newline between words
+                            });
+        std::cout << "Trying to check if " << std::endl
+                  << result << std::endl
+                  << "is stuck" << std::endl
+                  << std::endl;
+#endif
+        if (is_stuck(lines)) {
+          ans++;
         }
-
-        return true;
-      };
-      std::sort(numbers.begin(), numbers.end(), compare);
-
-      auto n = numbers[numbers.size() / 2];
-      ans += n;
+        c = '.';
+      }
     }
   }
 
   return ans;
 }
+
 } // namespace part_two
