@@ -75018,57 +75018,65 @@ export  module  part_two;
 
 export namespace part_two {
 
-auto parse_line(const std::string &input) -> std::vector<long> {
-  std::vector<long> result;
-  size_t colon_pos = input.find(':');
-
-  if (colon_pos != std::string::npos) {
-    auto right_part = input.substr(colon_pos + 1);
-    std::stringstream ss(right_part);
-    long num;
-    while (ss >> num) {
-      result.push_back(num);
-    }
-
-    auto left_part = input.substr(0, colon_pos);
-    result.push_back(std::stol(left_part));
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
   }
-
-  return result;
-}
-
-auto can_match(const std::vector<long> &nums, long idx, long current_sum,
-               long target) -> bool {
-  if (static_cast<long>(nums.size()) == idx) {
-    return current_sum == target;
-  }
-
-  long last_number = nums[idx];
-
-  auto str = std::to_string(current_sum) + std::to_string(last_number);
-  auto result = can_match(nums, idx + 1, current_sum * last_number, target) ||
-                can_match(nums, idx + 1, current_sum + last_number, target) ||
-                can_match(nums, idx + 1, std::stol(str), target);
-
-  return result;
-}
+};
 
 auto solve(const std::string &input) -> long {
-  long ans = 0;
+  auto freq_map = std::unordered_map<char, std::vector<std::pair<int, int>>>();
+  auto visited_nodes = std::unordered_set<std::pair<int, int>, pair_hash>();
+
+  int i = 0;
+  long max_j = 0;
+
   for (const auto &line : input | std::views::split('\n')) {
-    std::vector<long> nums =
-        parse_line(std::string(std::begin(line), std::end(line)));
-    long target = nums.back();
-    nums.pop_back();
-# 71 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
-    auto result = can_match(nums, 1, nums[0], target);
+    max_j = line.size();
+    for (size_t j = 0; j < line.size(); j++) {
+      auto ch = line[j];
+      if (ch != '.') {
+        freq_map[ch].push_back({i, j});
+      }
+    }
+
+    i++;
+  }
+
+  long max_i = i;
+
+  long ans = 0;
+  for (const auto &[ch, locations] : freq_map) {
+    for (const auto &first : locations) {
+      for (const auto &second : locations) {
+        if (first == second)
+          continue;
+
+        auto di = second.first - first.first;
+        auto dj = second.second - first.second;
+
+        long multiplier = 0;
+        while (true) {
+          auto new_i = second.first + multiplier * di;
+          auto new_j = second.second + multiplier * dj;
+
+          if (new_i >= 0 && new_i < max_i && new_j >= 0 && new_j < max_j) {
+            if (visited_nodes.find({new_i, new_j}) == visited_nodes.end()) {
+              ans++;
+              visited_nodes.insert({new_i, new_j});
 
 
 
 
 
-    if (result) {
-      ans += target;
+            }
+            multiplier++;
+          } else {
+            break;
+          }
+        }
+      }
     }
   }
 
