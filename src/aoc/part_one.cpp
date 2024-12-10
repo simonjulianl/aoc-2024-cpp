@@ -1,8 +1,10 @@
 module;
 
 #include <algorithm>
+#include <deque>
 #include <iostream>
 #include <iterator>
+#include <queue>
 #include <ranges>
 #include <sstream>
 #include <string>
@@ -12,66 +14,68 @@ module;
 
 export module part_one;
 
-//#define DEBUG
+// #define DEBUG
 
 export namespace part_one {
 
-struct pair_hash {
-  template <class T1, class T2>
-  std::size_t operator()(const std::pair<T1, T2> &pair) const {
-    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
-  }
-};
-
 auto solve(const std::string &input) -> long {
-  auto freq_map = std::unordered_map<char, std::vector<std::pair<int, int>>>();
-  auto visited_nodes = std::unordered_set<std::pair<int, int>, pair_hash>();
+  std::deque<std::pair<long, long>> files;
+  std::queue<long> emptySpaces;
 
-  int i = 0;
-  long max_j = 0;
-
-  for (const auto &line : input | std::views::split('\n')) {
-    max_j = line.size();
-    for (size_t j = 0; j < line.size(); j++) {
-      auto ch = line[j];
-      if (ch != '.') {
-        freq_map[ch].push_back({i, j});
-      }
+  long isFile = true, fileId = 0;
+  for (auto const &i : input) {
+    if (isFile) {
+      files.push_back({fileId, i - '0'});
+      fileId++;
+    } else {
+      emptySpaces.push(i - '0');
     }
-
-    i++;
+    isFile = !isFile;
   }
 
-  long max_i = i;
+  long long checksum = 0;
+  long position = 0;
 
-  long ans = 0;
-  for (const auto &[ch, locations] : freq_map) {
-    for (const auto &first : locations) {
-      for (const auto &second : locations) {
-        if (first == second)
-          continue;
+  bool isCurrentNumber = true;
+  while (!files.empty()) {
+    if (isCurrentNumber) {
+      auto [currentFileId, fileLength] = files.front();
+      files.pop_front();
 
-        auto di = second.first - first.first;
-        auto dj = second.second - first.second;
+      checksum += currentFileId * ((fileLength * position) +
+                                   (fileLength * (fileLength - 1)) / 2);
+      position += fileLength;
+    } else {
+      auto emptySpace = emptySpaces.front();
+      emptySpaces.pop();
 
-        auto new_i = second.first + di;
-        auto new_j = second.second + dj;
+      // Get the current back to fill the empty spaces
+      while (emptySpace > 0) {
+        if (files.empty()) {
+          break;
+        }
+        auto [currentFileId, fileLength] = files.back();
+        files.pop_back();
 
-        if (new_i >= 0 && new_i < max_i && new_j >= 0 && new_j < max_j) {
-          if (visited_nodes.find({new_i, new_j}) == visited_nodes.end()) {
-            ans++;
-            visited_nodes.insert({new_i, new_j});
+        auto current_iteration = std::min(fileLength, emptySpace);
 
-#ifdef DEBUG
-            std::cout << "Found " << ch << " at " << new_i << ", " << new_j
-                      << std::endl;
-#endif
-          }
+        checksum +=
+            currentFileId * ((current_iteration * position) +
+                             (current_iteration * (current_iteration - 1)) / 2);
+        position += current_iteration;
+
+        emptySpace -= current_iteration;
+        fileLength -= current_iteration;
+
+        if (fileLength > 0) {
+          files.push_back({currentFileId, fileLength});
         }
       }
     }
+
+    isCurrentNumber = !isCurrentNumber;
   }
 
-  return ans;
+  return checksum;
 }
 } // namespace part_one
