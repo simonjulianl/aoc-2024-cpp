@@ -4,7 +4,6 @@ module;
 #include <deque>
 #include <iostream>
 #include <iterator>
-#include <list>
 #include <queue>
 #include <ranges>
 #include <sstream>
@@ -19,74 +18,66 @@ export module part_two;
 
 export namespace part_two {
 
-auto solve(const std::string &input) -> long {
-  std::list<std::pair<long, long>> layout;
-
-  long isFile = true, fileId = 0;
-  for (auto const &i : input) {
-    if (isFile) {
-      layout.push_back({fileId, i - '0'});
-      fileId++;
-    } else {
-      layout.push_back({-1, i - '0'});
-    }
-    isFile = !isFile;
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
   }
+};
 
-  std::unordered_set<long> seen_files;
+auto count_score(const std::vector<std::string> &map, int i, int j) -> long {
+  long score = 0;
+  std::queue<std::pair<int, int>> q;
 
-  // defragmentation
-  for (auto it = layout.rbegin(); it != layout.rend(); it++) {
-    auto [currentFileId, fileLength] = *it;
-    if (currentFileId == -1) {
-      continue; // layout for space, just ignore it
+  int width = map[0].size();
+  int height = map.size();
+
+  q.push({i, j});
+  while (!q.empty()) {
+    auto [curr_i, curr_j] = q.front();
+    q.pop();
+
+    auto current_char = map[curr_i][curr_j];
+    if (current_char == '9') {
+      score++;
     }
 
-    if (seen_files.find(currentFileId) != seen_files.end()) {
-      continue; // already seen this file
-    }
+    auto next_char = (char)(current_char + 1);
 
-    // attempt to move this
-    seen_files.insert(currentFileId);
+    for (const auto &[di, dj] :
+         std::vector<std::pair<int, int>>{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
+      int next_i = curr_i + di;
+      int next_j = curr_j + dj;
 
-    // Try to insert from front
-    for (auto it2 = layout.begin(); it2 != layout.end(); it2++) {
-      if (*it == *it2) { // do not try to move the file backwards
-        break;
-      }
-
-      auto [currentFileId2, fileLength2] = *it2;
-
-      // empty space
-      if (currentFileId2 == -1) {
-        // the block can be inserted here
-        if (fileLength2 >= fileLength) {
-          layout.insert(it2, {currentFileId, fileLength});
-          it2->second -= fileLength;
-          it->first = -1;
-
-          break;
+      if (next_i >= 0 && next_i < height && next_j >= 0 && next_j < width) {
+        if (map[next_i][next_j] == next_char) {
+          q.push({next_i, next_j});
         }
       }
     }
   }
+  return score;
+}
 
-  long long checksum = 0, position = 0;
-  for (auto const &i : layout) {
-    // empty space
-    if (i.first == -1) {
-      position += i.second;
-      continue;
-    }
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> map;
 
-    auto [currentFileId, fileLength] = i;
-
-    checksum += currentFileId *
-                ((fileLength * position) + (fileLength * (fileLength - 1)) / 2);
-
-    position += fileLength;
+  for (const auto &line : input | std::views::split('\n')) {
+    map.push_back(std::string(std::begin(line), std::end(line)));
   }
 
-  return checksum;
+  long score = 0;
+  for (int i = 0; i < map.size(); i++) {
+    for (int j = 0; j < map[i].size(); j++) {
+      const char c = map[i][j];
+      if (c == '0') {
+        // count the score of this trailhead
+        auto s = count_score(map, i, j);
+        score += s;
+      }
+    }
+  }
+
+  return score;
 }
 } // namespace part_two

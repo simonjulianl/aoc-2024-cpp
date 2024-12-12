@@ -1,0 +1,3 @@
+ninja_dyndep_version = 1.0
+build aoc/CMakeFiles/aoc2024.dir/main.cpp.o: dyndep | aoc/CMakeFiles/part_two.dir/part_two.gcm aoc/CMakeFiles/input.dir/input.gcm aoc/CMakeFiles/part_one.dir/part_one.gcm
+

@@ -78442,64 +78442,75 @@ export  module  part_one;
 
 export namespace part_one {
 
-auto solve(const std::string &input) -> long {
-  std::deque<std::pair<long, long>> files;
-  std::queue<long> emptySpaces;
-
-  long isFile = true, fileId = 0;
-  for (auto const &i : input) {
-    if (isFile) {
-      files.push_back({fileId, i - '0'});
-      fileId++;
-    } else {
-      emptySpaces.push(i - '0');
-    }
-    isFile = !isFile;
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
   }
+};
 
-  long long checksum = 0;
-  long position = 0;
+auto count_score(const std::vector<std::string> &map, int i, int j) -> long {
+  long score = 0;
+  std::unordered_set<std::pair<int, int>, pair_hash> visited;
+  std::queue<std::pair<int, int>> q;
 
-  bool isCurrentNumber = true;
-  while (!files.empty()) {
-    if (isCurrentNumber) {
-      auto [currentFileId, fileLength] = files.front();
-      files.pop_front();
+  int width = map[0].size();
+  int height = map.size();
 
-      checksum += currentFileId * ((fileLength * position) +
-                                   (fileLength * (fileLength - 1)) / 2);
-      position += fileLength;
-    } else {
-      auto emptySpace = emptySpaces.front();
-      emptySpaces.pop();
+  q.push({i, j});
+  while (!q.empty()) {
+    auto [curr_i, curr_j] = q.front();
+    q.pop();
 
+    if (visited.find({curr_i, curr_j}) != visited.end()) {
+      continue;
+    }
 
-      while (emptySpace > 0) {
-        if (files.empty()) {
-          break;
-        }
-        auto [currentFileId, fileLength] = files.back();
-        files.pop_back();
+    visited.insert({curr_i, curr_j});
 
-        auto current_iteration = std::min(fileLength, emptySpace);
+    auto current_char = map[curr_i][curr_j];
+    if (current_char == '9') {
+      score++;
+    }
 
-        checksum +=
-            currentFileId * ((current_iteration * position) +
-                             (current_iteration * (current_iteration - 1)) / 2);
-        position += current_iteration;
+    auto next_char = (char)(current_char + 1);
 
-        emptySpace -= current_iteration;
-        fileLength -= current_iteration;
+    for (const auto &[di, dj] :
+         std::vector<std::pair<int, int>>{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
+      int next_i = curr_i + di;
+      int next_j = curr_j + dj;
 
-        if (fileLength > 0) {
-          files.push_back({currentFileId, fileLength});
+      if (next_i >= 0 && next_i < height && next_j >= 0 && next_j < width) {
+        if (map[next_i][next_j] == next_char) {
+          if (visited.find({next_i, next_j}) == visited.end()) {
+            q.push({next_i, next_j});
+          }
         }
       }
     }
+  }
+  return score;
+}
 
-    isCurrentNumber = !isCurrentNumber;
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> map;
+
+  for (const auto &line : input | std::views::split('\n')) {
+    map.push_back(std::string(std::begin(line), std::end(line)));
   }
 
-  return checksum;
+  long score = 0;
+  for (int i = 0; i < map.size(); i++) {
+    for (int j = 0; j < map[i].size(); j++) {
+      const char c = map[i][j];
+      if (c == '0') {
+
+        auto s = count_score(map, i, j);
+        score += s;
+      }
+    }
+  }
+
+  return score;
 }
 }

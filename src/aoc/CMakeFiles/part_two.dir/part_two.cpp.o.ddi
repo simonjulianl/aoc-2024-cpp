@@ -1,0 +1,17 @@
+{
+"rules": [
+{
+"primary-output": "aoc/CMakeFiles/part_two.dir/part_two.cpp.o",
+"provides": [
+{
+"logical-name": "part_two",
+"is-interface": true
+}
+],
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}
