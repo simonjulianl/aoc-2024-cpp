@@ -1,12 +1,15 @@
 module;
 
 #include <algorithm>
+#include <cmath>
 #include <deque>
 #include <iostream>
 #include <iterator>
+#include <numeric>
 #include <queue>
 #include <ranges>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -25,59 +28,55 @@ struct pair_hash {
   }
 };
 
-auto count_score(const std::vector<std::string> &map, int i, int j) -> long {
-  long score = 0;
-  std::queue<std::pair<int, int>> q;
-
-  int width = map[0].size();
-  int height = map.size();
-
-  q.push({i, j});
-  while (!q.empty()) {
-    auto [curr_i, curr_j] = q.front();
-    q.pop();
-
-    auto current_char = map[curr_i][curr_j];
-    if (current_char == '9') {
-      score++;
-    }
-
-    auto next_char = (char)(current_char + 1);
-
-    for (const auto &[di, dj] :
-         std::vector<std::pair<int, int>>{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}) {
-      int next_i = curr_i + di;
-      int next_j = curr_j + dj;
-
-      if (next_i >= 0 && next_i < height && next_j >= 0 && next_j < width) {
-        if (map[next_i][next_j] == next_char) {
-          q.push({next_i, next_j});
-        }
-      }
-    }
+auto countDigits(long long num) -> long long {
+  if (num == 0) {
+    return 1;
   }
-  return score;
+
+  return static_cast<long long>(std::log10(num)) + 1;
 }
 
-auto solve(const std::string &input) -> long {
-  std::vector<std::string> map;
+std::unordered_map<std::pair<long long, long long>, long long, pair_hash> cache;
 
-  for (const auto &line : input | std::views::split('\n')) {
-    map.push_back(std::string(std::begin(line), std::end(line)));
+auto getAns(long long number, long long iteration) -> long long {
+  if (iteration == 0) {
+    return 1;
   }
 
-  long score = 0;
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[i].size(); j++) {
-      const char c = map[i][j];
-      if (c == '0') {
-        // count the score of this trailhead
-        auto s = count_score(map, i, j);
-        score += s;
-      }
-    }
+  if (auto it = cache.find({number, iteration}); it != cache.end()) {
+    return it->second;
   }
 
-  return score;
+  long long num_digits = countDigits(number);
+  long long ans = 0;
+  if (number == 0) {
+    ans = getAns(1, iteration - 1);
+  } else if (num_digits % 2 == 0) {
+    long long divisor = static_cast<long long>(std::pow(10, num_digits / 2));
+    long long first_half = number / divisor;
+    long long second_half = number % divisor;
+
+    ans += getAns(first_half, iteration - 1);
+    ans += getAns(second_half, iteration - 1);
+  } else {
+    ans += getAns(number * 2024, iteration - 1);
+  }
+
+  cache.insert({{number, iteration}, ans});
+  return ans;
+}
+
+auto solve(const std::string &input) -> long long {
+  auto tokens =
+      std::views::split(input, ' ') | std::views::transform([](auto &&range) {
+        return std::stol(std::string(range.begin(), range.end()));
+      });
+
+  std::vector<long long> numbers(tokens.begin(), tokens.end());
+
+  long long ans = std::accumulate(
+      numbers.begin(), numbers.end(), 0LL,
+      [](long long acc, long long num) { return acc + getAns(num, 75); });
+  return ans;
 }
 } // namespace part_two
