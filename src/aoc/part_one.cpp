@@ -15,55 +15,82 @@ module;
 
 export module part_one;
 
-// #define DEBUG
+//#define DEBUG
 
 export namespace part_one {
 
-auto countDigits(long long num) {
-  if (num == 0) {
-    return 1;
+struct pair_hash {
+  template <class T1, class T2>
+  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+    return std::hash<T1>{}(pair.first) ^ std::hash<T2>{}(pair.second);
+  }
+};
+
+using PairSet = std::unordered_set<std::pair<int, int>, pair_hash>;
+
+auto getPrice(const std::vector<std::string> &map, PairSet &visited, int i,
+              int j) -> long {
+  std::queue<std::pair<int, int>> q;
+  visited.insert({i, j});
+  q.push({i, j});
+
+  long offset = 0;
+  long area = 0;
+  auto init_char = map[i][j];
+
+  while (!q.empty()) {
+    auto [curr_i, curr_j] = q.front();
+    q.pop();
+
+    // For each valid character, increase the area and offset
+    area++;
+
+    for (auto const &[di, dj] :
+         std::vector<std::pair<int, int>>{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+      auto new_i = curr_i + di;
+      auto new_j = curr_j + dj;
+      if (new_i < 0 || new_i >= map.size() || new_j < 0 ||
+          new_j >= map[i].size()) {
+        continue;
+      }
+
+      auto new_char = map[new_i][new_j];
+      if (new_char == init_char) {
+        offset++; // neighbouring same char
+        if (visited.find({new_i, new_j}) == visited.end()) {
+          q.push({new_i, new_j});
+          visited.insert({new_i, new_j});
+        }
+      }
+    }
   }
 
-  return static_cast<int>(std::log10(num)) + 1;
+  auto perimeter = 4 * area - offset;
+
+#ifdef DEBUG
+  std::cout << "Char: " << init_char << "| Area: " << area
+            << " Perimeter: " << perimeter << std::endl;
+#endif
+  return area * perimeter;
 }
 
 auto solve(const std::string &input) -> long {
-  auto tokens =
-      std::views::split(input, ' ') | std::views::transform([](auto &&range) {
-        return std::stol(std::string(range.begin(), range.end()));
-      });
+  std::vector<std::string> map;
+  PairSet visited;
 
-  std::vector<long long> numbers(tokens.begin(), tokens.end());
-
-  int blink = 0;
-  while (blink < 25) {
-    std::vector<long long> new_numbers;
-    for (const auto &num : numbers) {
-      if (num == 0) {
-        new_numbers.push_back(1);
-        continue;
-      }
-
-      int num_digits = countDigits(num);
-      if (num_digits % 2 == 0) {
-        // split the rock into two
-        long long divisor =
-            static_cast<long long>(std::pow(10, num_digits / 2));
-        long long first_half = num / divisor;
-        long long second_half = num % divisor;
-
-        new_numbers.push_back(first_half);
-        new_numbers.push_back(second_half);
-        continue;
-      }
-
-      // last case
-      new_numbers.push_back(num * 2024);
-    }
-    numbers = new_numbers;
-    blink++;
+  for (const auto &line : input | std::views::split('\n')) {
+    map.push_back(std::string(std::begin(line), std::end(line)));
   }
 
-  return numbers.size();
+  long ans = 0;
+  for (size_t i = 0; i < map.size(); i++) {
+    for (size_t j = 0; j < map[i].size(); j++) {
+      if (visited.find({i, j}) == visited.end()) {
+        // Try to bfs the current region
+        ans += getPrice(map, visited, i, j);
+      }
+    }
+  }
+  return ans;
 }
 } // namespace part_one
