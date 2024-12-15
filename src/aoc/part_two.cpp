@@ -5,8 +5,10 @@ module;
 #include <deque>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <queue>
 #include <ranges>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -15,7 +17,7 @@ module;
 
 export module part_two;
 
-#define DEBUG
+// #define DEBUG
 
 export namespace part_two {
 
@@ -26,142 +28,82 @@ struct pair_hash {
   }
 };
 
-using PairSet = std::unordered_set<std::pair<int, int>, pair_hash>;
+long max_long = std::numeric_limits<long>::max();
 
-auto getPrice(const std::vector<std::string> &map, PairSet &visited, int i,
-              int j) -> long {
-  std::queue<std::pair<int, int>> q;
-  visited.insert({i, j});
-  q.push({i, j});
+auto getOptimalCost(long dxa, long dya, long dxb, long dyb, long px, long py) -> long {
+  // This is just a system of 2 linear equations ... let A be how many times I
+  // press button A, let B be how many times I press button B
+  // A * dxa + B * dxb = px -- (1)
+  // A * dya + B * dyb = py -- (2)
 
-  // Think of each box having 4 corners, so total sides = total true corners
-  long true_corners = 0;
-  long area = 0;
-  auto init_char = map[i][j];
+  // Transform the equations to:
+  // A * dya * dxa + B * dya * dxb = px * dya -- (3)
+  // A * dya * dxa + B * dxa * dyb = px * dxa -- (4)
+  // B ( dya * dxb - dxa * dyb ) = px * dya - py * dxa -- (5)
+  // B = (px * dya - py * dxa) / (dya * dxb - dxa * dyb) -- (6)
+  // A = (px - B * dxb) / dxa -- (7)
 
-  while (!q.empty()) {
-    auto [curr_i, curr_j] = q.front();
-    q.pop();
+  long B = (px * dya - py * dxa) / (dya * dxb - dxa * dyb);
+  long A = (px - B * dxb) / dxa;
 
-    // For each valid character, increase the area and offset
-    area++;
-
-    long valid_neighbours = 0;
-    std ::vector<std::pair<int, int>> valid_neighbours_pos{
-        {-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-    auto UP = false, DOWN = false, LEFT = false, RIGHT = false;
-    auto UP_RIGHT = false, UP_LEFT = false, DOWN_RIGHT = false,
-         DOWN_LEFT = false;
-    for (auto const &[di, dj] : std::vector<std::pair<int, int>>{{-1, 0},
-                                                                 {1, 0},
-                                                                 {0, -1},
-                                                                 {0, 1},
-                                                                 {-1, 1},
-                                                                 {-1, -1},
-                                                                 {1, 1},
-                                                                 {1, -1}}) {
-      auto new_i = curr_i + di;
-      auto new_j = curr_j + dj;
-
-      if (new_i < 0 || new_i >= map.size() || new_j < 0 ||
-          new_j >= map[i].size()) {
-        continue;
-      }
-
-      auto new_char = map[new_i][new_j];
-      if (new_char == init_char) {
-        if (std::find(std::begin(valid_neighbours_pos),
-                      std::end(valid_neighbours_pos), std::make_pair(di, dj)) !=
-            std::end(valid_neighbours_pos)) {
-          valid_neighbours++;
-          if (visited.find({new_i, new_j}) == visited.end()) {
-            q.push({new_i, new_j});
-            visited.insert({new_i, new_j});
-          }
-        }
-
-        if (std::make_pair(di, dj) == std::make_pair(-1, 0)) {
-          UP = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(1, 0)) {
-          DOWN = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(0, -1)) {
-          LEFT = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(0, 1)) {
-          RIGHT = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(-1, 1)) {
-          UP_RIGHT = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(-1, -1)) {
-          UP_LEFT = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(1, 1)) {
-          DOWN_RIGHT = true;
-        } else if (std::make_pair(di, dj) == std::make_pair(1, -1)) {
-          DOWN_LEFT = true;
-        }
-      }
-    }
-
-    auto countOuterCorners = [&]() -> long {
-      auto outerCorners = 0;
-      if (UP && RIGHT && !UP_RIGHT) {
-        outerCorners++;
-      }
-
-      if (UP && LEFT && !UP_LEFT) {
-        outerCorners++;
-      }
-
-      if (DOWN && RIGHT && !DOWN_RIGHT) {
-        outerCorners++;
-      }
-
-      if (DOWN && LEFT && !DOWN_LEFT) {
-        outerCorners++;
-      }
-      return outerCorners;
-    };
-
-    auto temp_corners = 0;
-    if (valid_neighbours == 0) {
-      temp_corners = 4; // inner corners
-    } else if (valid_neighbours == 1) {
-      temp_corners = 2; // inner corners
-    } else if (valid_neighbours == 2) {
-      if ((UP && DOWN) || (LEFT && RIGHT)) {
-        // count ins
-        temp_corners = countOuterCorners();
-      } else {
-        // if it's an L shape, one of the corner must be inner corner
-        temp_corners = 1 + countOuterCorners();
-      }
-    } else if (valid_neighbours == 3 || valid_neighbours == 4) {
-      // Every possible "corner" must be outer corners
-      temp_corners = countOuterCorners();
-    }
-
-    true_corners += temp_corners;
+  if (A < 0 || B < 0 || A * dxa + B * dxb != px || A * dya + B * dyb != py) {
+    return max_long;
   }
 
-  return area * true_corners;
+  return 3 * A + B;
 }
 
 auto solve(const std::string &input) -> long {
-  std::vector<std::string> map;
-  PairSet visited;
+  const std::regex pattern(R"(Button\s(\w):\sX([+-]\d+),\sY([+-]\d+))");
 
-  for (const auto &line : input | std::views::split('\n')) {
-    map.push_back(std::string(std::begin(line), std::end(line)));
-  }
+  const std::regex prize_pattern(R"(.*X=(\d+), Y=(\d+).*)");
 
   long ans = 0;
-  for (size_t i = 0; i < map.size(); i++) {
-    for (size_t j = 0; j < map[i].size(); j++) {
-      if (visited.find({i, j}) == visited.end()) {
-        // Try to bfs the current region
-        ans += getPrice(map, visited, i, j);
+  for (const auto &line : input | std::views::split(std::string("\n\n"))) {
+    // For each prize
+    std::smatch matches;
+    long dxa = 0, dya = 0, dxb = 0, dyb = 0, px = 0, py = 0;
+    for (const auto &group : line | std::views::split('\n')) {
+      const auto group_str = std::string(group.begin(), group.end());
+      if (std::regex_match(group_str, matches, pattern)) {
+        const std::string &button = matches[1].str();
+        const std::string &x_value = matches[2].str();
+        const std::string &y_value = matches[3].str();
+
+        if (button == "A") {
+          dxa = std::stol(x_value);
+          dya = std::stol(y_value);
+        } else if (button == "B") {
+          dxb = std::stol(x_value);
+          dyb = std::stol(y_value);
+        }
+        continue;
+      }
+
+      if (std::regex_match(group_str, matches, prize_pattern)) {
+        px = std::stol(matches[1].str());
+        py = std::stol(matches[2].str());
       }
     }
+
+    // Solve the problem
+#ifdef DEBUG
+    std::cout << "dxa: " << dxa << ", dya: " << dya << " | dxb: " << dxb
+              << ", dyb: " << dyb << std::endl
+              << "Solving for " << px << ", " << py << std::endl;
+#endif
+
+    const long displacement = 10000000000000L;
+    const long true_px = px + displacement;
+    const long true_py = py + displacement;
+
+    long prize_ans = getOptimalCost(dxa, dya, dxb, dyb, true_px, true_py);
+
+    if (prize_ans != max_long) {
+      ans += prize_ans;
+    }
   }
+
   return ans;
 }
 } // namespace part_two
