@@ -1,17 +1,13 @@
 module;
 
-#include <algorithm>
-#include <cmath>
-#include <deque>
+#include <chrono>
 #include <iostream>
-#include <iterator>
 #include <limits>
 #include <queue>
 #include <ranges>
 #include <regex>
-#include <sstream>
 #include <string>
-#include <unordered_map>
+#include <thread>
 #include <unordered_set>
 #include <vector>
 
@@ -21,6 +17,30 @@ export module part_two;
 
 export namespace part_two {
 
+// WTF... this doesn't work...
+auto contain3x3Block(const std::vector<std::vector<char>> &map) -> bool {
+  long tall = map.size();
+  long wide = map[0].size();
+
+  for (int i = 0; i < tall - 3; i++) {
+    for (int j = 0; j < wide - 3; j++) {
+      auto isBlock = true;
+      for (int k = 0; k < 3; k++) {
+        for (int l = 0; l < 3; l++) {
+          if (map[i + k][j + l] != 'R') {
+            isBlock = false;
+          }
+        }
+      }
+      if (isBlock) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 struct pair_hash {
   template <class T1, class T2>
   std::size_t operator()(const std::pair<T1, T2> &pair) const {
@@ -28,82 +48,124 @@ struct pair_hash {
   }
 };
 
-long max_long = std::numeric_limits<long>::max();
-
-auto getOptimalCost(long dxa, long dya, long dxb, long dyb, long px, long py) -> long {
-  // This is just a system of 2 linear equations ... let A be how many times I
-  // press button A, let B be how many times I press button B
-  // A * dxa + B * dxb = px -- (1)
-  // A * dya + B * dyb = py -- (2)
-
-  // Transform the equations to:
-  // A * dya * dxa + B * dya * dxb = px * dya -- (3)
-  // A * dya * dxa + B * dxa * dyb = px * dxa -- (4)
-  // B ( dya * dxb - dxa * dyb ) = px * dya - py * dxa -- (5)
-  // B = (px * dya - py * dxa) / (dya * dxb - dxa * dyb) -- (6)
-  // A = (px - B * dxb) / dxa -- (7)
-
-  long B = (px * dya - py * dxa) / (dya * dxb - dxa * dyb);
-  long A = (px - B * dxb) / dxa;
-
-  if (A < 0 || B < 0 || A * dxa + B * dxb != px || A * dya + B * dyb != py) {
-    return max_long;
-  }
-
-  return 3 * A + B;
-}
-
-auto solve(const std::string &input) -> long {
-  const std::regex pattern(R"(Button\s(\w):\sX([+-]\d+),\sY([+-]\d+))");
-
-  const std::regex prize_pattern(R"(.*X=(\d+), Y=(\d+).*)");
-
+auto countLargestConnectedComponent(const std::vector<std::vector<char>> &map)
+    -> long {
   long ans = 0;
-  for (const auto &line : input | std::views::split(std::string("\n\n"))) {
-    // For each prize
-    std::smatch matches;
-    long dxa = 0, dya = 0, dxb = 0, dyb = 0, px = 0, py = 0;
-    for (const auto &group : line | std::views::split('\n')) {
-      const auto group_str = std::string(group.begin(), group.end());
-      if (std::regex_match(group_str, matches, pattern)) {
-        const std::string &button = matches[1].str();
-        const std::string &x_value = matches[2].str();
-        const std::string &y_value = matches[3].str();
+  std::unordered_set<std::pair<long, long>, pair_hash> visited;
 
-        if (button == "A") {
-          dxa = std::stol(x_value);
-          dya = std::stol(y_value);
-        } else if (button == "B") {
-          dxb = std::stol(x_value);
-          dyb = std::stol(y_value);
-        }
+  long tall = map.size();
+  long wide = map[0].size();
+  for (int i = 0; i < tall; i++) {
+    for (int j = 0; j < wide; j++) {
+      if (map[i][j] != 'R') {
         continue;
       }
 
-      if (std::regex_match(group_str, matches, prize_pattern)) {
-        px = std::stol(matches[1].str());
-        py = std::stol(matches[2].str());
+      if (visited.find({i, j}) != visited.end()) {
+        continue;
       }
+
+      visited.insert({i, j});
+      std::queue<std::pair<long, long>> q;
+      q.push({i, j});
+      long size = 0;
+      while (!q.empty()) {
+        auto &[curr_i, curr_j] = q.front();
+        q.pop();
+        size++;
+
+        // 8 direction neighbour
+        for (const auto &[di, dj] :
+             std::vector<std::pair<long, long>>{{-1, 0},
+                                                {1, 0},
+                                                {0, -1},
+                                                {0, 1},
+                                                {-1, -1},
+                                                {1, 1},
+                                                {-1, 1},
+                                                {1, -1}}) {
+          long next_i = curr_i + di;
+          long next_j = curr_j + dj;
+
+          if (next_i >= 0 && next_i < tall && next_j >= 0 && next_j < wide) {
+            if (map[next_i][next_j] == 'R') {
+              if (visited.find({next_i, next_j}) == visited.end()) {
+                q.push({next_i, next_j});
+                visited.insert({next_i, next_j});
+              }
+            }
+          }
+        }
+      }
+
+      ans = std::max(ans, size);
     }
+  }
+  return ans;
+}
 
-    // Solve the problem
-#ifdef DEBUG
-    std::cout << "dxa: " << dxa << ", dya: " << dya << " | dxb: " << dxb
-              << ", dyb: " << dyb << std::endl
-              << "Solving for " << px << ", " << py << std::endl;
-#endif
+auto solve(const std::string &input) -> long {
+  std::regex pattern(R"(p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+))");
+  std::smatch match;
+  std::vector<std::pair<std::pair<long, long>, std::pair<long, long>>> robots;
 
-    const long displacement = 10000000000000L;
-    const long true_px = px + displacement;
-    const long true_py = py + displacement;
-
-    long prize_ans = getOptimalCost(dxa, dya, dxb, dyb, true_px, true_py);
-
-    if (prize_ans != max_long) {
-      ans += prize_ans;
+  for (const auto &line : input | std::views::split('\n')) {
+    auto str = std::string(line.begin(), line.end());
+    if (std::regex_match(str, match, pattern)) {
+      long px = std::stol(match[1]);
+      long py = std::stol(match[2]);
+      long vx = std::stol(match[3]);
+      long vy = std::stol(match[4]);
+      robots.push_back({{px, py}, {vx, vy}});
     }
   }
 
-  return ans;
+  long wide = 101, tall = 103;
+
+  long time = 0;
+  while (true) {
+    for (auto &robot : robots) {
+      robot.first.first += robot.second.first;
+      robot.first.second += robot.second.second;
+
+      robot.first.first %= wide;
+      robot.first.second %= tall;
+
+      if (robot.first.first < 0) {
+        robot.first.first += wide;
+      }
+
+      if (robot.first.second < 0) {
+        robot.first.second += tall;
+      }
+    }
+
+    // Hopefully the xmas tree contains a blob of 9 robots...
+    std::vector<std::vector<char>> map(tall, std::vector<char>(wide, '.'));
+
+    // Mark the robots on the map
+    for (const auto &robot : robots) {
+      long x = robot.first.first;
+      long y = robot.first.second;
+
+      map[y][x] = 'R'; // 'R' to represent a robot
+    }
+
+    auto largestConnectedComponent = countLargestConnectedComponent(map);
+    if (largestConnectedComponent >= 20) {
+      std::cout << "Time: " << time << std::endl;
+      for (const auto &row : map) {
+        for (const auto &cell : row) {
+          std::cout << cell;
+        }
+        std::cout << '\n';
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+
+    time++;
+  }
+
+  return 1;
 }
 } // namespace part_two
