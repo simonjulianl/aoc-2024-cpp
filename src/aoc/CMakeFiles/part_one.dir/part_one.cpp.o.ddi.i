@@ -121151,56 +121151,100 @@ export  module  part_one;
 export namespace part_one {
 
 auto solve(const std::string &input) -> long {
-  std::regex pattern(R"(p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+))");
-  std::smatch match;
-  std::vector<std::pair<std::pair<long, long>, std::pair<long, long>>> robots;
+  std::istringstream stream(input);
+  std::vector<std::vector<char>> map;
+  std::string path;
 
-  for (const auto &line : input | std::views::split('\n')) {
-    auto str = std::string(line.begin(), line.end());
-    if (std::regex_match(str, match, pattern)) {
-      long px = std::stol(match[1]);
-      long py = std::stol(match[2]);
-      long vx = std::stol(match[3]);
-      long vy = std::stol(match[4]);
-      robots.push_back({{px, py}, {vx, vy}});
+  std::string line;
+  while (std::getline(stream, line)) {
+    if (line.empty()) {
+      break;
+    }
+
+    map.push_back(std::vector<char>(line.begin(), line.end()));
+  }
+
+  std::pair<int, int> robot;
+  for (int i = 0; i < map.size(); i++) {
+    for (int j = 0; j < map[i].size(); j++) {
+      if (map[i][j] == '@') {
+        robot = {i, j};
+        break;
+      }
     }
   }
 
-  long wide = 101, tall = 103, time = 100;
-  for (auto &robot : robots) {
-    robot.first.first += time * robot.second.first;
-    robot.first.second += time * robot.second.second;
+  std::getline(stream, path);
 
-    robot.first.first %= wide;
-    robot.first.second %= tall;
-
-    if (robot.first.first < 0) {
-      robot.first.first += wide;
+  for (const auto &ch : path) {
+    std::pair<int, int> delta;
+    if (ch == '<') {
+      delta = {0, -1};
+    } else if (ch == '>') {
+      delta = {0, 1};
+    } else if (ch == '^') {
+      delta = {-1, 0};
+    } else if (ch == 'v') {
+      delta = {1, 0};
     }
 
-    if (robot.first.second < 0) {
-      robot.first.second += tall;
+    auto next_char =
+        map[robot.first + delta.first][robot.second + delta.second];
+    if (next_char == '#') {
+      continue;
+    } else if (next_char == '.') {
+
+      map[robot.first][robot.second] = '.';
+      robot.first += delta.first;
+      robot.second += delta.second;
+      map[robot.first][robot.second] = '@';
+    } else {
+
+
+      bool can_push;
+      int i;
+      for (i = 1;; i++) {
+        next_char =
+            map[robot.first + i * delta.first][robot.second + i * delta.second];
+        if (next_char == '#') {
+          can_push = false;
+          break;
+        } else if (next_char == '.') {
+          can_push = true;
+          break;
+        }
+      }
+
+      if (can_push) {
+        map[robot.first + i * delta.first][robot.second + i * delta.second] =
+            'O';
+        map[robot.first][robot.second] = '.';
+        robot.first += delta.first;
+        robot.second += delta.second;
+        map[robot.first][robot.second] = '@';
+      }
     }
+
+
   }
 
-  long first_quadrant = 0, second_quadrant = 0, third_quadrant = 0,
-       fourth_quadrant = 0;
-
-  for (const auto &robot : robots) {
-    if (robot.first.first < wide / 2 && robot.first.second < tall / 2) {
-      first_quadrant++;
-    } else if (robot.first.first > wide / 2 && robot.first.second < tall / 2) {
-      second_quadrant++;
-    } else if (robot.first.first < wide / 2 && robot.first.second > tall / 2) {
-      third_quadrant++;
-    } else if (robot.first.first > wide / 2 && robot.first.second > tall / 2) {
-      fourth_quadrant++;
+  for (const auto &row : map) {
+    for (const auto &cell : row) {
+      std::cout << cell;
     }
+    std::cout << std::endl;
   }
 
-  std::cout << first_quadrant << " " << second_quadrant << " " << third_quadrant
-            << " " << fourth_quadrant << std::endl;
+  std::cout << std::endl;
 
-  return first_quadrant * second_quadrant * third_quadrant * fourth_quadrant;
+  long ans = 0;
+  for (int i = 0; i < map.size(); i++) {
+    for (int j = 0; j < map[i].size(); j++) {
+      if (map[i][j] == 'O') {
+        ans += 100 * i + j;
+      }
+    }
+  }
+  return ans;
 }
 }
