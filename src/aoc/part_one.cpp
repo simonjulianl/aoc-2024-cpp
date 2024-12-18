@@ -4,6 +4,7 @@ module;
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <queue>
 #include <ranges>
 #include <regex>
 #include <string>
@@ -18,101 +19,107 @@ export module part_one;
 
 export namespace part_one {
 
-auto solve(const std::string &input) -> long {
-  std::istringstream stream(input);
-  std::vector<std::vector<char>> map;
-  std::string path;
-
-  std::string line;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      break;
-    }
-
-    map.push_back(std::vector<char>(line.begin(), line.end()));
+struct tuple_hash {
+  template <class T>
+  std::size_t operator()(const std::tuple<T, T, T> &tuple) const {
+    auto first = std::get<0>(tuple);
+    auto second = std::get<1>(tuple);
+    auto third = std::get<2>(tuple);
+    return std::hash<T>{}(first) ^ std::hash<T>{}(second) ^
+           std::hash<T>{}(third);
   }
+};
 
-  std::pair<int, int> robot;
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[i].size(); j++) {
-      if (map[i][j] == '@') {
-        robot = {i, j};
+auto getDelta(int dir) -> std::pair<int, int> {
+  switch (dir) {
+  case 0:
+    return {-1, 0};
+  case 1:
+    return {0, 1};
+  case 2:
+    return {1, 0};
+  default:
+    return {0, -1};
+  }
+}
+
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> maze;
+  std::ranges::copy(input | std::views::split('\n') |
+                        std::views::transform([](auto &&line) {
+                          return std::string(line.begin(), line.end());
+                        }),
+                    std::back_inserter(maze));
+
+  std::pair<int, int> start;
+  for (int i = 0; i < (int)maze.size(); i++) {
+    for (int j = 0; j < (int)maze[i].size(); j++) {
+      if (maze[i][j] == 'S') {
+        start = {i, j};
         break;
       }
     }
   }
 
-  std::getline(stream, path);
+  std::queue<std::tuple<int, int, int>> q;
+  // define N E S W = 0 1 2 3
+  std::unordered_map<std::tuple<int, int, int>, long, tuple_hash> visited_nodes;
 
-  for (const auto &ch : path) {
-    std::pair<int, int> delta;
-    if (ch == '<') {
-      delta = {0, -1};
-    } else if (ch == '>') {
-      delta = {0, 1};
-    } else if (ch == '^') {
-      delta = {-1, 0};
-    } else if (ch == 'v') {
-      delta = {1, 0};
+  auto init = std::make_tuple(start.first, start.second, 1);
+  q.push(init);
+  visited_nodes[init] = 0;
+
+  long ans = std::numeric_limits<long>::max();
+  while (!q.empty()) {
+    auto [i, j, dir] = q.front();
+    q.pop();
+
+    if (maze[i][j] == 'E') {
+      ans = std::min(ans, visited_nodes[{i, j, dir}]);
     }
 
-    auto next_char =
-        map[robot.first + delta.first][robot.second + delta.second];
-    if (next_char == '#') {
-      continue; // Cannot do anything, it's a wall
-    } else if (next_char == '.') {
-      // move to the empty space
-      map[robot.first][robot.second] = '.';
-      robot.first += delta.first;
-      robot.second += delta.second;
-      map[robot.first][robot.second] = '@';
-    } else {
-      // It is a box, need to push it if possible
-      // Find until the end
-      bool can_push;
-      int i;
-      for (i = 1;; i++) {
-        next_char =
-            map[robot.first + i * delta.first][robot.second + i * delta.second];
-        if (next_char == '#') {
-          can_push = false;
-          break;
-        } else if (next_char == '.') {
-          can_push = true;
-          break;
+    // Go straight
+    auto [di, dj] = getDelta(dir);
+
+    int new_i = i + di;
+    int new_j = j + dj;
+    // check if new_i and new_j are within bounds and do not hit wall #
+    if (new_i >= 0 && new_i < (int)maze.size() && new_j >= 0 &&
+        new_j < (int)maze[new_i].size() && maze[new_i][new_j] != '#') {
+      auto new_state = std::make_tuple(new_i, new_j, dir);
+      if (visited_nodes.find(new_state) == visited_nodes.end()) {
+        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1;
+        q.push(new_state);
+      } else {
+        auto old_score = visited_nodes[new_state];
+        auto new_score = visited_nodes[{i, j, dir}] + 1;
+
+        if (new_score < old_score) {
+          visited_nodes[new_state] = new_score;
+          q.push(new_state);
         }
       }
-
-      if (can_push) {
-        map[robot.first + i * delta.first][robot.second + i * delta.second] =
-            'O';
-        map[robot.first][robot.second] = '.';
-        robot.first += delta.first;
-        robot.second += delta.second;
-        map[robot.first][robot.second] = '@';
-      }
     }
 
-    // Output the map
-  }
+    auto consideredDirs = std::vector<int>{(dir + 1) % 4, (dir + 3) % 4};
+    // rotate left or right
+    for (const auto &new_dir : consideredDirs) {
+      auto new_state = std::make_tuple(i, j, new_dir);
+      if (visited_nodes.find(new_state) == visited_nodes.end()) {
+        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1000;
+        q.push(new_state);
+      } else {
+        auto old_score = visited_nodes[new_state];
+        auto new_score = visited_nodes[{i, j, dir}] + 1000;
 
-  for (const auto &row : map) {
-    for (const auto &cell : row) {
-      std::cout << cell;
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << std::endl;
-  // Count the location of the boxes
-  long ans = 0;
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[i].size(); j++) {
-      if (map[i][j] == 'O') {
-        ans += 100 * i + j;
+        if (new_score < old_score) {
+          visited_nodes[new_state] = new_score;
+          q.push(new_state);
+        }
       }
     }
   }
+
   return ans;
 }
 } // namespace part_one

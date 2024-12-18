@@ -121713,170 +121713,218 @@ struct pair_hash {
   }
 };
 
-auto solve(const std::string &input) -> long {
-  std::istringstream stream(input);
-  std::vector<std::vector<char>> map;
-  std::string path;
+struct tuple_hash {
+  template <class T>
+  std::size_t operator()(const std::tuple<T, T, T> &tuple) const {
+    auto first = std::get<0>(tuple);
+    auto second = std::get<1>(tuple);
+    auto third = std::get<2>(tuple);
+    return std::hash<T>{}(first) ^ std::hash<T>{}(second) ^
+           std::hash<T>{}(third);
+  }
+};
 
-  std::string line;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      break;
-    }
+auto getDelta(int dir) -> std::pair<int, int> {
+  switch (dir) {
+  case 0:
+    return {-1, 0};
+  case 1:
+    return {0, 1};
+  case 2:
+    return {1, 0};
+  default:
+    return {0, -1};
+  }
+}
 
-    auto tmp = std::vector<char>(line.begin(), line.end());
-    std::vector<char> row;
-    for (const auto &ch : tmp) {
-      if (ch == 'O') {
-        row.push_back('[');
-        row.push_back(']');
-      } else if (ch == '@') {
-        row.push_back('@');
-        row.push_back('.');
-      } else if (ch == '.') {
-        row.push_back('.');
-        row.push_back('.');
-      } else if (ch == '#') {
-        row.push_back('#');
-        row.push_back('#');
-      }
-    }
-
-    map.push_back(row);
+auto getTilesInBestPath(
+    std::unordered_set<std::pair<int, int>, pair_hash> &visited_points,
+    long bestPathScore,
+    std::unordered_set<std::tuple<int, int, int>, tuple_hash> &cached_path,
+    std::vector<std::tuple<int, int, int, long>> &path,
+    const std::vector<std::string> &maze) -> void {
+  auto [i, j, dir, score] = path.back();
+  if (score > bestPathScore) {
+    return;
   }
 
-  std::pair<int, int> robot;
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[i].size(); j++) {
-      if (map[i][j] == '@') {
-        robot = {i, j};
+  if (maze[i][j] == 'E') {
+
+    if (score == bestPathScore) {
+      for (const auto &[vi, vj, dir_not_used, score_not_used] : path) {
+        visited_points.insert({vi, vj});
+      }
+    }
+    return;
+  }
+
+
+
+  auto [di, dj] = getDelta(dir);
+
+  auto new_i = i + di;
+  auto new_j = j + dj;
+
+  if (new_i >= 0 && new_i < (int)maze.size() && new_j >= 0 &&
+      new_j < (int)maze[new_i].size() && maze[new_i][new_j] != '#') {
+    auto new_state = std::make_tuple(new_i, new_j, dir);
+
+    if (cached_path.find(new_state) == cached_path.end()) {
+
+      cached_path.insert(new_state);
+      path.push_back({new_i, new_j, dir, score + 1});
+
+      getTilesInBestPath(visited_points, bestPathScore, cached_path, path,
+                         maze);
+
+
+      path.pop_back();
+      cached_path.erase(new_state);
+    }
+  }
+
+  auto consideredDirs = std::vector<int>{(dir + 1) % 4, (dir + 3) % 4};
+
+  for (const auto &new_dir : consideredDirs) {
+    auto new_state = std::make_tuple(i, j, new_dir);
+    if (cached_path.find(new_state) == cached_path.end()) {
+
+      cached_path.insert(new_state);
+      path.push_back({i, j, new_dir, score + 1000});
+
+      getTilesInBestPath(visited_points, bestPathScore, cached_path, path,
+                         maze);
+
+
+      path.pop_back();
+      cached_path.erase(new_state);
+    }
+  }
+}
+
+auto solve(const std::string &input) -> long {
+  std::vector<std::string> maze;
+  std::ranges::copy(input | std::views::split('\n') |
+                        std::views::transform([](auto &&line) {
+                          return std::string(line.begin(), line.end());
+                        }),
+                    std::back_inserter(maze));
+
+  std::pair<int, int> start;
+  for (int i = 0; i < (int)maze.size(); i++) {
+    for (int j = 0; j < (int)maze[i].size(); j++) {
+      if (maze[i][j] == 'S') {
+        start = {i, j};
         break;
       }
     }
   }
 
-  std::getline(stream, path);
-# 84 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
-  for (const auto &ch : path) {
-    std::pair<int, int> delta;
-    if (ch == '<') {
-      delta = {0, -1};
-    } else if (ch == '>') {
-      delta = {0, 1};
-    } else if (ch == '^') {
-      delta = {-1, 0};
-    } else if (ch == 'v') {
-      delta = {1, 0};
+  std::queue<std::tuple<int, int, int>> q;
+
+  std::unordered_map<std::tuple<int, int, int>, long, tuple_hash> visited_nodes;
+
+  auto init = std::make_tuple(start.first, start.second, 1);
+  q.push(init);
+  visited_nodes[init] = 0;
+
+  long best_path_score = std::numeric_limits<long>::max();
+  std::pair<int, int> end;
+  while (!q.empty()) {
+    auto [i, j, dir] = q.front();
+    q.pop();
+
+    if (maze[i][j] == 'E') {
+      end = {i, j};
+      best_path_score = std::min(best_path_score, visited_nodes[{i, j, dir}]);
     }
 
-    auto next_char =
-        map[robot.first + delta.first][robot.second + delta.second];
-    if (next_char == '#') {
-      continue;
-    } else if (next_char == '.') {
 
-      map[robot.first][robot.second] = '.';
-      robot.first += delta.first;
-      robot.second += delta.second;
-      map[robot.first][robot.second] = '@';
-    } else {
+    auto [di, dj] = getDelta(dir);
 
+    int new_i = i + di;
+    int new_j = j + dj;
 
-      auto can_push = true;
-      int i;
+    if (new_i >= 0 && new_i < (int)maze.size() && new_j >= 0 &&
+        new_j < (int)maze[new_i].size() && maze[new_i][new_j] != '#') {
+      auto new_state = std::make_tuple(new_i, new_j, dir);
+      if (visited_nodes.find(new_state) == visited_nodes.end()) {
+        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1;
+        q.push(new_state);
+      } else {
+        auto old_score = visited_nodes[new_state];
+        auto new_score = visited_nodes[{i, j, dir}] + 1;
 
-
-      std::vector<std::pair<int, int>> boxes;
-      std::unordered_set<std::pair<int, int>, pair_hash> visited;
-      std::queue<std::pair<int, int>> q;
-      q.push({robot.first + delta.first, robot.second + delta.second});
-
-      while (!q.empty()) {
-        auto curr = q.front();
-        q.pop();
-
-        auto current_char = map[curr.first][curr.second];
-        if (current_char == '#') {
-          can_push = false;
-          break;
+        if (new_score < old_score) {
+          visited_nodes[new_state] = new_score;
+          q.push(new_state);
         }
-
-
-        if (current_char == ']') {
-          curr.second -= 1;
-          current_char = '[';
-        }
-
-        if (visited.find(curr) != visited.end()) {
-          continue;
-        }
-
-        visited.insert(curr);
-        boxes.push_back(curr);
-
-
-        auto next_item_due_to_left =
-            map[curr.first + delta.first][curr.second + delta.second];
-        if (next_item_due_to_left != '.') {
-          q.push({curr.first + delta.first, curr.second + delta.second});
-        }
-
-
-        std::pair<int, int> right_position = {curr.first, curr.second + 1};
-        std::pair<int, int> next_due_to_right = {
-            right_position.first + delta.first,
-            right_position.second + delta.second};
-
-        if (next_due_to_right == curr) {
-
-          continue;
-        }
-
-        auto next_item_due_to_right = map[right_position.first + delta.first]
-                                         [right_position.second + delta.second];
-        if (next_item_due_to_right != '.') {
-          q.push({right_position.first + delta.first,
-                  right_position.second + delta.second});
-        }
-      }
-
-      if (can_push) {
-
-        std::reverse(boxes.begin(), boxes.end());
-        for (const auto &box : boxes) {
-          map[box.first][box.second] = '.';
-          map[box.first][box.second + 1] = '.';
-          map[box.first + delta.first][box.second + delta.second] = '[';
-          map[box.first + delta.first][box.second + 1 + delta.second] = ']';
-        }
-
-        map[robot.first][robot.second] = '.';
-        robot.first += delta.first;
-        robot.second += delta.second;
-        map[robot.first][robot.second] = '@';
       }
     }
 
+    auto consideredDirs = std::vector<int>{(dir + 1) % 4, (dir + 3) % 4};
 
-  }
+    for (const auto &new_dir : consideredDirs) {
+      auto new_state = std::make_tuple(i, j, new_dir);
+      if (visited_nodes.find(new_state) == visited_nodes.end()) {
+        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1000;
+        q.push(new_state);
+      } else {
+        auto old_score = visited_nodes[new_state];
+        auto new_score = visited_nodes[{i, j, dir}] + 1000;
 
-  for (const auto &row : map) {
-    for (const auto &cell : row) {
-      std::cout << cell;
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << std::endl;
-
-  long ans = 0;
-  for (int i = 0; i < map.size(); i++) {
-    for (int j = 0; j < map[i].size(); j++) {
-      if (map[i][j] == '[') {
-        ans += 100 * i + j;
+        if (new_score < old_score) {
+          visited_nodes[new_state] = new_score;
+          q.push(new_state);
+        }
       }
     }
   }
-  return ans;
+# 207 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
+  std::unordered_set<std::pair<int, int>, pair_hash> visited_points;
+  std::queue<std::tuple<int, int, int, long>> q2;
+
+
+  for (int i = 0; i < 4; i++) {
+    q2.push({end.first, end.second, i, best_path_score});
+  }
+
+  while (!q2.empty()) {
+    auto [i, j, dir, score] = q2.front();
+    q2.pop();
+
+    visited_points.insert({i, j});
+
+    auto [di, dj] = getDelta(dir);
+
+
+    int new_i = i - di;
+    int new_j = j - dj;
+    if (new_i >= 0 && new_i < (int)maze.size() && new_j >= 0 &&
+        new_j < (int)maze[new_i].size() && maze[new_i][new_j] != '#') {
+      if (visited_nodes.find({new_i, new_j, dir}) != visited_nodes.end()) {
+        auto cost = visited_nodes[{new_i, new_j, dir}];
+        if (cost == score - 1) {
+
+          auto new_state = std::make_tuple(new_i, new_j, dir, score - 1);
+          q2.push(new_state);
+        }
+      }
+    }
+
+    auto consideredDirs = std::vector<int>{(dir + 1) % 4, (dir + 3) % 4};
+    for (const auto &new_dir : consideredDirs) {
+      if (visited_nodes.find({i, j, new_dir}) != visited_nodes.end()) {
+        auto cost = visited_nodes[{i, j, new_dir}];
+        if (cost == score - 1000) {
+
+          auto new_state = std::make_tuple(i, j, new_dir, score - 1000);
+          q2.push(new_state);
+        }
+      }
+    }
+  }
+
+  return (long)visited_points.size();
 }
 }
