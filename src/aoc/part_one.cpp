@@ -1,6 +1,7 @@
 module;
 
 #include <chrono>
+#include <cmath>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -12,114 +13,129 @@ module;
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <numeric>
 
 export module part_one;
 
-// #define DEBUG
+#define DEBUG
 
 export namespace part_one {
 
-struct tuple_hash {
-  template <class T>
-  std::size_t operator()(const std::tuple<T, T, T> &tuple) const {
-    auto first = std::get<0>(tuple);
-    auto second = std::get<1>(tuple);
-    auto third = std::get<2>(tuple);
-    return std::hash<T>{}(first) ^ std::hash<T>{}(second) ^
-           std::hash<T>{}(third);
-  }
-};
-
-auto getDelta(int dir) -> std::pair<int, int> {
-  switch (dir) {
-  case 0:
-    return {-1, 0};
-  case 1:
-    return {0, 1};
-  case 2:
-    return {1, 0};
-  default:
-    return {0, -1};
-  }
-}
-
 auto solve(const std::string &input) -> long {
-  std::vector<std::string> maze;
-  std::ranges::copy(input | std::views::split('\n') |
-                        std::views::transform([](auto &&line) {
-                          return std::string(line.begin(), line.end());
-                        }),
-                    std::back_inserter(maze));
+  long registerA = 0, registerB = 0, registerC = 0;
+  std::vector<std::string> lines;
+  std::istringstream stream(input);
+  std::string line;
+  std::vector<long> program;
 
-  std::pair<int, int> start;
-  for (int i = 0; i < (int)maze.size(); i++) {
-    for (int j = 0; j < (int)maze[i].size(); j++) {
-      if (maze[i][j] == 'S') {
-        start = {i, j};
-        break;
+  while (std::getline(stream, line)) {
+    if (line.starts_with("Register A:")) {
+      registerA = std::stol(line.substr(12));
+    } else if (line.starts_with("Register B:")) {
+      registerB = std::stol(line.substr(12));
+    } else if (line.starts_with("Register C:")) {
+      registerC = std::stol(line.substr(12));
+    } else if (line.starts_with("Program:")) {
+      std::string programString = line.substr(9);
+      std::istringstream programStream(programString);
+      std::string token;
+      while (std::getline(programStream, token, ',')) {
+        program.push_back(std::stol(token));
       }
     }
   }
 
-  std::queue<std::tuple<int, int, int>> q;
-  // define N E S W = 0 1 2 3
-  std::unordered_map<std::tuple<int, int, int>, long, tuple_hash> visited_nodes;
+#ifdef DEBUG
+  std::cout << registerA << " " << registerB << " " << registerC << std::endl;
+  for (const auto &r : program) {
+    std::cout << r << " ";
+  }
+#endif
 
-  auto init = std::make_tuple(start.first, start.second, 1);
-  q.push(init);
-  visited_nodes[init] = 0;
-
-  long ans = std::numeric_limits<long>::max();
-  while (!q.empty()) {
-    auto [i, j, dir] = q.front();
-    q.pop();
-
-    if (maze[i][j] == 'E') {
-      ans = std::min(ans, visited_nodes[{i, j, dir}]);
+  auto getComboOperand = [&](long operand) -> long {
+    if (operand <= 3) {
+      return operand;
+    } else if (operand == 4) {
+      return registerA;
+    } else if (operand == 5) {
+      return registerB;
+    } else if (operand == 6) {
+      return registerC;
     }
 
-    // Go straight
-    auto [di, dj] = getDelta(dir);
+    // invalid program
+    return 0;
+  };
 
-    int new_i = i + di;
-    int new_j = j + dj;
-    // check if new_i and new_j are within bounds and do not hit wall #
-    if (new_i >= 0 && new_i < (int)maze.size() && new_j >= 0 &&
-        new_j < (int)maze[new_i].size() && maze[new_i][new_j] != '#') {
-      auto new_state = std::make_tuple(new_i, new_j, dir);
-      if (visited_nodes.find(new_state) == visited_nodes.end()) {
-        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1;
-        q.push(new_state);
-      } else {
-        auto old_score = visited_nodes[new_state];
-        auto new_score = visited_nodes[{i, j, dir}] + 1;
+  std::vector<long> ans;
 
-        if (new_score < old_score) {
-          visited_nodes[new_state] = new_score;
-          q.push(new_state);
-        }
-      }
+  long instructionPointer = 0;
+  while (instructionPointer < program.size()) {
+    auto currentOpCode = program[instructionPointer];
+    instructionPointer++;
+    switch (currentOpCode) {
+    case 0: {
+      // adv
+      auto operand1 = getComboOperand(program[instructionPointer]);
+      instructionPointer++;
+      registerA /= std::pow(2, operand1);
+      break;
     }
-
-    auto consideredDirs = std::vector<int>{(dir + 1) % 4, (dir + 3) % 4};
-    // rotate left or right
-    for (const auto &new_dir : consideredDirs) {
-      auto new_state = std::make_tuple(i, j, new_dir);
-      if (visited_nodes.find(new_state) == visited_nodes.end()) {
-        visited_nodes[new_state] = visited_nodes[{i, j, dir}] + 1000;
-        q.push(new_state);
+    case 1: {
+      // bxl
+      auto operand1 = program[instructionPointer];
+      instructionPointer++;
+      registerB ^= operand1;
+      break;
+    }
+    case 2: {
+      // bst instruction
+      auto operand1 = getComboOperand(program[instructionPointer]) % 8;
+      registerB = operand1;
+      instructionPointer++;
+      break;
+    }
+    case 3: {
+      // jnz
+      if (registerA == 0) {
+        instructionPointer++;
       } else {
-        auto old_score = visited_nodes[new_state];
-        auto new_score = visited_nodes[{i, j, dir}] + 1000;
-
-        if (new_score < old_score) {
-          visited_nodes[new_state] = new_score;
-          q.push(new_state);
-        }
+        auto operand1 = program[instructionPointer];
+        instructionPointer = operand1;
       }
+      break;
+    }
+    case 4: {
+      instructionPointer++;
+      registerB ^= registerC;
+      break;
+    }
+    case 5: {
+      long operand1 = getComboOperand(program[instructionPointer]) % 8;
+      instructionPointer++;
+      ans.push_back(operand1);
+      break;
+    }
+    case 6: {
+      long operand1 = getComboOperand(program[instructionPointer]);
+      instructionPointer++;
+      registerB = registerA / std::pow(2, operand1);
+      break;
+    }
+    case 7: {
+      auto operand1 = getComboOperand(program[instructionPointer]);
+      instructionPointer++;
+      registerC = registerA / std::pow(2, operand1);
+      break;
+    }
     }
   }
+  auto result = std::accumulate(
+      ans.begin() + 1, ans.end(), std::to_string(ans[0]),
+      [](const std::string &a, long b) { return a + "," + std::to_string(b); });
+  std::cout << std::endl;
+  std::cout << result << std::endl;
 
-  return ans;
+  return 0;
 }
 } // namespace part_one
