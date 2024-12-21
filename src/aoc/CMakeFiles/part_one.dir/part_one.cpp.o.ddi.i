@@ -95837,6 +95837,815 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 79 "/usr/include/c++/14/iterator" 2 3
 # 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 
+# 1 "/usr/include/c++/14/numeric" 1 3
+# 58 "/usr/include/c++/14/numeric" 3
+       
+# 59 "/usr/include/c++/14/numeric" 3
+
+
+
+# 1 "/usr/include/c++/14/bits/stl_numeric.h" 1 3
+# 64 "/usr/include/c++/14/bits/stl_numeric.h" 3
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+# 85 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _ForwardIterator, typename _Tp>
+    constexpr
+    void
+    iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __value)
+    {
+
+     
+
+     
+
+      ;
+
+      for (; __first != __last; ++__first)
+ {
+   *__first = __value;
+   ++__value;
+ }
+    }
+
+
+
+
+
+# 131 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _Tp>
+    constexpr
+    inline _Tp
+    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init)
+    {
+
+     
+      ;
+
+      for (; __first != __last; ++__first)
+ __init = std::move(__init) + *__first;
+      return __init;
+    }
+# 158 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
+    constexpr
+    inline _Tp
+    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init,
+        _BinaryOperation __binary_op)
+    {
+
+     
+      ;
+
+      for (; __first != __last; ++__first)
+ __init = __binary_op(std::move(__init), *__first);
+      return __init;
+    }
+# 187 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
+    constexpr
+    inline _Tp
+    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
+    _InputIterator2 __first2, _Tp __init)
+    {
+
+     
+     
+      ;
+
+      for (; __first1 != __last1; ++__first1, (void)++__first2)
+ __init = std::move(__init) + (*__first1 * *__first2);
+      return __init;
+    }
+# 219 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
+    typename _BinaryOperation1, typename _BinaryOperation2>
+    constexpr
+    inline _Tp
+    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
+    _InputIterator2 __first2, _Tp __init,
+    _BinaryOperation1 __binary_op1,
+    _BinaryOperation2 __binary_op2)
+    {
+
+     
+     
+      ;
+
+      for (; __first1 != __last1; ++__first1, (void)++__first2)
+ __init = __binary_op1(std::move(__init),
+         __binary_op2(*__first1, *__first2));
+      return __init;
+    }
+# 253 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    _OutputIterator
+    partial_sum(_InputIterator __first, _InputIterator __last,
+  _OutputIterator __result)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   __value = std::move(__value) + *__first;
+   *++__result = __value;
+ }
+      return ++__result;
+    }
+# 294 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    partial_sum(_InputIterator __first, _InputIterator __last,
+  _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   __value = __binary_op(std::move(__value), *__first);
+   *++__result = __value;
+ }
+      return ++__result;
+    }
+# 334 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    _OutputIterator
+    adjacent_difference(_InputIterator __first,
+   _InputIterator __last, _OutputIterator __result)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   _ValueType __tmp = *__first;
+   *++__result = __tmp - std::move(__value);
+   __value = std::move(__tmp);
+ }
+      return ++__result;
+    }
+# 376 "/usr/include/c++/14/bits/stl_numeric.h" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    adjacent_difference(_InputIterator __first, _InputIterator __last,
+   _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
+
+
+     
+     
+
+      ;
+
+      if (__first == __last)
+ return __result;
+      _ValueType __value = *__first;
+      *__result = __value;
+      while (++__first != __last)
+ {
+   _ValueType __tmp = *__first;
+   *++__result = __binary_op(__tmp, std::move(__value));
+   __value = std::move(__tmp);
+ }
+      return ++__result;
+    }
+
+
+
+
+
+
+}
+# 63 "/usr/include/c++/14/numeric" 2 3
+# 90 "/usr/include/c++/14/numeric" 3
+# 1 "/usr/include/c++/14/bits/version.h" 1 3
+# 47 "/usr/include/c++/14/bits/version.h" 3
+       
+# 48 "/usr/include/c++/14/bits/version.h" 3
+# 91 "/usr/include/c++/14/numeric" 2 3
+# 104 "/usr/include/c++/14/numeric" 3
+namespace std __attribute__ ((__visibility__ ("default")))
+{
+
+
+
+namespace __detail
+{
+
+
+  template<typename _Res, typename _Tp>
+    constexpr _Res
+    __abs_r(_Tp __val)
+    {
+      static_assert(sizeof(_Res) >= sizeof(_Tp),
+   "result type must be at least as wide as the input type");
+
+      if (__val >= 0)
+ return __val;
+
+
+
+
+      return -static_cast<_Res>(__val);
+    }
+
+  template<typename> void __abs_r(bool) = delete;
+
+
+  template<typename _Tp>
+    constexpr _Tp
+    __gcd(_Tp __m, _Tp __n)
+    {
+      static_assert(is_unsigned<_Tp>::value, "type must be unsigned");
+
+      if (__m == 0)
+ return __n;
+      if (__n == 0)
+ return __m;
+
+      const int __i = std::__countr_zero(__m);
+      __m >>= __i;
+      const int __j = std::__countr_zero(__n);
+      __n >>= __j;
+      const int __k = __i < __j ? __i : __j;
+
+      while (true)
+ {
+   if (__m > __n)
+     {
+       _Tp __tmp = __m;
+       __m = __n;
+       __n = __tmp;
+     }
+
+   __n -= __m;
+
+   if (__n == 0)
+     return __m << __k;
+
+   __n >>= std::__countr_zero(__n);
+ }
+    }
+}
+
+
+
+
+  template<typename _Mn, typename _Nn>
+    constexpr common_type_t<_Mn, _Nn>
+    gcd(_Mn __m, _Nn __n) noexcept
+    {
+      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
+      "std::gcd arguments must be integers");
+      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
+      "std::gcd arguments must not be bool");
+      using _Ct = common_type_t<_Mn, _Nn>;
+      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
+      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
+      return __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
+    }
+
+
+  template<typename _Mn, typename _Nn>
+    constexpr common_type_t<_Mn, _Nn>
+    lcm(_Mn __m, _Nn __n) noexcept
+    {
+      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
+      "std::lcm arguments must be integers");
+      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
+      "std::lcm arguments must not be bool");
+      using _Ct = common_type_t<_Mn, _Nn>;
+      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
+      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
+      if (__m2 == 0 || __n2 == 0)
+ return 0;
+      _Ct __r = __m2 / __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
+
+      if constexpr (is_signed_v<_Ct>)
+ if (__is_constant_evaluated())
+   return __r * __n2;
+
+      bool __overflow = __builtin_mul_overflow(__r, __n2, &__r);
+      do { if (std::__is_constant_evaluated()) if (__builtin_expect(!bool(!__overflow), false)) std::__glibcxx_assert_fail(); } while (false);
+      return __r;
+    }
+
+
+
+
+
+  template<typename _Tp>
+    constexpr
+    enable_if_t<__and_v<is_arithmetic<_Tp>, is_same<remove_cv_t<_Tp>, _Tp>,
+   __not_<is_same<_Tp, bool>>>,
+  _Tp>
+    midpoint(_Tp __a, _Tp __b) noexcept
+    {
+      if constexpr (is_integral_v<_Tp>)
+ {
+   using _Up = make_unsigned_t<_Tp>;
+
+   int __k = 1;
+   _Up __m = __a;
+   _Up __M = __b;
+   if (__a > __b)
+     {
+       __k = -1;
+       __m = __b;
+       __M = __a;
+     }
+   return __a + __k * _Tp(_Up(__M - __m) / 2);
+ }
+      else
+ {
+   constexpr _Tp __lo = numeric_limits<_Tp>::min() * 2;
+   constexpr _Tp __hi = numeric_limits<_Tp>::max() / 2;
+   const _Tp __abs_a = __a < 0 ? -__a : __a;
+   const _Tp __abs_b = __b < 0 ? -__b : __b;
+   if (__abs_a <= __hi && __abs_b <= __hi) [[likely]]
+     return (__a + __b) / 2;
+   if (__abs_a < __lo)
+     return __a + __b/2;
+   if (__abs_b < __lo)
+     return __a/2 + __b;
+   return __a/2 + __b/2;
+ }
+    }
+
+  template<typename _Tp>
+    constexpr enable_if_t<is_object_v<_Tp>, _Tp*>
+    midpoint(_Tp* __a, _Tp* __b) noexcept
+    {
+      static_assert( sizeof(_Tp) != 0, "type must be complete" );
+      return __a + (__b - __a) / 2;
+    }
+# 284 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
+    constexpr
+    _Tp
+    reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
+    _BinaryOperation __binary_op)
+    {
+      using __ref = typename iterator_traits<_InputIterator>::reference;
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, __ref>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, _Tp&>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, _Tp&>);
+      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, __ref>);
+      if constexpr (__is_random_access_iter<_InputIterator>::value)
+ {
+   while ((__last - __first) >= 4)
+     {
+       _Tp __v1 = __binary_op(__first[0], __first[1]);
+       _Tp __v2 = __binary_op(__first[2], __first[3]);
+       _Tp __v3 = __binary_op(__v1, __v2);
+       __init = __binary_op(__init, __v3);
+       __first += 4;
+     }
+ }
+      for (; __first != __last; ++__first)
+ __init = __binary_op(__init, *__first);
+      return __init;
+    }
+# 322 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp>
+    constexpr
+    inline _Tp
+    reduce(_InputIterator __first, _InputIterator __last, _Tp __init)
+    { return std::reduce(__first, __last, std::move(__init), plus<>()); }
+# 339 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator>
+    constexpr
+    inline typename iterator_traits<_InputIterator>::value_type
+    reduce(_InputIterator __first, _InputIterator __last)
+    {
+      using value_type = typename iterator_traits<_InputIterator>::value_type;
+      return std::reduce(__first, __last, value_type{}, plus<>());
+    }
+# 366 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
+    typename _BinaryOperation1, typename _BinaryOperation2>
+    constexpr
+    _Tp
+    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
+       _InputIterator2 __first2, _Tp __init,
+       _BinaryOperation1 __binary_op1,
+       _BinaryOperation2 __binary_op2)
+    {
+      if constexpr (__and_v<__is_random_access_iter<_InputIterator1>,
+       __is_random_access_iter<_InputIterator2>>)
+ {
+   while ((__last1 - __first1) >= 4)
+     {
+       _Tp __v1 = __binary_op1(__binary_op2(__first1[0], __first2[0]),
+          __binary_op2(__first1[1], __first2[1]));
+       _Tp __v2 = __binary_op1(__binary_op2(__first1[2], __first2[2]),
+          __binary_op2(__first1[3], __first2[3]));
+       _Tp __v3 = __binary_op1(__v1, __v2);
+       __init = __binary_op1(__init, __v3);
+       __first1 += 4;
+       __first2 += 4;
+     }
+ }
+      for (; __first1 != __last1; ++__first1, (void) ++__first2)
+ __init = __binary_op1(__init, __binary_op2(*__first1, *__first2));
+      return __init;
+    }
+# 410 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
+    constexpr
+    inline _Tp
+    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
+       _InputIterator2 __first2, _Tp __init)
+    {
+      return std::transform_reduce(__first1, __last1, __first2,
+       std::move(__init),
+       plus<>(), multiplies<>());
+    }
+# 435 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _Tp,
+    typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _Tp
+    transform_reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
+       _BinaryOperation __binary_op, _UnaryOperation __unary_op)
+    {
+      if constexpr (__is_random_access_iter<_InputIterator>::value)
+ {
+   while ((__last - __first) >= 4)
+     {
+       _Tp __v1 = __binary_op(__unary_op(__first[0]),
+         __unary_op(__first[1]));
+       _Tp __v2 = __binary_op(__unary_op(__first[2]),
+         __unary_op(__first[3]));
+       _Tp __v3 = __binary_op(__v1, __v2);
+       __init = __binary_op(__init, __v3);
+       __first += 4;
+     }
+ }
+      for (; __first != __last; ++__first)
+ __init = __binary_op(__init, __unary_op(*__first));
+      return __init;
+    }
+# 478 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    exclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _Tp __init,
+     _BinaryOperation __binary_op)
+    {
+      while (__first != __last)
+ {
+   auto __v = __init;
+   __init = __binary_op(__init, *__first);
+   ++__first;
+   *__result++ = std::move(__v);
+ }
+      return __result;
+    }
+# 513 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp>
+    constexpr
+    inline _OutputIterator
+    exclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _Tp __init)
+    {
+      return std::exclusive_scan(__first, __last, __result, std::move(__init),
+     plus<>());
+    }
+# 541 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation, typename _Tp>
+    constexpr
+    _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _BinaryOperation __binary_op,
+     _Tp __init)
+    {
+      for (; __first != __last; ++__first)
+ *__result++ = __init = __binary_op(__init, *__first);
+      return __result;
+    }
+# 570 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation>
+    constexpr
+    _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result, _BinaryOperation __binary_op)
+    {
+      if (__first != __last)
+ {
+   auto __init = *__first;
+   *__result++ = __init;
+   ++__first;
+   if (__first != __last)
+     __result = std::inclusive_scan(__first, __last, __result,
+        __binary_op, std::move(__init));
+ }
+      return __result;
+    }
+# 604 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator>
+    constexpr
+    inline _OutputIterator
+    inclusive_scan(_InputIterator __first, _InputIterator __last,
+     _OutputIterator __result)
+    { return std::inclusive_scan(__first, __last, __result, plus<>()); }
+# 631 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
+    typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _OutputIterator
+    transform_exclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result, _Tp __init,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op)
+    {
+      while (__first != __last)
+ {
+   auto __v = __init;
+   __init = __binary_op(__init, __unary_op(*__first));
+   ++__first;
+   *__result++ = std::move(__v);
+ }
+      return __result;
+    }
+# 670 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+    typename _BinaryOperation, typename _UnaryOperation, typename _Tp>
+    constexpr
+    _OutputIterator
+    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op,
+        _Tp __init)
+    {
+      for (; __first != __last; ++__first)
+ *__result++ = __init = __binary_op(__init, __unary_op(*__first));
+      return __result;
+    }
+# 704 "/usr/include/c++/14/numeric" 3
+  template<typename _InputIterator, typename _OutputIterator,
+   typename _BinaryOperation, typename _UnaryOperation>
+    constexpr
+    _OutputIterator
+    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
+        _OutputIterator __result,
+        _BinaryOperation __binary_op,
+        _UnaryOperation __unary_op)
+    {
+      if (__first != __last)
+ {
+   auto __init = __unary_op(*__first);
+   *__result++ = __init;
+   ++__first;
+   if (__first != __last)
+     __result = std::transform_inclusive_scan(__first, __last, __result,
+           __binary_op, __unary_op,
+           std::move(__init));
+ }
+      return __result;
+    }
+
+
+
+
+
+}
+# 739 "/usr/include/c++/14/numeric" 3
+# 1 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 1 3
+# 13 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 3
+# 1 "/usr/include/c++/14/pstl/execution_defs.h" 1 3
+# 15 "/usr/include/c++/14/pstl/execution_defs.h" 3
+namespace __pstl
+{
+namespace execution
+{
+inline namespace v1
+{
+
+
+class sequenced_policy
+{
+};
+
+
+class parallel_policy
+{
+};
+
+
+class parallel_unsequenced_policy
+{
+};
+
+class unsequenced_policy
+{
+};
+
+
+inline constexpr sequenced_policy seq{};
+inline constexpr parallel_policy par{};
+inline constexpr parallel_unsequenced_policy par_unseq{};
+inline constexpr unsequenced_policy unseq{};
+
+
+template <class _Tp>
+struct is_execution_policy : std::false_type
+{
+};
+
+template <>
+struct is_execution_policy<__pstl::execution::sequenced_policy> : std::true_type
+{
+};
+template <>
+struct is_execution_policy<__pstl::execution::parallel_policy> : std::true_type
+{
+};
+template <>
+struct is_execution_policy<__pstl::execution::parallel_unsequenced_policy> : std::true_type
+{
+};
+template <>
+struct is_execution_policy<__pstl::execution::unsequenced_policy> : std::true_type
+{
+};
+
+
+template <class _Tp>
+constexpr bool is_execution_policy_v = __pstl::execution::is_execution_policy<_Tp>::value;
+
+
+}
+}
+
+namespace __internal
+{
+template <class _ExecPolicy, class _Tp>
+
+using __enable_if_execution_policy =
+    typename std::enable_if<__pstl::execution::is_execution_policy<std::__remove_cvref_t<_ExecPolicy>>::value,
+                            _Tp>::type;
+
+
+
+
+
+
+template <class _IsVector>
+struct __serial_tag;
+template <class _IsVector>
+struct __parallel_tag;
+
+}
+
+}
+# 14 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 2 3
+
+namespace std
+{
+
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
+       _BinaryOperation __binary_op);
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy,
+                                                 typename iterator_traits<_ForwardIterator>::value_type>
+reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
+                 _ForwardIterator2 __first2, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation1,
+          class _BinaryOperation2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
+                 _ForwardIterator2 __first2, _Tp __init, _BinaryOperation1 __binary_op1,
+                 _BinaryOperation2 __binary_op2);
+
+template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation, class _UnaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
+transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
+                 _BinaryOperation __binary_op, _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _BinaryOperation __binary_op);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+               _ForwardIterator2 __result, _BinaryOperation __binary_op, _Tp __init);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation,
+          class _UnaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op,
+                         _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation,
+          class _UnaryOperation, class _Tp>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op,
+                         _Tp __init);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _UnaryOperation,
+          class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op);
+
+
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                    _ForwardIterator2 __d_first, _BinaryOperation __op);
+
+template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
+__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
+adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
+                    _ForwardIterator2 __d_first);
+
+}
+# 740 "/usr/include/c++/14/numeric" 2 3
+# 9 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 # 1 "/usr/include/c++/14/queue" 1 3
 # 58 "/usr/include/c++/14/queue" 3
        
@@ -99259,7 +100068,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
        
 # 48 "/usr/include/c++/14/bits/version.h" 3
 # 70 "/usr/include/c++/14/queue" 2 3
-# 9 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 # 1 "/usr/include/c++/14/ranges" 1 3
 # 35 "/usr/include/c++/14/ranges" 3
        
@@ -103689,7 +104498,7 @@ namespace views::__adaptor
 # 9520 "/usr/include/c++/14/ranges" 3
 
 }
-# 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 # 1 "/usr/include/c++/14/regex" 1 3
 # 32 "/usr/include/c++/14/regex" 3
        
@@ -115330,7 +116139,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
   }
 
 }
-# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 12 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 
 # 1 "/usr/include/c++/14/thread" 1 3
 # 32 "/usr/include/c++/14/thread" 3
@@ -123014,7 +123823,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 372 "/usr/include/c++/14/thread" 3
 
 }
-# 13 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 14 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 # 1 "/usr/include/c++/14/unordered_map" 1 3
 # 32 "/usr/include/c++/14/unordered_map" 3
        
@@ -129161,7 +129970,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 14 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 15 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 # 1 "/usr/include/c++/14/unordered_set" 1 3
 # 32 "/usr/include/c++/14/unordered_set" 3
        
@@ -130505,817 +131314,8 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 15 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
+# 16 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 
-# 1 "/usr/include/c++/14/numeric" 1 3
-# 58 "/usr/include/c++/14/numeric" 3
-       
-# 59 "/usr/include/c++/14/numeric" 3
-
-
-
-# 1 "/usr/include/c++/14/bits/stl_numeric.h" 1 3
-# 64 "/usr/include/c++/14/bits/stl_numeric.h" 3
-namespace std __attribute__ ((__visibility__ ("default")))
-{
-
-# 85 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _ForwardIterator, typename _Tp>
-    constexpr
-    void
-    iota(_ForwardIterator __first, _ForwardIterator __last, _Tp __value)
-    {
-
-     
-
-     
-
-      ;
-
-      for (; __first != __last; ++__first)
- {
-   *__first = __value;
-   ++__value;
- }
-    }
-
-
-
-
-
-# 131 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _Tp>
-    constexpr
-    inline _Tp
-    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init)
-    {
-
-     
-      ;
-
-      for (; __first != __last; ++__first)
- __init = std::move(__init) + *__first;
-      return __init;
-    }
-# 158 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
-    constexpr
-    inline _Tp
-    accumulate(_InputIterator __first, _InputIterator __last, _Tp __init,
-        _BinaryOperation __binary_op)
-    {
-
-     
-      ;
-
-      for (; __first != __last; ++__first)
- __init = __binary_op(std::move(__init), *__first);
-      return __init;
-    }
-# 187 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
-    constexpr
-    inline _Tp
-    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
-    _InputIterator2 __first2, _Tp __init)
-    {
-
-     
-     
-      ;
-
-      for (; __first1 != __last1; ++__first1, (void)++__first2)
- __init = std::move(__init) + (*__first1 * *__first2);
-      return __init;
-    }
-# 219 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
-    typename _BinaryOperation1, typename _BinaryOperation2>
-    constexpr
-    inline _Tp
-    inner_product(_InputIterator1 __first1, _InputIterator1 __last1,
-    _InputIterator2 __first2, _Tp __init,
-    _BinaryOperation1 __binary_op1,
-    _BinaryOperation2 __binary_op2)
-    {
-
-     
-     
-      ;
-
-      for (; __first1 != __last1; ++__first1, (void)++__first2)
- __init = __binary_op1(std::move(__init),
-         __binary_op2(*__first1, *__first2));
-      return __init;
-    }
-# 253 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _OutputIterator>
-    constexpr
-    _OutputIterator
-    partial_sum(_InputIterator __first, _InputIterator __last,
-  _OutputIterator __result)
-    {
-      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
-
-
-     
-     
-
-      ;
-
-      if (__first == __last)
- return __result;
-      _ValueType __value = *__first;
-      *__result = __value;
-      while (++__first != __last)
- {
-   __value = std::move(__value) + *__first;
-   *++__result = __value;
- }
-      return ++__result;
-    }
-# 294 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _OutputIterator,
-    typename _BinaryOperation>
-    constexpr
-    _OutputIterator
-    partial_sum(_InputIterator __first, _InputIterator __last,
-  _OutputIterator __result, _BinaryOperation __binary_op)
-    {
-      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
-
-
-     
-     
-
-      ;
-
-      if (__first == __last)
- return __result;
-      _ValueType __value = *__first;
-      *__result = __value;
-      while (++__first != __last)
- {
-   __value = __binary_op(std::move(__value), *__first);
-   *++__result = __value;
- }
-      return ++__result;
-    }
-# 334 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _OutputIterator>
-    constexpr
-    _OutputIterator
-    adjacent_difference(_InputIterator __first,
-   _InputIterator __last, _OutputIterator __result)
-    {
-      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
-
-
-     
-     
-
-      ;
-
-      if (__first == __last)
- return __result;
-      _ValueType __value = *__first;
-      *__result = __value;
-      while (++__first != __last)
- {
-   _ValueType __tmp = *__first;
-   *++__result = __tmp - std::move(__value);
-   __value = std::move(__tmp);
- }
-      return ++__result;
-    }
-# 376 "/usr/include/c++/14/bits/stl_numeric.h" 3
-  template<typename _InputIterator, typename _OutputIterator,
-    typename _BinaryOperation>
-    constexpr
-    _OutputIterator
-    adjacent_difference(_InputIterator __first, _InputIterator __last,
-   _OutputIterator __result, _BinaryOperation __binary_op)
-    {
-      typedef typename iterator_traits<_InputIterator>::value_type _ValueType;
-
-
-     
-     
-
-      ;
-
-      if (__first == __last)
- return __result;
-      _ValueType __value = *__first;
-      *__result = __value;
-      while (++__first != __last)
- {
-   _ValueType __tmp = *__first;
-   *++__result = __binary_op(__tmp, std::move(__value));
-   __value = std::move(__tmp);
- }
-      return ++__result;
-    }
-
-
-
-
-
-
-}
-# 63 "/usr/include/c++/14/numeric" 2 3
-# 90 "/usr/include/c++/14/numeric" 3
-# 1 "/usr/include/c++/14/bits/version.h" 1 3
-# 47 "/usr/include/c++/14/bits/version.h" 3
-       
-# 48 "/usr/include/c++/14/bits/version.h" 3
-# 91 "/usr/include/c++/14/numeric" 2 3
-# 104 "/usr/include/c++/14/numeric" 3
-namespace std __attribute__ ((__visibility__ ("default")))
-{
-
-
-
-namespace __detail
-{
-
-
-  template<typename _Res, typename _Tp>
-    constexpr _Res
-    __abs_r(_Tp __val)
-    {
-      static_assert(sizeof(_Res) >= sizeof(_Tp),
-   "result type must be at least as wide as the input type");
-
-      if (__val >= 0)
- return __val;
-
-
-
-
-      return -static_cast<_Res>(__val);
-    }
-
-  template<typename> void __abs_r(bool) = delete;
-
-
-  template<typename _Tp>
-    constexpr _Tp
-    __gcd(_Tp __m, _Tp __n)
-    {
-      static_assert(is_unsigned<_Tp>::value, "type must be unsigned");
-
-      if (__m == 0)
- return __n;
-      if (__n == 0)
- return __m;
-
-      const int __i = std::__countr_zero(__m);
-      __m >>= __i;
-      const int __j = std::__countr_zero(__n);
-      __n >>= __j;
-      const int __k = __i < __j ? __i : __j;
-
-      while (true)
- {
-   if (__m > __n)
-     {
-       _Tp __tmp = __m;
-       __m = __n;
-       __n = __tmp;
-     }
-
-   __n -= __m;
-
-   if (__n == 0)
-     return __m << __k;
-
-   __n >>= std::__countr_zero(__n);
- }
-    }
-}
-
-
-
-
-  template<typename _Mn, typename _Nn>
-    constexpr common_type_t<_Mn, _Nn>
-    gcd(_Mn __m, _Nn __n) noexcept
-    {
-      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
-      "std::gcd arguments must be integers");
-      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
-      "std::gcd arguments must not be bool");
-      using _Ct = common_type_t<_Mn, _Nn>;
-      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
-      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
-      return __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
-    }
-
-
-  template<typename _Mn, typename _Nn>
-    constexpr common_type_t<_Mn, _Nn>
-    lcm(_Mn __m, _Nn __n) noexcept
-    {
-      static_assert(is_integral_v<_Mn> && is_integral_v<_Nn>,
-      "std::lcm arguments must be integers");
-      static_assert(_Mn(2) == 2 && _Nn(2) == 2,
-      "std::lcm arguments must not be bool");
-      using _Ct = common_type_t<_Mn, _Nn>;
-      const _Ct __m2 = __detail::__abs_r<_Ct>(__m);
-      const _Ct __n2 = __detail::__abs_r<_Ct>(__n);
-      if (__m2 == 0 || __n2 == 0)
- return 0;
-      _Ct __r = __m2 / __detail::__gcd<make_unsigned_t<_Ct>>(__m2, __n2);
-
-      if constexpr (is_signed_v<_Ct>)
- if (__is_constant_evaluated())
-   return __r * __n2;
-
-      bool __overflow = __builtin_mul_overflow(__r, __n2, &__r);
-      do { if (std::__is_constant_evaluated()) if (__builtin_expect(!bool(!__overflow), false)) std::__glibcxx_assert_fail(); } while (false);
-      return __r;
-    }
-
-
-
-
-
-  template<typename _Tp>
-    constexpr
-    enable_if_t<__and_v<is_arithmetic<_Tp>, is_same<remove_cv_t<_Tp>, _Tp>,
-   __not_<is_same<_Tp, bool>>>,
-  _Tp>
-    midpoint(_Tp __a, _Tp __b) noexcept
-    {
-      if constexpr (is_integral_v<_Tp>)
- {
-   using _Up = make_unsigned_t<_Tp>;
-
-   int __k = 1;
-   _Up __m = __a;
-   _Up __M = __b;
-   if (__a > __b)
-     {
-       __k = -1;
-       __m = __b;
-       __M = __a;
-     }
-   return __a + __k * _Tp(_Up(__M - __m) / 2);
- }
-      else
- {
-   constexpr _Tp __lo = numeric_limits<_Tp>::min() * 2;
-   constexpr _Tp __hi = numeric_limits<_Tp>::max() / 2;
-   const _Tp __abs_a = __a < 0 ? -__a : __a;
-   const _Tp __abs_b = __b < 0 ? -__b : __b;
-   if (__abs_a <= __hi && __abs_b <= __hi) [[likely]]
-     return (__a + __b) / 2;
-   if (__abs_a < __lo)
-     return __a + __b/2;
-   if (__abs_b < __lo)
-     return __a/2 + __b;
-   return __a/2 + __b/2;
- }
-    }
-
-  template<typename _Tp>
-    constexpr enable_if_t<is_object_v<_Tp>, _Tp*>
-    midpoint(_Tp* __a, _Tp* __b) noexcept
-    {
-      static_assert( sizeof(_Tp) != 0, "type must be complete" );
-      return __a + (__b - __a) / 2;
-    }
-# 284 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _Tp, typename _BinaryOperation>
-    constexpr
-    _Tp
-    reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
-    _BinaryOperation __binary_op)
-    {
-      using __ref = typename iterator_traits<_InputIterator>::reference;
-      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, __ref>);
-      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, _Tp&>);
-      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, _Tp&, _Tp&>);
-      static_assert(is_invocable_r_v<_Tp, _BinaryOperation&, __ref, __ref>);
-      if constexpr (__is_random_access_iter<_InputIterator>::value)
- {
-   while ((__last - __first) >= 4)
-     {
-       _Tp __v1 = __binary_op(__first[0], __first[1]);
-       _Tp __v2 = __binary_op(__first[2], __first[3]);
-       _Tp __v3 = __binary_op(__v1, __v2);
-       __init = __binary_op(__init, __v3);
-       __first += 4;
-     }
- }
-      for (; __first != __last; ++__first)
- __init = __binary_op(__init, *__first);
-      return __init;
-    }
-# 322 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _Tp>
-    constexpr
-    inline _Tp
-    reduce(_InputIterator __first, _InputIterator __last, _Tp __init)
-    { return std::reduce(__first, __last, std::move(__init), plus<>()); }
-# 339 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator>
-    constexpr
-    inline typename iterator_traits<_InputIterator>::value_type
-    reduce(_InputIterator __first, _InputIterator __last)
-    {
-      using value_type = typename iterator_traits<_InputIterator>::value_type;
-      return std::reduce(__first, __last, value_type{}, plus<>());
-    }
-# 366 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator1, typename _InputIterator2, typename _Tp,
-    typename _BinaryOperation1, typename _BinaryOperation2>
-    constexpr
-    _Tp
-    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
-       _InputIterator2 __first2, _Tp __init,
-       _BinaryOperation1 __binary_op1,
-       _BinaryOperation2 __binary_op2)
-    {
-      if constexpr (__and_v<__is_random_access_iter<_InputIterator1>,
-       __is_random_access_iter<_InputIterator2>>)
- {
-   while ((__last1 - __first1) >= 4)
-     {
-       _Tp __v1 = __binary_op1(__binary_op2(__first1[0], __first2[0]),
-          __binary_op2(__first1[1], __first2[1]));
-       _Tp __v2 = __binary_op1(__binary_op2(__first1[2], __first2[2]),
-          __binary_op2(__first1[3], __first2[3]));
-       _Tp __v3 = __binary_op1(__v1, __v2);
-       __init = __binary_op1(__init, __v3);
-       __first1 += 4;
-       __first2 += 4;
-     }
- }
-      for (; __first1 != __last1; ++__first1, (void) ++__first2)
- __init = __binary_op1(__init, __binary_op2(*__first1, *__first2));
-      return __init;
-    }
-# 410 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator1, typename _InputIterator2, typename _Tp>
-    constexpr
-    inline _Tp
-    transform_reduce(_InputIterator1 __first1, _InputIterator1 __last1,
-       _InputIterator2 __first2, _Tp __init)
-    {
-      return std::transform_reduce(__first1, __last1, __first2,
-       std::move(__init),
-       plus<>(), multiplies<>());
-    }
-# 435 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _Tp,
-    typename _BinaryOperation, typename _UnaryOperation>
-    constexpr
-    _Tp
-    transform_reduce(_InputIterator __first, _InputIterator __last, _Tp __init,
-       _BinaryOperation __binary_op, _UnaryOperation __unary_op)
-    {
-      if constexpr (__is_random_access_iter<_InputIterator>::value)
- {
-   while ((__last - __first) >= 4)
-     {
-       _Tp __v1 = __binary_op(__unary_op(__first[0]),
-         __unary_op(__first[1]));
-       _Tp __v2 = __binary_op(__unary_op(__first[2]),
-         __unary_op(__first[3]));
-       _Tp __v3 = __binary_op(__v1, __v2);
-       __init = __binary_op(__init, __v3);
-       __first += 4;
-     }
- }
-      for (; __first != __last; ++__first)
- __init = __binary_op(__init, __unary_op(*__first));
-      return __init;
-    }
-# 478 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
-    typename _BinaryOperation>
-    constexpr
-    _OutputIterator
-    exclusive_scan(_InputIterator __first, _InputIterator __last,
-     _OutputIterator __result, _Tp __init,
-     _BinaryOperation __binary_op)
-    {
-      while (__first != __last)
- {
-   auto __v = __init;
-   __init = __binary_op(__init, *__first);
-   ++__first;
-   *__result++ = std::move(__v);
- }
-      return __result;
-    }
-# 513 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator, typename _Tp>
-    constexpr
-    inline _OutputIterator
-    exclusive_scan(_InputIterator __first, _InputIterator __last,
-     _OutputIterator __result, _Tp __init)
-    {
-      return std::exclusive_scan(__first, __last, __result, std::move(__init),
-     plus<>());
-    }
-# 541 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator,
-    typename _BinaryOperation, typename _Tp>
-    constexpr
-    _OutputIterator
-    inclusive_scan(_InputIterator __first, _InputIterator __last,
-     _OutputIterator __result, _BinaryOperation __binary_op,
-     _Tp __init)
-    {
-      for (; __first != __last; ++__first)
- *__result++ = __init = __binary_op(__init, *__first);
-      return __result;
-    }
-# 570 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator,
-    typename _BinaryOperation>
-    constexpr
-    _OutputIterator
-    inclusive_scan(_InputIterator __first, _InputIterator __last,
-     _OutputIterator __result, _BinaryOperation __binary_op)
-    {
-      if (__first != __last)
- {
-   auto __init = *__first;
-   *__result++ = __init;
-   ++__first;
-   if (__first != __last)
-     __result = std::inclusive_scan(__first, __last, __result,
-        __binary_op, std::move(__init));
- }
-      return __result;
-    }
-# 604 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator>
-    constexpr
-    inline _OutputIterator
-    inclusive_scan(_InputIterator __first, _InputIterator __last,
-     _OutputIterator __result)
-    { return std::inclusive_scan(__first, __last, __result, plus<>()); }
-# 631 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator, typename _Tp,
-    typename _BinaryOperation, typename _UnaryOperation>
-    constexpr
-    _OutputIterator
-    transform_exclusive_scan(_InputIterator __first, _InputIterator __last,
-        _OutputIterator __result, _Tp __init,
-        _BinaryOperation __binary_op,
-        _UnaryOperation __unary_op)
-    {
-      while (__first != __last)
- {
-   auto __v = __init;
-   __init = __binary_op(__init, __unary_op(*__first));
-   ++__first;
-   *__result++ = std::move(__v);
- }
-      return __result;
-    }
-# 670 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator,
-    typename _BinaryOperation, typename _UnaryOperation, typename _Tp>
-    constexpr
-    _OutputIterator
-    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
-        _OutputIterator __result,
-        _BinaryOperation __binary_op,
-        _UnaryOperation __unary_op,
-        _Tp __init)
-    {
-      for (; __first != __last; ++__first)
- *__result++ = __init = __binary_op(__init, __unary_op(*__first));
-      return __result;
-    }
-# 704 "/usr/include/c++/14/numeric" 3
-  template<typename _InputIterator, typename _OutputIterator,
-   typename _BinaryOperation, typename _UnaryOperation>
-    constexpr
-    _OutputIterator
-    transform_inclusive_scan(_InputIterator __first, _InputIterator __last,
-        _OutputIterator __result,
-        _BinaryOperation __binary_op,
-        _UnaryOperation __unary_op)
-    {
-      if (__first != __last)
- {
-   auto __init = __unary_op(*__first);
-   *__result++ = __init;
-   ++__first;
-   if (__first != __last)
-     __result = std::transform_inclusive_scan(__first, __last, __result,
-           __binary_op, __unary_op,
-           std::move(__init));
- }
-      return __result;
-    }
-
-
-
-
-
-}
-# 739 "/usr/include/c++/14/numeric" 3
-# 1 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 1 3
-# 13 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 3
-# 1 "/usr/include/c++/14/pstl/execution_defs.h" 1 3
-# 15 "/usr/include/c++/14/pstl/execution_defs.h" 3
-namespace __pstl
-{
-namespace execution
-{
-inline namespace v1
-{
-
-
-class sequenced_policy
-{
-};
-
-
-class parallel_policy
-{
-};
-
-
-class parallel_unsequenced_policy
-{
-};
-
-class unsequenced_policy
-{
-};
-
-
-inline constexpr sequenced_policy seq{};
-inline constexpr parallel_policy par{};
-inline constexpr parallel_unsequenced_policy par_unseq{};
-inline constexpr unsequenced_policy unseq{};
-
-
-template <class _Tp>
-struct is_execution_policy : std::false_type
-{
-};
-
-template <>
-struct is_execution_policy<__pstl::execution::sequenced_policy> : std::true_type
-{
-};
-template <>
-struct is_execution_policy<__pstl::execution::parallel_policy> : std::true_type
-{
-};
-template <>
-struct is_execution_policy<__pstl::execution::parallel_unsequenced_policy> : std::true_type
-{
-};
-template <>
-struct is_execution_policy<__pstl::execution::unsequenced_policy> : std::true_type
-{
-};
-
-
-template <class _Tp>
-constexpr bool is_execution_policy_v = __pstl::execution::is_execution_policy<_Tp>::value;
-
-
-}
-}
-
-namespace __internal
-{
-template <class _ExecPolicy, class _Tp>
-
-using __enable_if_execution_policy =
-    typename std::enable_if<__pstl::execution::is_execution_policy<std::__remove_cvref_t<_ExecPolicy>>::value,
-                            _Tp>::type;
-
-
-
-
-
-
-template <class _IsVector>
-struct __serial_tag;
-template <class _IsVector>
-struct __parallel_tag;
-
-}
-
-}
-# 14 "/usr/include/c++/14/pstl/glue_numeric_defs.h" 2 3
-
-namespace std
-{
-
-
-template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
-reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
-       _BinaryOperation __binary_op);
-
-template <class _ExecutionPolicy, class _ForwardIterator, class _Tp>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
-reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init);
-
-template <class _ExecutionPolicy, class _ForwardIterator>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy,
-                                                 typename iterator_traits<_ForwardIterator>::value_type>
-reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
-transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
-                 _ForwardIterator2 __first2, _Tp __init);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation1,
-          class _BinaryOperation2>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
-transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator1 __first1, _ForwardIterator1 __last1,
-                 _ForwardIterator2 __first2, _Tp __init, _BinaryOperation1 __binary_op1,
-                 _BinaryOperation2 __binary_op2);
-
-template <class _ExecutionPolicy, class _ForwardIterator, class _Tp, class _BinaryOperation, class _UnaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _Tp>
-transform_reduce(_ExecutionPolicy&& __exec, _ForwardIterator __first, _ForwardIterator __last, _Tp __init,
-                 _BinaryOperation __binary_op, _UnaryOperation __unary_op);
-
-
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-               _ForwardIterator2 __result, _Tp __init);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-               _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op);
-
-
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-               _ForwardIterator2 __result);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-               _ForwardIterator2 __result, _BinaryOperation __binary_op);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-               _ForwardIterator2 __result, _BinaryOperation __binary_op, _Tp __init);
-
-
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _Tp, class _BinaryOperation,
-          class _UnaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-transform_exclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-                         _ForwardIterator2 __result, _Tp __init, _BinaryOperation __binary_op,
-                         _UnaryOperation __unary_op);
-
-
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation,
-          class _UnaryOperation, class _Tp>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op,
-                         _Tp __init);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _UnaryOperation,
-          class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-transform_inclusive_scan(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-                         _ForwardIterator2 __result, _BinaryOperation __binary_op, _UnaryOperation __unary_op);
-
-
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2, class _BinaryOperation>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-                    _ForwardIterator2 __d_first, _BinaryOperation __op);
-
-template <class _ExecutionPolicy, class _ForwardIterator1, class _ForwardIterator2>
-__pstl::__internal::__enable_if_execution_policy<_ExecutionPolicy, _ForwardIterator2>
-adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _ForwardIterator1 __last,
-                    _ForwardIterator2 __d_first);
-
-}
-# 740 "/usr/include/c++/14/numeric" 2 3
-# 17 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp" 2
 
 
 # 18 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_one.cpp"
@@ -131325,121 +131325,111 @@ export  module  part_one;
 
 export namespace part_one {
 
-auto solve(const std::string &input) -> long {
-  long registerA = 0, registerB = 0, registerC = 0;
-  std::vector<std::string> lines;
+auto parseInput(const std::string &input) -> std::vector<std::pair<int, int>> {
+  std::vector<std::pair<int, int>> points;
   std::istringstream stream(input);
   std::string line;
-  std::vector<long> program;
 
   while (std::getline(stream, line)) {
-    if (line.starts_with("Register A:")) {
-      registerA = std::stol(line.substr(12));
-    } else if (line.starts_with("Register B:")) {
-      registerB = std::stol(line.substr(12));
-    } else if (line.starts_with("Register C:")) {
-      registerC = std::stol(line.substr(12));
-    } else if (line.starts_with("Program:")) {
-      std::string programString = line.substr(9);
-      std::istringstream programStream(programString);
-      std::string token;
-      while (std::getline(programStream, token, ',')) {
-        program.push_back(std::stol(token));
+    if (line.empty()) {
+      continue;
+    }
+
+    size_t comma_pos = line.find(',');
+    if (comma_pos == std::string::npos) {
+      continue;
+    }
+
+    int x = std::stoi(line.substr(0, comma_pos));
+    int y = std::stoi(line.substr(comma_pos + 1));
+    points.push_back({x, y});
+  }
+
+  return points;
+}
+
+class MemoryPathFinder {
+private:
+
+  const std::vector<int> dx = {-1, 0, 1, 0};
+  const std::vector<int> dy = {0, 1, 0, -1};
+  int gridSize;
+  std::vector<std::vector<bool>> corrupted;
+
+  bool isValid(int x, int y) {
+    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !corrupted[x][y];
+  }
+
+public:
+  MemoryPathFinder(int size) : gridSize(size) {
+    corrupted =
+        std::vector<std::vector<bool>>(size, std::vector<bool>(size, false));
+  }
+
+  void addCorruptedPoint(int x, int y) { corrupted[x][y] = true; }
+
+  int findShortestPath() {
+    std::vector<std::vector<int>> distance(gridSize,
+                                           std::vector<int>(gridSize, -1));
+    std::queue<std::pair<int, int>> q;
+
+
+    q.push({0, 0});
+    distance[0][0] = 0;
+
+    while (!q.empty()) {
+      auto const &[x, y] = q.front();
+      q.pop();
+
+
+      if (x == gridSize - 1 && y == gridSize - 1) {
+        return distance[x][y];
+      }
+
+
+      for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        if (isValid(newX, newY) && distance[newX][newY] == -1) {
+          distance[newX][newY] = distance[x][y] + 1;
+          q.push({newX, newY});
+        }
       }
     }
+
+    return -1;
   }
 
-
-  std::cout << registerA << " " << registerB << " " << registerC << std::endl;
-  for (const auto &r : program) {
-    std::cout << r << " ";
-  }
-
-
-  auto getComboOperand = [&](long operand) -> long {
-    if (operand <= 3) {
-      return operand;
-    } else if (operand == 4) {
-      return registerA;
-    } else if (operand == 5) {
-      return registerB;
-    } else if (operand == 6) {
-      return registerC;
-    }
-
-
-    return 0;
-  };
-
-  std::vector<long> ans;
-
-  long instructionPointer = 0;
-  while (instructionPointer < program.size()) {
-    auto currentOpCode = program[instructionPointer];
-    instructionPointer++;
-    switch (currentOpCode) {
-    case 0: {
-
-      auto operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerA /= std::pow(2, operand1);
-      break;
-    }
-    case 1: {
-
-      auto operand1 = program[instructionPointer];
-      instructionPointer++;
-      registerB ^= operand1;
-      break;
-    }
-    case 2: {
-
-      auto operand1 = getComboOperand(program[instructionPointer]) % 8;
-      registerB = operand1;
-      instructionPointer++;
-      break;
-    }
-    case 3: {
-
-      if (registerA == 0) {
-        instructionPointer++;
-      } else {
-        auto operand1 = program[instructionPointer];
-        instructionPointer = operand1;
+  void printGrid() {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
+        std::cout << (corrupted[i][j] ? '#' : '.');
       }
-      break;
-    }
-    case 4: {
-      instructionPointer++;
-      registerB ^= registerC;
-      break;
-    }
-    case 5: {
-      long operand1 = getComboOperand(program[instructionPointer]) % 8;
-      instructionPointer++;
-      ans.push_back(operand1);
-      break;
-    }
-    case 6: {
-      long operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerB = registerA / std::pow(2, operand1);
-      break;
-    }
-    case 7: {
-      auto operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerC = registerA / std::pow(2, operand1);
-      break;
-    }
+      std::cout << '\n';
     }
   }
-  auto result = std::accumulate(
-      ans.begin() + 1, ans.end(), std::to_string(ans[0]),
-      [](const std::string &a, long b) { return a + "," + std::to_string(b); });
-  std::cout << std::endl;
-  std::cout << result << std::endl;
+};
 
-  return 0;
+auto solve(const std::string &input) -> long {
+  auto points = parseInput(input);
+  auto finder = MemoryPathFinder(71);
+
+  auto totalBytes = 1024;
+  for (size_t i = 0; i < (size_t)totalBytes && i < points.size(); i++) {
+    finder.addCorruptedPoint(points[i].second, points[i].first);
+  }
+
+  std::cout << "Memory space after 1024 bytes:\n";
+  finder.printGrid();
+
+  int shortestPath = finder.findShortestPath();
+  if (shortestPath != -1) {
+    std::cout << "\nShortest path length: " << shortestPath << std::endl;
+  } else {
+    std::cout << "\nNo path exists to the exit!" << std::endl;
+  }
+
+  return shortestPath;
 }
 }

@@ -95573,7 +95573,6 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 }
 # 5 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
-
 # 1 "/usr/include/c++/14/iostream" 1 3
 # 36 "/usr/include/c++/14/iostream" 3
        
@@ -95605,7 +95604,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 
 
 }
-# 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 6 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/iterator" 1 3
 # 58 "/usr/include/c++/14/iterator" 3
        
@@ -95836,7 +95835,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
        
 # 48 "/usr/include/c++/14/bits/version.h" 3
 # 79 "/usr/include/c++/14/iterator" 2 3
-# 8 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 7 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 
 # 1 "/usr/include/c++/14/numeric" 1 3
 # 58 "/usr/include/c++/14/numeric" 3
@@ -96646,7 +96645,7 @@ adjacent_difference(_ExecutionPolicy&& __exec, _ForwardIterator1 __first, _Forwa
 
 }
 # 740 "/usr/include/c++/14/numeric" 2 3
-# 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 9 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/queue" 1 3
 # 58 "/usr/include/c++/14/queue" 3
        
@@ -100069,7 +100068,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
        
 # 48 "/usr/include/c++/14/bits/version.h" 3
 # 70 "/usr/include/c++/14/queue" 2 3
-# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 10 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/ranges" 1 3
 # 35 "/usr/include/c++/14/ranges" 3
        
@@ -104499,7 +104498,7 @@ namespace views::__adaptor
 # 9520 "/usr/include/c++/14/ranges" 3
 
 }
-# 12 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 11 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/regex" 1 3
 # 32 "/usr/include/c++/14/regex" 3
        
@@ -116140,7 +116139,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
   }
 
 }
-# 13 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 12 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 
 # 1 "/usr/include/c++/14/thread" 1 3
 # 32 "/usr/include/c++/14/thread" 3
@@ -123824,7 +123823,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
 # 372 "/usr/include/c++/14/thread" 3
 
 }
-# 15 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 14 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/unordered_map" 1 3
 # 32 "/usr/include/c++/14/unordered_map" 3
        
@@ -129971,7 +129970,7 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 16 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 15 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 # 1 "/usr/include/c++/14/unordered_set" 1 3
 # 32 "/usr/include/c++/14/unordered_set" 3
        
@@ -131315,91 +131314,139 @@ namespace std __attribute__ ((__visibility__ ("default")))
     }
 
 }
-# 17 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
+# 16 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp" 2
 
 
 
-# 19 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
+# 18 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
 export  module  part_two;
 
 
 
 export namespace part_two {
 
-auto getInitA(std::vector<long> &programs, long currentInput, long &refAns)
-    -> void {
-
-
-
-
-
-  if (programs.size() == 0) {
-    refAns = std::min(refAns, currentInput);
-    return;
-  }
-
-  long current_number = programs.back();
-
-  for (int i = 0; i < 8; i++) {
-    std::vector<long> ans;
-
-    long initA = currentInput * 8 + i;
-    long registerA = initA;
-    long registerB = 0;
-    long registerC = 0;
-
-    while (registerA != 0) {
-      registerB = (registerA % 8) ^ 0b111;
-      registerC = registerA >> registerB;
-      registerB = registerB ^ registerC ^ 0b111;
-      ans.push_back(registerB % 8);
-      registerA = registerA >> 3;
-    }
-
-    if (ans.size() > 0 && ans.front() == current_number) {
-
-      programs.pop_back();
-      getInitA(programs, initA, refAns);
-      programs.push_back(current_number);
-    }
-  }
-}
-
-auto solve(const std::string &input) -> long {
-  long registerA = 0, registerB = 0, registerC = 0;
-  std::vector<std::string> lines;
+auto parseInput(const std::string &input) -> std::vector<std::pair<int, int>> {
+  std::vector<std::pair<int, int>> points;
   std::istringstream stream(input);
   std::string line;
-  std::vector<long> program;
-
-
 
   while (std::getline(stream, line)) {
-    if (line.starts_with("Register A:")) {
-      registerA = std::stol(line.substr(12));
-    } else if (line.starts_with("Register B:")) {
-      registerB = std::stol(line.substr(12));
-    } else if (line.starts_with("Register C:")) {
-      registerC = std::stol(line.substr(12));
-    } else if (line.starts_with("Program:")) {
-      std::string programString = line.substr(9);
-      std::istringstream programStream(programString);
-      std::string token;
-      while (std::getline(programStream, token, ',')) {
-        program.push_back(std::stol(token));
+    if (line.empty()) {
+      continue;
+    }
+
+    size_t comma_pos = line.find(',');
+    if (comma_pos == std::string::npos) {
+      continue;
+    }
+
+    int x = std::stoi(line.substr(0, comma_pos));
+    int y = std::stoi(line.substr(comma_pos + 1));
+    points.push_back({x, y});
+  }
+
+  return points;
+}
+
+class MemoryPathFinder {
+private:
+
+  const std::vector<int> dx = {-1, 0, 1, 0};
+  const std::vector<int> dy = {0, 1, 0, -1};
+  int gridSize;
+  std::vector<std::vector<bool>> corrupted;
+
+  bool isValid(int x, int y) {
+    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !corrupted[x][y];
+  }
+
+public:
+  MemoryPathFinder(int size) : gridSize(size) {
+    corrupted =
+        std::vector<std::vector<bool>>(size, std::vector<bool>(size, false));
+  }
+
+  void addCorruptedPoint(int x, int y) { corrupted[x][y] = true; }
+
+  void reset() {
+    corrupted = std::vector<std::vector<bool>>(
+        gridSize, std::vector<bool>(gridSize, false));
+  }
+
+  bool pathExists() {
+    std::vector<std::vector<bool>> visited(gridSize,
+                                           std::vector<bool>(gridSize, false));
+    std::queue<std::pair<int, int>> q;
+
+
+    q.push({0, 0});
+    visited[0][0] = true;
+
+    while (!q.empty()) {
+      int x = q.front().first;
+      int y = q.front().second;
+      q.pop();
+
+
+      if (x == gridSize - 1 && y == gridSize - 1) {
+        return true;
+      }
+
+
+      for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        if (isValid(newX, newY) && !visited[newX][newY]) {
+          visited[newX][newY] = true;
+          q.push({newX, newY});
+        }
       }
     }
+
+    return false;
   }
 
+  std::pair<int, int>
+  findBlockingPoint(const std::vector<std::pair<int, int>> &points) {
+    reset();
 
-  std::cout << registerA << " " << registerB << " " << registerC << std::endl;
-  for (const auto &r : program) {
-    std::cout << r << " ";
+    for (size_t i = 0; i < points.size(); i++) {
+      addCorruptedPoint(points[i].second, points[i].first);
+
+      if (!pathExists()) {
+
+        return points[i];
+      }
+    }
+
+    return {-1, -1};
   }
 
+  void printGrid() {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
+        std::cout << (corrupted[i][j] ? '#' : '.');
+      }
+      std::cout << '\n';
+    }
+  }
+};
 
-  long ans = std::numeric_limits<long>::max();
-  getInitA(program, 0, ans);
-  return ans;
+auto solve(const std::string &input) -> long {
+  auto points = parseInput(input);
+  auto finder = MemoryPathFinder(71);
+
+  auto blockingPoint = finder.findBlockingPoint(points);
+
+  if (blockingPoint.first != -1) {
+
+    std::cout << blockingPoint.first << "," << blockingPoint.second
+              << std::endl;
+  } else {
+    std::cout << "No blocking point found!" << std::endl;
+  }
+
+  return 0;
 }
 }

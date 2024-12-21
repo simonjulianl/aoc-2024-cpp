@@ -5,6 +5,7 @@ module;
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <numeric>
 #include <queue>
 #include <ranges>
 #include <regex>
@@ -13,7 +14,6 @@ module;
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <numeric>
 
 export module part_one;
 
@@ -21,121 +21,111 @@ export module part_one;
 
 export namespace part_one {
 
-auto solve(const std::string &input) -> long {
-  long registerA = 0, registerB = 0, registerC = 0;
-  std::vector<std::string> lines;
+auto parseInput(const std::string &input) -> std::vector<std::pair<int, int>> {
+  std::vector<std::pair<int, int>> points;
   std::istringstream stream(input);
   std::string line;
-  std::vector<long> program;
 
   while (std::getline(stream, line)) {
-    if (line.starts_with("Register A:")) {
-      registerA = std::stol(line.substr(12));
-    } else if (line.starts_with("Register B:")) {
-      registerB = std::stol(line.substr(12));
-    } else if (line.starts_with("Register C:")) {
-      registerC = std::stol(line.substr(12));
-    } else if (line.starts_with("Program:")) {
-      std::string programString = line.substr(9);
-      std::istringstream programStream(programString);
-      std::string token;
-      while (std::getline(programStream, token, ',')) {
-        program.push_back(std::stol(token));
+    if (line.empty()) {
+      continue;
+    }
+
+    size_t comma_pos = line.find(',');
+    if (comma_pos == std::string::npos) {
+      continue;
+    }
+
+    int x = std::stoi(line.substr(0, comma_pos));
+    int y = std::stoi(line.substr(comma_pos + 1));
+    points.push_back({x, y});
+  }
+
+  return points;
+}
+
+class MemoryPathFinder {
+private:
+  // Direction arrays for up, right, down, left movements
+  const std::vector<int> dx = {-1, 0, 1, 0};
+  const std::vector<int> dy = {0, 1, 0, -1};
+  int gridSize;
+  std::vector<std::vector<bool>> corrupted;
+
+  bool isValid(int x, int y) {
+    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !corrupted[x][y];
+  }
+
+public:
+  MemoryPathFinder(int size) : gridSize(size) {
+    corrupted =
+        std::vector<std::vector<bool>>(size, std::vector<bool>(size, false));
+  }
+
+  void addCorruptedPoint(int x, int y) { corrupted[x][y] = true; }
+
+  int findShortestPath() {
+    std::vector<std::vector<int>> distance(gridSize,
+                                           std::vector<int>(gridSize, -1));
+    std::queue<std::pair<int, int>> q;
+
+    // Start from top-left corner
+    q.push({0, 0});
+    distance[0][0] = 0;
+
+    while (!q.empty()) {
+      auto const &[x, y] = q.front();
+      q.pop();
+
+      // If we reached the bottom-right corner
+      if (x == gridSize - 1 && y == gridSize - 1) {
+        return distance[x][y];
+      }
+
+      // Try all four directions
+      for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        if (isValid(newX, newY) && distance[newX][newY] == -1) {
+          distance[newX][newY] = distance[x][y] + 1;
+          q.push({newX, newY});
+        }
       }
     }
+
+    return -1; // No path found
   }
 
-#ifdef DEBUG
-  std::cout << registerA << " " << registerB << " " << registerC << std::endl;
-  for (const auto &r : program) {
-    std::cout << r << " ";
-  }
-#endif
-
-  auto getComboOperand = [&](long operand) -> long {
-    if (operand <= 3) {
-      return operand;
-    } else if (operand == 4) {
-      return registerA;
-    } else if (operand == 5) {
-      return registerB;
-    } else if (operand == 6) {
-      return registerC;
-    }
-
-    // invalid program
-    return 0;
-  };
-
-  std::vector<long> ans;
-
-  long instructionPointer = 0;
-  while (instructionPointer < program.size()) {
-    auto currentOpCode = program[instructionPointer];
-    instructionPointer++;
-    switch (currentOpCode) {
-    case 0: {
-      // adv
-      auto operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerA /= std::pow(2, operand1);
-      break;
-    }
-    case 1: {
-      // bxl
-      auto operand1 = program[instructionPointer];
-      instructionPointer++;
-      registerB ^= operand1;
-      break;
-    }
-    case 2: {
-      // bst instruction
-      auto operand1 = getComboOperand(program[instructionPointer]) % 8;
-      registerB = operand1;
-      instructionPointer++;
-      break;
-    }
-    case 3: {
-      // jnz
-      if (registerA == 0) {
-        instructionPointer++;
-      } else {
-        auto operand1 = program[instructionPointer];
-        instructionPointer = operand1;
+  void printGrid() {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
+        std::cout << (corrupted[i][j] ? '#' : '.');
       }
-      break;
-    }
-    case 4: {
-      instructionPointer++;
-      registerB ^= registerC;
-      break;
-    }
-    case 5: {
-      long operand1 = getComboOperand(program[instructionPointer]) % 8;
-      instructionPointer++;
-      ans.push_back(operand1);
-      break;
-    }
-    case 6: {
-      long operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerB = registerA / std::pow(2, operand1);
-      break;
-    }
-    case 7: {
-      auto operand1 = getComboOperand(program[instructionPointer]);
-      instructionPointer++;
-      registerC = registerA / std::pow(2, operand1);
-      break;
-    }
+      std::cout << '\n';
     }
   }
-  auto result = std::accumulate(
-      ans.begin() + 1, ans.end(), std::to_string(ans[0]),
-      [](const std::string &a, long b) { return a + "," + std::to_string(b); });
-  std::cout << std::endl;
-  std::cout << result << std::endl;
+};
 
-  return 0;
+auto solve(const std::string &input) -> long {
+  auto points = parseInput(input);
+  auto finder = MemoryPathFinder(71);
+
+  auto totalBytes = 1024;
+  for (size_t i = 0; i < (size_t)totalBytes && i < points.size(); i++) {
+    finder.addCorruptedPoint(points[i].second, points[i].first);
+  }
+
+  std::cout << "Memory space after 1024 bytes:\n";
+  finder.printGrid();
+
+  int shortestPath = finder.findShortestPath();
+  if (shortestPath != -1) {
+    std::cout << "\nShortest path length: " << shortestPath << std::endl;
+  } else {
+    std::cout << "\nNo path exists to the exit!" << std::endl;
+  }
+
+  return shortestPath;
 }
 } // namespace part_one

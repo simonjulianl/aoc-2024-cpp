@@ -2,7 +2,6 @@ module;
 
 #include <chrono>
 #include <cmath>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -22,80 +21,128 @@ export module part_two;
 
 export namespace part_two {
 
-auto getInitA(std::vector<long> &programs, long currentInput, long &refAns)
-    -> void {
-  // need to do dfs over this
-  //  if the program is X_16,X_15,X_14,...,X_0
-  // look for all a0s which f(a0) output X_0
-  // look for all a1s which f(a0 * 8 + a1) output X_1,X_0
-  // look for all a2s which f(a0 * 8 * 8 + a1 * 8 + a2) output X_2,X_1,X_0
-  if (programs.size() == 0) {
-    refAns = std::min(refAns, currentInput);
-    return;
-  }
-
-  long current_number = programs.back();
-
-  for (int i = 0; i < 8; i++) {
-    std::vector<long> ans;
-    // find digit one by one
-    long initA = currentInput * 8 + i;
-    long registerA = initA;
-    long registerB = 0;
-    long registerC = 0;
-
-    while (registerA != 0) {
-      registerB = (registerA % 8) ^ 0b111;
-      registerC = registerA >> registerB;
-      registerB = registerB ^ registerC ^ 0b111;
-      ans.push_back(registerB % 8);
-      registerA = registerA >> 3;
-    }
-
-    if (ans.size() > 0 && ans.front() == current_number) {
-      // potentially matching
-      programs.pop_back();
-      getInitA(programs, initA, refAns);
-      programs.push_back(current_number);
-    }
-  }
-}
-
-auto solve(const std::string &input) -> long {
-  long registerA = 0, registerB = 0, registerC = 0;
-  std::vector<std::string> lines;
+auto parseInput(const std::string &input) -> std::vector<std::pair<int, int>> {
+  std::vector<std::pair<int, int>> points;
   std::istringstream stream(input);
   std::string line;
-  std::vector<long> program;
 
-  // This part is not important for part two, but I'll leave it for parsing
-  // purposes
   while (std::getline(stream, line)) {
-    if (line.starts_with("Register A:")) {
-      registerA = std::stol(line.substr(12));
-    } else if (line.starts_with("Register B:")) {
-      registerB = std::stol(line.substr(12));
-    } else if (line.starts_with("Register C:")) {
-      registerC = std::stol(line.substr(12));
-    } else if (line.starts_with("Program:")) {
-      std::string programString = line.substr(9);
-      std::istringstream programStream(programString);
-      std::string token;
-      while (std::getline(programStream, token, ',')) {
-        program.push_back(std::stol(token));
+    if (line.empty()) {
+      continue;
+    }
+
+    size_t comma_pos = line.find(',');
+    if (comma_pos == std::string::npos) {
+      continue;
+    }
+
+    int x = std::stoi(line.substr(0, comma_pos));
+    int y = std::stoi(line.substr(comma_pos + 1));
+    points.push_back({x, y});
+  }
+
+  return points;
+}
+
+class MemoryPathFinder {
+private:
+  // Direction arrays for up, right, down, left movements
+  const std::vector<int> dx = {-1, 0, 1, 0};
+  const std::vector<int> dy = {0, 1, 0, -1};
+  int gridSize;
+  std::vector<std::vector<bool>> corrupted;
+
+  bool isValid(int x, int y) {
+    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !corrupted[x][y];
+  }
+
+public:
+  MemoryPathFinder(int size) : gridSize(size) {
+    corrupted =
+        std::vector<std::vector<bool>>(size, std::vector<bool>(size, false));
+  }
+
+  void addCorruptedPoint(int x, int y) { corrupted[x][y] = true; }
+
+  void reset() {
+    corrupted = std::vector<std::vector<bool>>(
+        gridSize, std::vector<bool>(gridSize, false));
+  }
+
+  bool pathExists() {
+    std::vector<std::vector<bool>> visited(gridSize,
+                                           std::vector<bool>(gridSize, false));
+    std::queue<std::pair<int, int>> q;
+
+    // Start from top-left corner
+    q.push({0, 0});
+    visited[0][0] = true;
+
+    while (!q.empty()) {
+      int x = q.front().first;
+      int y = q.front().second;
+      q.pop();
+
+      // If we reached the bottom-right corner
+      if (x == gridSize - 1 && y == gridSize - 1) {
+        return true;
+      }
+
+      // Try all four directions
+      for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        if (isValid(newX, newY) && !visited[newX][newY]) {
+          visited[newX][newY] = true;
+          q.push({newX, newY});
+        }
       }
     }
+
+    return false;
   }
 
-#ifdef DEBUG
-  std::cout << registerA << " " << registerB << " " << registerC << std::endl;
-  for (const auto &r : program) {
-    std::cout << r << " ";
-  }
-#endif
+  std::pair<int, int>
+  findBlockingPoint(const std::vector<std::pair<int, int>> &points) {
+    reset();
 
-  long ans = std::numeric_limits<long>::max();
-  getInitA(program, 0, ans);
-  return ans;
+    for (size_t i = 0; i < points.size(); i++) {
+      addCorruptedPoint(points[i].second, points[i].first);
+
+      if (!pathExists()) {
+        // Return the blocking point in (y,x) format
+        return points[i];
+      }
+    }
+
+    return {-1, -1}; // No blocking point found
+  }
+
+  void printGrid() {
+    for (int i = 0; i < gridSize; i++) {
+      for (int j = 0; j < gridSize; j++) {
+        std::cout << (corrupted[i][j] ? '#' : '.');
+      }
+      std::cout << '\n';
+    }
+  }
+};
+
+auto solve(const std::string &input) -> long {
+  auto points = parseInput(input);
+  auto finder = MemoryPathFinder(71);
+
+  auto blockingPoint = finder.findBlockingPoint(points);
+
+  if (blockingPoint.first != -1) {
+    // Print result in y,x format
+    std::cout << blockingPoint.first << "," << blockingPoint.second
+              << std::endl;
+  } else {
+    std::cout << "No blocking point found!" << std::endl;
+  }
+
+  return 0;
 }
 } // namespace part_two
