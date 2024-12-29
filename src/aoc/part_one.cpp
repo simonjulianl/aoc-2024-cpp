@@ -1,131 +1,91 @@
 module;
 
-#include <chrono>
-#include <cmath>
+#include <algorithm>
 #include <iostream>
-#include <iterator>
-#include <limits>
-#include <numeric>
-#include <queue>
-#include <ranges>
-#include <regex>
+#include <sstream>
 #include <string>
-#include <thread>
-#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 export module part_one;
 
-#define DEBUG
+//#define DEBUG
 
 export namespace part_one {
 
-auto parseInput(const std::string &input) -> std::vector<std::pair<int, int>> {
-  std::vector<std::pair<int, int>> points;
+auto solve(const std::string &input) -> long {
   std::istringstream stream(input);
   std::string line;
+  std::vector<std::string> patterns;
+  std::vector<std::string> designs;
+  bool firstLine = true;
 
   while (std::getline(stream, line)) {
     if (line.empty()) {
       continue;
     }
 
-    size_t comma_pos = line.find(',');
-    if (comma_pos == std::string::npos) {
-      continue;
-    }
-
-    int x = std::stoi(line.substr(0, comma_pos));
-    int y = std::stoi(line.substr(comma_pos + 1));
-    points.push_back({x, y});
-  }
-
-  return points;
-}
-
-class MemoryPathFinder {
-private:
-  // Direction arrays for up, right, down, left movements
-  const std::vector<int> dx = {-1, 0, 1, 0};
-  const std::vector<int> dy = {0, 1, 0, -1};
-  int gridSize;
-  std::vector<std::vector<bool>> corrupted;
-
-  bool isValid(int x, int y) {
-    return x >= 0 && x < gridSize && y >= 0 && y < gridSize && !corrupted[x][y];
-  }
-
-public:
-  MemoryPathFinder(int size) : gridSize(size) {
-    corrupted =
-        std::vector<std::vector<bool>>(size, std::vector<bool>(size, false));
-  }
-
-  void addCorruptedPoint(int x, int y) { corrupted[x][y] = true; }
-
-  int findShortestPath() {
-    std::vector<std::vector<int>> distance(gridSize,
-                                           std::vector<int>(gridSize, -1));
-    std::queue<std::pair<int, int>> q;
-
-    // Start from top-left corner
-    q.push({0, 0});
-    distance[0][0] = 0;
-
-    while (!q.empty()) {
-      auto const &[x, y] = q.front();
-      q.pop();
-
-      // If we reached the bottom-right corner
-      if (x == gridSize - 1 && y == gridSize - 1) {
-        return distance[x][y];
+    if (firstLine) {
+      std::string pattern;
+      std::istringstream patternStream(line);
+      while (std::getline(patternStream, pattern, ',')) {
+        pattern.erase(remove_if(pattern.begin(), pattern.end(), isspace),
+                      pattern.end());
+        if (!pattern.empty()) {
+          patterns.push_back(pattern);
+        }
       }
 
-      // Try all four directions
-      for (int i = 0; i < 4; i++) {
-        int newX = x + dx[i];
-        int newY = y + dy[i];
+      firstLine = false;
+    } else {
+      line.erase(remove_if(line.begin(), line.end(), isspace), line.end());
+      if (!line.empty()) {
+        designs.push_back(line);
+      }
+    }
+  }
 
-        if (isValid(newX, newY) && distance[newX][newY] == -1) {
-          distance[newX][newY] = distance[x][y] + 1;
-          q.push({newX, newY});
+#ifdef DEBUG
+  for (const auto &pattern : designs) {
+    std::cout << pattern << std::endl;
+  }
+#endif
+
+  auto canFormDesign = [&patterns](const std::string &design) -> bool {
+    std::vector<bool> dp(design.length() + 1, false);
+    dp[0] = true;
+
+    for (size_t i = 1; i <= design.length(); i++) {
+      for (const auto &pattern : patterns) {
+        if (pattern.length() <= i) {
+          bool matches = true;
+
+          // Check if the pattern matches the design
+          for (size_t j = 0; j < pattern.length(); j++) {
+            if (design[i - pattern.length() + j] != pattern[j]) {
+              matches = false;
+              break;
+            }
+          }
+
+          // If pattern matches, check if the previous substring can be formed
+          if (matches && dp[i - pattern.length()]) {
+            dp[i] = true;
+            break;
+          }
         }
       }
     }
 
-    return -1; // No path found
-  }
+    return dp[design.length()];
+  };
 
-  void printGrid() {
-    for (int i = 0; i < gridSize; i++) {
-      for (int j = 0; j < gridSize; j++) {
-        std::cout << (corrupted[i][j] ? '#' : '.');
-      }
-      std::cout << '\n';
+  long ans = 0;
+  for (const auto &design : designs) {
+    if (canFormDesign(design)) {
+      ans++;
     }
   }
-};
-
-auto solve(const std::string &input) -> long {
-  auto points = parseInput(input);
-  auto finder = MemoryPathFinder(71);
-
-  auto totalBytes = 1024;
-  for (size_t i = 0; i < (size_t)totalBytes && i < points.size(); i++) {
-    finder.addCorruptedPoint(points[i].second, points[i].first);
-  }
-
-  std::cout << "Memory space after 1024 bytes:\n";
-  finder.printGrid();
-
-  int shortestPath = finder.findShortestPath();
-  if (shortestPath != -1) {
-    std::cout << "\nShortest path length: " << shortestPath << std::endl;
-  } else {
-    std::cout << "\nNo path exists to the exit!" << std::endl;
-  }
-
-  return shortestPath;
+  return ans;
 }
 } // namespace part_one
