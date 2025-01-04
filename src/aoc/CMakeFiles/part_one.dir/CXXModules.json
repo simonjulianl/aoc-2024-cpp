@@ -1,0 +1,19 @@
+{
+	"modules" : 
+	{
+		"part_one" : 
+		{
+			"bmi" : "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/CMakeFiles/part_one.dir/part_one.gcm",
+			"is-private" : false
+		}
+	},
+	"references" : 
+	{
+		"part_one" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "aoc/CMakeFiles/part_one.dir/part_one.gcm"
+		}
+	},
+	"usages" : {}
+}
