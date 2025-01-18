@@ -1,6 +1,7 @@
 module;
 
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <numeric>
@@ -18,94 +19,78 @@ export module part_two;
 
 export namespace part_two {
 
-struct TupleHash {
-  template <class T1, class T2, class T3, class T4>
-  std::size_t operator()(const std::tuple<T1, T2, T3, T4> &tuple) const {
-    auto h1 = std::hash<T1>{}(std::get<0>(tuple));
-    auto h2 = std::hash<T2>{}(std::get<1>(tuple));
-    auto h3 = std::hash<T3>{}(std::get<2>(tuple));
-    auto h4 = std::hash<T4>{}(std::get<3>(tuple));
-
-    return h1 ^ h2 ^ h3 ^ h4;
-  }
-};
-
-auto pruneNumber(const long &number) -> long { return number % 16777216; }
-
-auto mixNumber(const long &number, const long &secretNumber) -> long {
-  return number ^ secretNumber;
-}
-
-auto getNextSecretNumber(const long &number) -> long {
-  long a = pruneNumber(mixNumber(number << 6, number));
-  long b = pruneNumber(mixNumber(a >> 5, a));
-  long c = pruneNumber(mixNumber(b << 11, b));
-  return c;
-}
-
-auto getDeltaPriceSequence(const long &number, const long &i)
-    -> std::vector<std::pair<long, long>> {
-  std::vector<std::pair<long, long>> sequence;
-  auto curr = number;
-  for (auto j = 0; j < i - 1; j++) {
-    auto prev = curr;
-    curr = getNextSecretNumber(curr);
-    auto diff = curr % 10 - prev % 10;
-    sequence.push_back({diff, curr % 10});
-  }
-
-  return sequence;
-}
-
-auto getBananaGivenSequence(const std::vector<long> &seq,
-                            const std::vector<std::pair<long, long>> &prices)
-    -> long {
-  // Since the seq is of length 4, let's just brute force pattern matching
-  for (auto i = 0; i < prices.size() - 3; i++) {
-    if (prices[i].first == seq[0] && prices[i + 1].first == seq[1] &&
-        prices[i + 2].first == seq[2] && prices[i + 3].first == seq[3]) {
-      return prices[i + 3].second;
-    }
-  }
-
-  return -1;
-}
-
 auto solve(const std::string &input) -> long {
   std::istringstream stream(input);
   std::string line;
 
-  std::vector<long> numbers;
+  std::unordered_map<std::string, std::unordered_set<std::string>> numbers;
+  std::string firstPart, secondPart;
+
   while (std::getline(stream, line)) {
-    numbers.push_back(std::stol(line));
+    auto pos = line.find("-");
+    if (pos == std::string::npos) {
+      continue;
+    } else {
+      firstPart = line.substr(0, pos);
+      secondPart = line.substr(pos + 1);
+
+      numbers[firstPart].insert(secondPart);
+      numbers[secondPart].insert(firstPart);
+    }
   }
 
-  std::unordered_map<std::tuple<long, long, long, long>, long, TupleHash> cache;
-  // Precompute every seq of 4 numbers
-  for (const auto &number : numbers) {
-    auto priceSeq = getDeltaPriceSequence(number, 2000);
-    // Check for any possible sequence of 4 in the priceSeq
-    std::unordered_set<std::tuple<long, long, long, long>, TupleHash> visited;
-    for (auto i = 0; i < priceSeq.size() - 3; i++) {
-      std::tuple<long, long, long, long> sequence =
-          std::make_tuple(priceSeq[i].first, priceSeq[i + 1].first,
-                          priceSeq[i + 2].first, priceSeq[i + 3].first);
-      auto banana = priceSeq[i + 3].second;
-      if (visited.find(sequence) == visited.end()) {
-        cache[sequence] += banana;
-        visited.insert(sequence);
-      }
+  // max clique problem
+  std::vector<std::string> candidates;
+  for (const auto &pair : numbers) {
+    candidates.push_back(pair.first);
+  }
+  std::sort(candidates.begin(), candidates.end());
+
+  std::vector<std::string> bestClique;
+  std::vector<std::string> currentClique;
+
+  std::function<void(const std::vector<std::string> &)> search;
+
+  search = [&](const std::vector<std::string> &candidates) {
+    if (currentClique.size() > bestClique.size()) {
+      bestClique = currentClique;
     }
 
-#ifdef DEBUG
-    std::cout << "Finish processing number: " << number << std::endl;
-#endif
-  }
+    for (const auto &v : candidates) {
+      currentClique.push_back(v);
 
-  auto ans = std::max_element(
-      cache.begin(), cache.end(),
-      [](const auto &a, const auto &b) { return a.second < b.second; });
+      std::vector<std::string> newCandidates;
+      for (const auto &u : candidates) {
+        if (u <= v)
+          continue; // prevent duplicate
 
-  return ans->second;
+        bool isConnected = true;
+        for (const auto &c : currentClique) {
+          if (numbers.at(u).count(c) == 0) {
+            isConnected = false;
+            break;
+          }
+        }
+
+        if (isConnected) {
+          newCandidates.push_back(u);
+        }
+      }
+
+      // backtrack search
+      search(newCandidates);
+      currentClique.pop_back();
+    }
+  };
+
+  search(candidates);
+
+  std::string result = std::accumulate(
+      bestClique.begin(), bestClique.end(), std::string(),
+      [](const std::string &a, const std::string &b) { return a + "," + b; });
+
+  result.erase(0, 1);
+  std::cout << "Best clique: " << result << std::endl;
+  return bestClique.size();
 }
 } // namespace part_two

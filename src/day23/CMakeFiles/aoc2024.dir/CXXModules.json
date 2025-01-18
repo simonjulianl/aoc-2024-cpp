@@ -1,0 +1,22 @@
+{
+	"modules" : {},
+	"references" : 
+	{
+		"input" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "aoc/CMakeFiles/input.dir/input.gcm"
+		},
+		"part_one" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "aoc/CMakeFiles/part_one.dir/part_one.gcm"
+		},
+		"part_two" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "aoc/CMakeFiles/part_two.dir/part_two.gcm"
+		}
+	},
+	"usages" : {}
+}

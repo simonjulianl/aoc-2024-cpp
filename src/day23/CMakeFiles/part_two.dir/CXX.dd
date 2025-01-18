@@ -1,0 +1,4 @@
+ninja_dyndep_version = 1.0
+build aoc/CMakeFiles/part_two.dir/part_two.cpp.o | aoc/CMakeFiles/part_two.dir/part_two.gcm: dyndep
+  restat = 1
+
