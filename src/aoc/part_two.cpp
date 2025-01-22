@@ -1,10 +1,10 @@
 module;
 
 #include <algorithm>
-#include <functional>
 #include <iostream>
 #include <map>
 #include <numeric>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string>
@@ -19,78 +19,159 @@ export module part_two;
 
 export namespace part_two {
 
+struct Gate {
+  std::string op;
+  std::string input1;
+  std::string input2;
+  std::string output;
+};
+
+auto checkWireIsInput(const std::string &w) -> bool {
+  return w[0] == 'x' || w[0] == 'y';
+}
+
+// Heavily inspired by :
+// https://github.com/vss2sn/advent_of_code/blob/master/2024/cpp/day_24b.cpp
 auto solve(const std::string &input) -> long {
   std::istringstream stream(input);
   std::string line;
+  std::unordered_map<std::string, std::vector<Gate>> map;
+  std::vector<Gate> gates;
 
-  std::unordered_map<std::string, std::unordered_set<std::string>> numbers;
-  std::string firstPart, secondPart;
-
+  auto isFirstPart = true;
   while (std::getline(stream, line)) {
-    auto pos = line.find("-");
-    if (pos == std::string::npos) {
+    if (line.empty()) {
+      isFirstPart = false;
+      continue;
+    }
+
+    if (isFirstPart) {
       continue;
     } else {
-      firstPart = line.substr(0, pos);
-      secondPart = line.substr(pos + 1);
+      // second part
+      std::regex pattern(R"((\w+)\s+(XOR|AND|OR)\s+(\w+)\s+->\s+(\w+))");
+      std::smatch match;
+      if (std::regex_match(line, match, pattern)) {
+        std::string i1 = match[1].str();
+        std::string op = match[2].str();
+        std::string i2 = match[3].str();
+        std::string output = match[4].str();
 
-      numbers[firstPart].insert(secondPart);
-      numbers[secondPart].insert(firstPart);
+        auto newGate = Gate{op, i1, i2, output};
+        gates.push_back(newGate);
+        map[i1].push_back(newGate);
+        map[i2].push_back(newGate);
+      }
     }
   }
 
-  // max clique problem
-  std::vector<std::string> candidates;
-  for (const auto &pair : numbers) {
-    candidates.push_back(pair.first);
+  for (auto &[wire, ops] : map) {
+    std::sort(std::begin(ops), std::end(ops),
+              [](const auto &a, const auto &b) { return a.op < b.op; });
   }
-  std::sort(candidates.begin(), candidates.end());
 
-  std::vector<std::string> bestClique;
-  std::vector<std::string> currentClique;
+#ifdef DEBUG
+  for (const auto &gate : gates) {
+    std::cout << gate.input1 << " " << gate.op << " " << gate.input2 << " -> "
+              << gate.output << std::endl;
+  }
+#endif
 
-  std::function<void(const std::vector<std::string> &)> search;
+  std::set<std::string> incorrect_outputs;
+  for (const auto &operation : gates) {
+    const auto &w1 = operation.input1;
+    const auto &w2 = operation.input2;
+    const auto &out = operation.output;
+    const auto &op = operation.op;
 
-  search = [&](const std::vector<std::string> &candidates) {
-    if (currentClique.size() > bestClique.size()) {
-      bestClique = currentClique;
+    /**
+     * From:
+     https://www.reddit.com/r/adventofcode/comments/1hl698z/2024_day_24_solutions/
+     *  By using the following formula
+        Zn = (Xn ⊕ Yn) ⊕ Cn-1
+        Cn = (Xn * Yn) + (Cn-1 * (Xn ⊕ Yn))
+        with C0 = (X0 * Y0)
+
+        We can derive a series of rule.
+
+        AND:
+
+        AND gate can only be input to an OR gate except for z01
+        AND gate cannot take other AND gate as input
+
+        XOR:
+        XOR gate can only be input to and AND/XOR gate
+        XOR gate cannot take AND gate as input except for z01
+
+        OR:
+        OR gate can only be input of AND/XOR gate
+        OR gate can only take AND gate as input
+        (Xn ⊕ Yn) ⊕ (a + b) should always output a Zxx except for the last carry
+     z45 A gate with Zxx as its output cannot directly use Xn or Yn as inputs
+     exept the first bit Z00. Look for gates that do not follow those rules.
+     */
+
+    if (out[0] == 'z') {
+      const auto idx = std::stoi(out.substr(1, out.size() - 1));
+      if (idx == 0 || idx == 45) {
+        continue;
+      }
     }
 
-    for (const auto &v : candidates) {
-      currentClique.push_back(v);
+    const bool is_first_input = checkWireIsInput(w1);
+    const bool is_second_input = checkWireIsInput(w2);
 
-      std::vector<std::string> newCandidates;
-      for (const auto &u : candidates) {
-        if (u <= v)
-          continue; // prevent duplicate
+    // This is just the subset of the rules
+    if (is_first_input && !is_second_input) {
+      incorrect_outputs.insert(out);
+    }
 
-        bool isConnected = true;
-        for (const auto &c : currentClique) {
-          if (numbers.at(u).count(c) == 0) {
-            isConnected = false;
-            break;
-          }
-        }
+    if (!is_first_input && is_second_input) {
+      incorrect_outputs.insert(out);
+    }
 
-        if (isConnected) {
-          newCandidates.push_back(u);
-        }
+    if (op == "AND") {
+      if (map[out].size() < 1 || map[out][0].op != "OR") {
+        incorrect_outputs.insert(out);
+      }
+    } else if (op == "OR") {
+      if (is_first_input || is_second_input) {
+        incorrect_outputs.insert(out);
       }
 
-      // backtrack search
-      search(newCandidates);
-      currentClique.pop_back();
+      if (!map.contains(out) || map[out].size() != 2 ||
+          map[out][0].op != "AND" || map[out][1].op != "XOR") {
+        incorrect_outputs.insert(out);
+      }
+    } else if (op == "XOR") {
+      if (is_first_input && out[0] == 'z') {
+        incorrect_outputs.insert(out);
+      }
+
+      if (is_first_input &&
+          (map[out][0].op != "AND" || map[out][1].op != "XOR")) {
+        incorrect_outputs.insert(out);
+      }
+
+      if (!is_first_input && out[0] != 'z') {
+        incorrect_outputs.insert(out);
+      }
     }
-  };
+  }
 
-  search(candidates);
+  for (const auto &op : gates) {
+    if (op.input1 == "x00" || op.input1 == "x00" || op.input1 == "y00" ||
+        op.input2 == "y00") {
+      // first z00 doesn't have carry bit but its included here
+      // c0 doesn't have or output, special rule
+      incorrect_outputs.erase(op.output);
+    }
+  }
 
-  std::string result = std::accumulate(
-      bestClique.begin(), bestClique.end(), std::string(),
-      [](const std::string &a, const std::string &b) { return a + "," + b; });
+  for (const auto &ele : incorrect_outputs) {
+    std::cout << ele << ',';
+  }
 
-  result.erase(0, 1);
-  std::cout << "Best clique: " << result << std::endl;
-  return bestClique.size();
+  return 1;
 }
 } // namespace part_two

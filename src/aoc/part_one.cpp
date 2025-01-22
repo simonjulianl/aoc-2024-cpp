@@ -4,6 +4,7 @@ module;
 #include <iostream>
 #include <map>
 #include <numeric>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string>
@@ -18,67 +19,100 @@ export module part_one;
 
 export namespace part_one {
 
+struct Gate {
+  std::string operation;
+  std::string input1;
+  std::string input2;
+  std::string output;
+};
+
 auto solve(const std::string &input) -> long {
   std::istringstream stream(input);
   std::string line;
+  std::unordered_map<std::string, bool> values;
+  std::vector<Gate> gates;
 
-  std::unordered_map<std::string, std::unordered_set<std::string>> numbers;
-  std::string firstPart, secondPart;
-
+  auto isFirstPart = true;
   while (std::getline(stream, line)) {
-    auto pos = line.find("-");
-    if (pos == std::string::npos) {
+    if (line.empty()) {
+      isFirstPart = false;
       continue;
-    } else {
-      firstPart = line.substr(0, pos);
-      secondPart = line.substr(pos + 1);
-
-      numbers[firstPart].insert(secondPart);
-      numbers[secondPart].insert(firstPart);
     }
-  }
 
-  // Brute force solution, try every combination of 3 comps
-  std::vector<std::string> keys;
-  for (const auto &pair : numbers) {
-    keys.push_back(pair.first);
-  }
+    if (isFirstPart) {
+      auto pos = line.find(":");
+      if (pos == std::string::npos) {
+        continue;
+      } else {
+        std::string cable = line.substr(0, pos);
+        std::string value = line.substr(pos + 2);
+        values[cable] = std::stoi(value) == 1;
+      }
+    } else {
+      // second part
+      std::regex pattern(R"((\w+)\s+(XOR|AND|OR)\s+(\w+)\s+->\s+(\w+))");
+      std::smatch match;
+      if (std::regex_match(line, match, pattern)) {
+        std::string i1 = match[1].str();
+        std::string op = match[2].str();
+        std::string i2 = match[3].str();
+        std::string output = match[4].str();
 
-  auto ans = 0;
-
-  // resource:
-  // https://stackoverflow.com/questions/12991758/creating-all-possible-k-combinations-of-n-items-in-c
-  int N = keys.size();
-  constexpr int K = 3;
-  std::string bitmask(K, 1); // K leading 1's
-  bitmask.resize(N, 0);      // N-K trailing 0's
-
-  std::cout << "N: " << N << std::endl;
-  do {
-    std::vector<std::string> combi;
-    for (int i = 0; i < N; ++i) // [0..N-1] integers
-    {
-      if (bitmask[i]) {
-        combi.push_back(keys[i]);
+        gates.push_back(Gate{op, i1, i2, output});
       }
     }
+  }
 
-    auto com1 = combi[0];
-    auto com2 = combi[1];
-    auto com3 = combi[2];
+#ifdef DEBUG
+  for (const auto &gate : gates) {
+    std::cout << gate.input1 << " " << gate.operation << " " << gate.input2
+              << " -> " << gate.output << std::endl;
+  }
+#endif
 
-    // Check if any of the com starts with t
-    if (com1[0] != 't' && com2[0] != 't' && com3[0] != 't') {
-      continue;
+  auto solvedGate = 0;
+  while (solvedGate != (int)gates.size()) {
+    // foreach gate, check if we can compute the value
+    for (const auto &gate : gates) {
+      if (values.count(gate.output) != 0) {
+        continue;
+      }
+
+      // output is still unknown
+      if (values.count(gate.input1) > 0 && values.count(gate.input2) > 0) {
+        auto i1 = values[gate.input1];
+        auto i2 = values[gate.input2];
+
+        bool output;
+        if (gate.operation == "AND") {
+          output = i1 && i2;
+        } else if (gate.operation == "OR") {
+          output = i1 || i2;
+        } else {
+          output = i1 ^ i2;
+        }
+
+        values[gate.output] = output;
+        solvedGate++;
+      }
+    }
+  }
+
+  // From my obs, max z value is z45 and its sequential (i.e. z00 - z45)
+  long long multiplier = 1;
+  long long ans = 0;
+  for (int i = 0; i <= 45; ++i) {
+    std::ostringstream oss;
+    oss << "z" << (i < 10 ? "0" : "")
+        << i; // Append leading zero for numbers < 10
+    auto key = oss.str();
+    auto value = values[key];
+    if (value) {
+      ans += multiplier;
     }
 
-    if (numbers[com1].find(com2) != numbers[com1].end() &&
-        numbers[com1].find(com3) != numbers[com1].end() &&
-        numbers[com2].find(com3) != numbers[com2].end()) {
-      ans += 1;
-    }
-  } while (std::prev_permutation(bitmask.begin(), bitmask.end()));
-
+    multiplier <<= 1;
+  }
   return ans;
 }
 } // namespace part_one

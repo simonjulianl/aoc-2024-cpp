@@ -1,0 +1,22 @@
+{
+"rules": [
+{
+"primary-output": "aoc/CMakeFiles/aoc2024.dir/main.cpp.o",
+"requires": [
+{
+"logical-name": "part_two"
+}
+,
+{
+"logical-name": "input"
+}
+,
+{
+"logical-name": "part_one"
+}
+]
+}
+],
+"version": 0,
+"revision": 0
+}
