@@ -95359,131 +95359,88 @@ export  module  part_two;
 
 export namespace part_two {
 
-struct Gate {
-  std::string op;
-  std::string input1;
-  std::string input2;
-  std::string output;
-};
+auto splitStringBy(const std::string &input, const std::string &separator)
+    -> std::vector<std::string> {
+  std::string inputCopy = input;
+  std::vector<std::string> parts;
+  size_t pos = 0;
+  while ((pos = inputCopy.find(separator)) != std::string::npos) {
+    parts.push_back(inputCopy.substr(0, pos));
+    inputCopy.erase(0, pos + separator.length());
+  }
 
-auto checkWireIsInput(const std::string &w) -> bool {
-  return w[0] == 'x' || w[0] == 'y';
+  parts.push_back(inputCopy);
+
+  return parts;
 }
 
+auto getLockKeyRepresentation(const std::string &keyLock)
+    -> std::tuple<bool, std::vector<int>> {
+  auto keyLockParts = splitStringBy(keyLock, "\n");
+  int rows = keyLockParts.size();
+  int cols = keyLockParts[0].size();
+  std::vector<int> heights(cols, 0);
 
+  bool isLock = false;
+  for (auto col = 0; col < cols; col++) {
+    if (keyLockParts[0][col] == '#') {
+      isLock = true;
+      auto count = 0;
+      for (auto row = 1; row < rows; row++) {
+        if (keyLockParts[row][col] == '#') {
+          count++;
+        }
+      }
+      heights[col] = count;
+    } else {
+      auto count = 0;
+      for (auto row = 1; row < rows; row++) {
+        if (keyLockParts[row][col] == '.') {
+          count++;
+        }
+      }
+      heights[col] = rows - 2 - count;
+    }
+  }
+
+  return std::make_tuple(isLock, heights);
+}
+
+auto doesKeyFitLock(const std::vector<int> &key, const std::vector<int> &lock,
+                    const int &lockSize) -> bool {
+  for (auto i = 0; i < key.size(); i++) {
+    if (key[i] + lock[i] > lockSize) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 auto solve(const std::string &input) -> long {
-  std::istringstream stream(input);
-  std::string line;
-  std::unordered_map<std::string, std::vector<Gate>> map;
-  std::vector<Gate> gates;
+  auto keyLocks = splitStringBy(input, "\n\n");
 
-  auto isFirstPart = true;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      isFirstPart = false;
-      continue;
-    }
+  std::vector<std::vector<int>> locks;
+  std::vector<std::vector<int>> keys;
 
-    if (isFirstPart) {
-      continue;
+  for (const auto &keyLock : keyLocks) {
+    auto [isLock, heights] = getLockKeyRepresentation(keyLock);
+    if (isLock) {
+      locks.push_back(heights);
     } else {
+      keys.push_back(heights);
+    }
+  }
 
-      std::regex pattern(R"((\w+)\s+(XOR|AND|OR)\s+(\w+)\s+->\s+(\w+))");
-      std::smatch match;
-      if (std::regex_match(line, match, pattern)) {
-        std::string i1 = match[1].str();
-        std::string op = match[2].str();
-        std::string i2 = match[3].str();
-        std::string output = match[4].str();
-
-        auto newGate = Gate{op, i1, i2, output};
-        gates.push_back(newGate);
-        map[i1].push_back(newGate);
-        map[i2].push_back(newGate);
+  auto matchingPair = 0;
+  for (auto key : keys) {
+    for (auto lock : locks) {
+      if (doesKeyFitLock(key, lock, 5)) {
+        matchingPair++;
       }
     }
   }
 
-  for (auto &[wire, ops] : map) {
-    std::sort(std::begin(ops), std::end(ops),
-              [](const auto &a, const auto &b) { return a.op < b.op; });
-  }
-
-
-  for (const auto &gate : gates) {
-    std::cout << gate.input1 << " " << gate.op << " " << gate.input2 << " -> "
-              << gate.output << std::endl;
-  }
-
-
-  std::set<std::string> incorrect_outputs;
-  for (const auto &operation : gates) {
-    const auto &w1 = operation.input1;
-    const auto &w2 = operation.input2;
-    const auto &out = operation.output;
-    const auto &op = operation.op;
-# 114 "/home/lauwsj/PycharmProjects/aoc-2024-cpp/src/aoc/part_two.cpp"
-    if (out[0] == 'z') {
-      const auto idx = std::stoi(out.substr(1, out.size() - 1));
-      if (idx == 0 || idx == 45) {
-        continue;
-      }
-    }
-
-    const bool is_first_input = checkWireIsInput(w1);
-    const bool is_second_input = checkWireIsInput(w2);
-
-
-    if (is_first_input && !is_second_input) {
-      incorrect_outputs.insert(out);
-    }
-
-    if (!is_first_input && is_second_input) {
-      incorrect_outputs.insert(out);
-    }
-
-    if (op == "AND") {
-      if (map[out].size() < 1 || map[out][0].op != "OR") {
-        incorrect_outputs.insert(out);
-      }
-    } else if (op == "OR") {
-      if (is_first_input || is_second_input) {
-        incorrect_outputs.insert(out);
-      }
-
-      if (!map.contains(out) || map[out].size() != 2 ||
-          map[out][0].op != "AND" || map[out][1].op != "XOR") {
-        incorrect_outputs.insert(out);
-      }
-    } else if (op == "XOR") {
-      if (is_first_input && out[0] == 'z') {
-        incorrect_outputs.insert(out);
-      }
-
-      if (is_first_input &&
-          (map[out][0].op != "AND" || map[out][1].op != "XOR")) {
-        incorrect_outputs.insert(out);
-      }
-
-      if (!is_first_input && out[0] != 'z') {
-        incorrect_outputs.insert(out);
-      }
-    }
-  }
-
-  for (const auto &op : gates) {
-    if (op.input1 == "x00" || op.input1 == "x00" || op.input1 == "y00" ||
-        op.input2 == "y00") {
-      std::cout << op.output << std::endl;
-
-    }
-  }
-
-  for (const auto &ele : incorrect_outputs) {
-    std::cout << ele << ',';
-  }
-
-  return 1;
+  return matchingPair;
 }
 }

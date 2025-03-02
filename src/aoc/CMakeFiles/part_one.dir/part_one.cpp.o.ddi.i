@@ -95359,100 +95359,88 @@ export  module  part_one;
 
 export namespace part_one {
 
-struct Gate {
-  std::string operation;
-  std::string input1;
-  std::string input2;
-  std::string output;
-};
+auto splitStringBy(const std::string &input, const std::string &separator)
+    -> std::vector<std::string> {
+  std::string inputCopy = input;
+  std::vector<std::string> parts;
+  size_t pos = 0;
+  while ((pos = inputCopy.find(separator)) != std::string::npos) {
+    parts.push_back(inputCopy.substr(0, pos));
+    inputCopy.erase(0, pos + separator.length());
+  }
+
+  parts.push_back(inputCopy);
+
+  return parts;
+}
+
+auto getLockKeyRepresentation(const std::string &keyLock)
+    -> std::tuple<bool, std::vector<int>> {
+  auto keyLockParts = splitStringBy(keyLock, "\n");
+  int rows = keyLockParts.size();
+  int cols = keyLockParts[0].size();
+  std::vector<int> heights(cols, 0);
+
+  bool isLock = false;
+  for (auto col = 0; col < cols; col++) {
+    if (keyLockParts[0][col] == '#') {
+      isLock = true;
+      auto count = 0;
+      for (auto row = 1; row < rows; row++) {
+        if (keyLockParts[row][col] == '#') {
+          count++;
+        }
+      }
+      heights[col] = count;
+    } else {
+      auto count = 0;
+      for (auto row = 1; row < rows; row++) {
+        if (keyLockParts[row][col] == '.') {
+          count++;
+        }
+      }
+      heights[col] = rows - 2 - count;
+    }
+  }
+
+  return std::make_tuple(isLock, heights);
+}
+
+auto doesKeyFitLock(const std::vector<int> &key, const std::vector<int> &lock,
+                    const int &lockSize) -> bool {
+  for (auto i = 0; i < key.size(); i++) {
+    if (key[i] + lock[i] > lockSize) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 auto solve(const std::string &input) -> long {
-  std::istringstream stream(input);
-  std::string line;
-  std::unordered_map<std::string, bool> values;
-  std::vector<Gate> gates;
+  auto keyLocks = splitStringBy(input, "\n\n");
 
-  auto isFirstPart = true;
-  while (std::getline(stream, line)) {
-    if (line.empty()) {
-      isFirstPart = false;
-      continue;
-    }
+  std::vector<std::vector<int>> locks;
+  std::vector<std::vector<int>> keys;
 
-    if (isFirstPart) {
-      auto pos = line.find(":");
-      if (pos == std::string::npos) {
-        continue;
-      } else {
-        std::string cable = line.substr(0, pos);
-        std::string value = line.substr(pos + 2);
-        values[cable] = std::stoi(value) == 1;
-      }
+  for (const auto &keyLock : keyLocks) {
+    auto [isLock, heights] = getLockKeyRepresentation(keyLock);
+    if (isLock) {
+      locks.push_back(heights);
     } else {
+      keys.push_back(heights);
+    }
+  }
 
-      std::regex pattern(R"((\w+)\s+(XOR|AND|OR)\s+(\w+)\s+->\s+(\w+))");
-      std::smatch match;
-      if (std::regex_match(line, match, pattern)) {
-        std::string i1 = match[1].str();
-        std::string op = match[2].str();
-        std::string i2 = match[3].str();
-        std::string output = match[4].str();
-
-        gates.push_back(Gate{op, i1, i2, output});
+  auto matchingPair = 0;
+  for (auto key : keys) {
+    for (auto lock : locks) {
+      if (doesKeyFitLock(key, lock, 5)) {
+        matchingPair++;
       }
     }
   }
 
-
-  for (const auto &gate : gates) {
-    std::cout << gate.input1 << " " << gate.operation << " " << gate.input2
-              << " -> " << gate.output << std::endl;
-  }
-
-
-  auto solvedGate = 0;
-  while (solvedGate != (int)gates.size()) {
-
-    for (const auto &gate : gates) {
-      if (values.count(gate.output) != 0) {
-        continue;
-      }
-
-
-      if (values.count(gate.input1) > 0 && values.count(gate.input2) > 0) {
-        auto i1 = values[gate.input1];
-        auto i2 = values[gate.input2];
-
-        bool output;
-        if (gate.operation == "AND") {
-          output = i1 && i2;
-        } else if (gate.operation == "OR") {
-          output = i1 || i2;
-        } else {
-          output = i1 ^ i2;
-        }
-
-        values[gate.output] = output;
-        solvedGate++;
-      }
-    }
-  }
-
-
-  long long multiplier = 1;
-  long long ans = 0;
-  for (int i = 0; i <= 45; ++i) {
-    std::ostringstream oss;
-    oss << "z" << (i < 10 ? "0" : "")
-        << i;
-    auto key = oss.str();
-    auto value = values[key];
-    if (value) {
-      ans += multiplier;
-    }
-
-    multiplier <<= 1;
-  }
-  return ans;
+  return matchingPair;
 }
 }
